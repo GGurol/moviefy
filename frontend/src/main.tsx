@@ -5,7 +5,7 @@ import App from "./App.js";
 import "./index.css";
 import ContextProviders from "./context/index.js";
 
-ReactDOM.createRoot(document.getElementById("root")).render(
+ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <BrowserRouter>
       <ContextProviders>

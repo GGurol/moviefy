@@ -1,7 +1,7 @@
-const mongoose = require('mongoose');
+import mongoose from "mongoose";
 
 // SchemaTypes
-const actorSchema = mongoose.Schema(
+const actorSchema = new mongoose.Schema(
   {
     name: {
       type: String,
@@ -28,6 +28,6 @@ const actorSchema = mongoose.Schema(
 );
 
 // Text Index
-actorSchema.index({ name: 'text' });
+actorSchema.index({ name: "text" });
 
-module.exports = mongoose.model('Actor', actorSchema);
+export default mongoose.model("Actor", actorSchema);

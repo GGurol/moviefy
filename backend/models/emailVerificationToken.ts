@@ -1,10 +1,10 @@
-const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
+import mongoose from "mongoose";
+import bcrypt from "bcryptjs";
 
-const emailVerificationTokenSchema = mongoose.Schema({
+const emailVerificationTokenSchema = new mongoose.Schema({
   owner: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+    ref: "User",
     required: true,
   },
   token: {
@@ -18,8 +18,8 @@ const emailVerificationTokenSchema = mongoose.Schema({
   },
 });
 
-emailVerificationTokenSchema.pre('save', async function (next) {
-  if (this.isModified('token')) {
+emailVerificationTokenSchema.pre("save", async function (next) {
+  if (this.isModified("token")) {
     this.token = await bcrypt.hash(this.token, 10);
   }
   next();
@@ -30,7 +30,4 @@ emailVerificationTokenSchema.methods.compareToken = async function (token) {
   return result;
 };
 
-module.exports = mongoose.model(
-  'EmailVerificationToken',
-  emailVerificationTokenSchema
-);
+export default mongoose.model("EmailVerificationToken", emailVerificationTokenSchema);

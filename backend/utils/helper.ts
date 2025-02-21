@@ -1,41 +1,38 @@
-const crypto = require('crypto');
-const cloudinary = require('../cloud');
-const Review = require('../models/review');
+import crypto from "crypto";
+import cloudinary from "../cloud";
+import Review from "../models/review";
 
-exports.sendError = (res, error, statusCode = 401) => {
+export const sendError = (res, error, statusCode = 401) => {
   res.status(statusCode).json({ error });
 };
 
 // https://nodejs.org/api/crypto.html#cryptorandombytessize-callback
-exports.generateRandomByte = () => {
+export const generateRandomByte = () => {
   return new Promise((resolve, reject) => {
     crypto.randomBytes(30, (err, buff) => {
       if (err) reject(err);
-      const buffString = buff.toString('hex');
+      const buffString = buff.toString("hex");
       // console.log(buffString);
       resolve(buffString);
     });
   });
 };
 
-exports.handleNotFound = (req, res) => {
-  this.sendError(res, 'Not Found!', 404);
+export const handleNotFound = (req, res) => {
+  this.sendError(res, "Not Found!", 404);
 };
 
-exports.uploadImageToCloud = async (file) => {
-  const { secure_url: url, public_id } = await cloudinary.uploader.upload(
-    file,
-    {
-      gravity: 'face',
-      height: 500,
-      width: 500,
-      crop: 'thumb',
-    }
-  );
+export const uploadImageToCloud = async (file) => {
+  const { secure_url: url, public_id } = await cloudinary.uploader.upload(file, {
+    gravity: "face",
+    height: 500,
+    width: 500,
+    crop: "thumb",
+  });
   return { url, public_id };
 };
 
-exports.formateActor = (actor) => {
+export const formateActor = (actor) => {
   const { name, gender, about, _id, avatar } = actor;
   return {
     id: _id,
@@ -46,7 +43,7 @@ exports.formateActor = (actor) => {
   };
 };
 
-exports.averageRatingPipeline = (movieId) => {
+export const averageRatingPipeline = (movieId) => {
   return [
     // {
     //   $lookup: {
@@ -63,7 +60,7 @@ exports.averageRatingPipeline = (movieId) => {
       $group: {
         _id: null,
         ratingAvg: {
-          $avg: '$rating',
+          $avg: "$rating",
         },
         reviewCount: {
           $sum: 1,
@@ -73,7 +70,7 @@ exports.averageRatingPipeline = (movieId) => {
   ];
 };
 
-exports.relatedMovieAggregation = (tags, movieId) => {
+export const relatedMovieAggregation = (tags, movieId) => {
   return [
     // {
     //   $lookup: {
@@ -92,8 +89,8 @@ exports.relatedMovieAggregation = (tags, movieId) => {
     {
       $project: {
         title: 1,
-        poster: '$poster.url',
-        responsivePosters: '$poster.responsive',
+        poster: "$poster.url",
+        responsivePosters: "$poster.responsive",
       },
     },
     {
@@ -102,10 +99,10 @@ exports.relatedMovieAggregation = (tags, movieId) => {
   ];
 };
 
-exports.topRatedMoviesPipeline = (type) => {
+export const topRatedMoviesPipeline = (type) => {
   const matchOptions = {
     reviews: { $exists: true },
-    status: { $eq: 'public' },
+    status: { $eq: "public" },
   };
 
   if (type) matchOptions.type = { $eq: type };
@@ -125,9 +122,9 @@ exports.topRatedMoviesPipeline = (type) => {
     {
       $project: {
         title: 1,
-        poster: '$poster.url',
-        responsivePosters: '$poster.responsive',
-        reviewCount: { $size: '$reviews' },
+        poster: "$poster.url",
+        responsivePosters: "$poster.responsive",
+        reviewCount: { $size: "$reviews" },
       },
     },
     {
@@ -139,10 +136,8 @@ exports.topRatedMoviesPipeline = (type) => {
   ];
 };
 
-exports.getAverageRatings = async (movieId) => {
-  const [aggregatedResponse] = await Review.aggregate(
-    this.averageRatingPipeline(movieId)
-  );
+export const getAverageRatings = async (movieId) => {
+  const [aggregatedResponse] = await Review.aggregate(this.averageRatingPipeline(movieId));
 
   const reviews = {};
 

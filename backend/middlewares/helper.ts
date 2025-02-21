@@ -1,4 +1,4 @@
-exports.parseData = (req, res, next) => {
+export const parseData = (req, res, next) => {
   const { trailer, cast, genres, tags, writers } = req.body;
 
   if (trailer) req.body.trailer = JSON.parse(trailer);

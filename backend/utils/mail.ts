@@ -1,27 +1,27 @@
-const nodemailer = require('nodemailer');
-const SibApiV3Sdk = require('sib-api-v3-sdk');
+import nodemailer from "nodemailer";
+import SibApiV3Sdk from "sib-api-v3-sdk";
 
-exports.generateOTP = (otp_length = 6) => {
-    // generate 6 digit otp
-    let OTP = '';
-    for (let i = 1; i <= otp_length; i++) {
-        const randomVal = Math.round(Math.random() * 9);
-        OTP += randomVal;
-    }
-    return OTP;
+export const generateOTP = (otp_length = 6) => {
+  // generate 6 digit otp
+  let OTP = "";
+  for (let i = 1; i <= otp_length; i++) {
+    const randomVal = Math.round(Math.random() * 9);
+    OTP += randomVal;
+  }
+  return OTP;
 };
 
-exports.generateMailTransporter = () =>
-    nodemailer.createTransport({
-        host: 'sandbox.smtp.mailtrap.io',
-        port: 2525,
-        auth: {
-            user: process.env.MAIL_TRAP_USER,
-            pass: process.env.MAIL_TRAP_PASS,
-        },
-    });
+export const generateMailTransporter = () =>
+  nodemailer.createTransport({
+    host: "sandbox.smtp.mailtrap.io",
+    port: 2525,
+    auth: {
+      user: process.env.MAIL_TRAP_USER,
+      pass: process.env.MAIL_TRAP_PASS,
+    },
+  });
 
-// exports.sendEmail = async (name, email, subject, htmlContent) => {
+// export const sendEmail = async (name, email, subject, htmlContent) => {
 //     let defaultClient = SibApiV3Sdk.ApiClient.instance;
 
 //     // Configure API key authorization: api-key

@@ -1,5 +1,5 @@
-const express = require('express');
-const {
+import express from "express";
+import {
   create,
   verifyEmail,
   resendEmailVerificationToken,
@@ -7,38 +7,23 @@ const {
   sendResetPasswordTokenStatus,
   resetPassword,
   signIn,
-} = require('../controllers/user');
-const {
-  userValidator,
-  validate,
-  validatePassword,
-  signInValidator,
-} = require('../middlewares/validator');
-const { isValidPassResetToken } = require('../middlewares/user');
-const { sendError } = require('../utils/helper');
-const { isAuth } = require('../middlewares/auth');
+} from "../controllers/user";
+import { userValidator, validate, validatePassword, signInValidator } from "../middlewares/validator";
+import { isValidPassResetToken } from "../middlewares/user";
+import { sendError } from "../utils/helper";
+import { isAuth } from "../middlewares/auth";
 
 const router = express.Router();
 
-router.post('/create', userValidator, validate, create);
-router.post('/sign-in', signInValidator, validate, signIn);
-router.post('/verify-email', verifyEmail);
-router.post('/resend-email-verification-token', resendEmailVerificationToken);
-router.post('/forget-password', forgetPassword);
-router.post(
-  '/verify-pass-reset-token',
-  isValidPassResetToken,
-  sendResetPasswordTokenStatus
-);
-router.post(
-  '/reset-password',
-  validatePassword,
-  validate,
-  isValidPassResetToken,
-  resetPassword
-);
+router.post("/create", userValidator, validate, create);
+router.post("/sign-in", signInValidator, validate, signIn);
+router.post("/verify-email", verifyEmail);
+router.post("/resend-email-verification-token", resendEmailVerificationToken);
+router.post("/forget-password", forgetPassword);
+router.post("/verify-pass-reset-token", isValidPassResetToken, sendResetPasswordTokenStatus);
+router.post("/reset-password", validatePassword, validate, isValidPassResetToken, resetPassword);
 
-router.get('/is-auth', isAuth, (req, res) => {
+router.get("/is-auth", isAuth, (req, res) => {
   const { user } = req;
   res.json({
     user: {
@@ -51,4 +36,4 @@ router.get('/is-auth', isAuth, (req, res) => {
   });
 });
 
-module.exports = router;
+export default router;

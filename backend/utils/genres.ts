@@ -29,4 +29,4 @@ const genres = [
   "Western",
 ];
 
-module.exports = genres;
+export default genres;

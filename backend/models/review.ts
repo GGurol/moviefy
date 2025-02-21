@@ -1,15 +1,15 @@
-const mongoose = require('mongoose');
+import mongoose from "mongoose";
 
-const reviewSchema = mongoose.Schema({
+const reviewSchema = new mongoose.Schema({
   // owner parentMovie rating content
   owner: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+    ref: "User",
     required: true,
   },
   parentMovie: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Movie',
+    ref: "Movie",
     required: true,
   },
   content: {
@@ -22,4 +22,4 @@ const reviewSchema = mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model('Review', reviewSchema);
+export default mongoose.model("Review", reviewSchema);
