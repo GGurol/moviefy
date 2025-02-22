@@ -1,10 +1,10 @@
-import { FileUploader } from 'react-drag-drop-files';
-import { AiOutlineCloudUpload } from 'react-icons/ai';
-import { useNotification } from '../../hooks';
-import { uploadMovie, uploadTrailer } from '../../api/movie';
-import { useState } from 'react';
-import MovieForm from './MovieForm';
-import ModalContainer from '../modals/ModalContainer';
+import { FileUploader } from "react-drag-drop-files";
+import { AiOutlineCloudUpload } from "react-icons/ai";
+import { useNotification } from "../../hooks";
+import { uploadMovie, uploadTrailer } from "../../api/movie";
+import { useState } from "react";
+import MovieForm from "./MovieForm";
+import ModalContainer from "../modals/ModalContainer";
 
 function MovieUpload({ visible, onClose }) {
   const [videoSelected, setVideoSelected] = useState(false);
@@ -23,7 +23,7 @@ function MovieUpload({ visible, onClose }) {
   };
 
   const handleTypeError = (error) => {
-    updateNotification('error', error);
+    updateNotification("error", error);
   };
 
   const handleUploadTrailer = async (data) => {
@@ -31,7 +31,7 @@ function MovieUpload({ visible, onClose }) {
       data,
       setUploadProgress
     );
-    if (error) return updateNotification('error', error);
+    if (error) return updateNotification("error", error);
 
     setVideoUploaded(true);
     setVideoInfo({ url, public_id });
@@ -39,7 +39,7 @@ function MovieUpload({ visible, onClose }) {
 
   const handleChange = (file) => {
     const formData = new FormData();
-    formData.append('video', file); // matches backend movie router -- uploadVideo.single('video')
+    formData.append("video", file); // matches backend movie router -- uploadVideo.single('video')
 
     setVideoSelected(true);
     handleUploadTrailer(formData);
@@ -47,23 +47,23 @@ function MovieUpload({ visible, onClose }) {
 
   const getUploadProgressValue = () => {
     if (!videoUploaded && uploadProgress >= 100) {
-      return 'Processing';
+      return "Processing";
     }
     return `Upload progress ${uploadProgress}%}`;
   };
 
   const handleSubmit = async (data) => {
     if (!videoInfo.url || !videoInfo.public_id)
-      return updateNotification('error', 'Trailer is missing!');
+      return updateNotification("error", "Trailer is missing!");
 
     setBusy(true);
-    data.append('trailer', JSON.stringify(videoInfo));
+    data.append("trailer", JSON.stringify(videoInfo));
     const { error, movie } = await uploadMovie(data);
     setBusy(false);
 
-    if (error) return updateNotification('error', error);
+    if (error) return updateNotification("error", error);
 
-    updateNotification('success', 'Movie uploaded successfully!');
+    updateNotification("success", "Movie uploaded successfully!");
 
     console.log(movie);
     resetState();
@@ -72,7 +72,7 @@ function MovieUpload({ visible, onClose }) {
 
   return (
     <ModalContainer visible={visible}>
-      <div className='mb-5'>
+      <div className="mb-5">
         <UploadProgress
           visible={!videoUploaded && videoSelected}
           message={getUploadProgressValue()}
@@ -90,7 +90,7 @@ function MovieUpload({ visible, onClose }) {
         </>
       ) : (
         <MovieForm
-          btnTitle='Upload'
+          btnTitle="Upload"
           busy={busy}
           onSubmit={!busy ? handleSubmit : null}
         />
@@ -103,13 +103,13 @@ const TrailerSelector = ({ visible, handleChange, onTypeError }) => {
   if (!visible) return null;
 
   return (
-    <div className='h-full flex items-center justify-center'>
+    <div className="h-full flex items-center justify-center">
       <FileUploader
         handleChange={handleChange}
         onTypeError={onTypeError}
-        types={['mp4', 'avi']}
+        types={["mp4", "avi"]}
       >
-        <label className='w-48 h-48 border border-dashed dark:border-dark-subtle border-light-subtle rounded-full flex flex-col items-center justify-center dark:text-dark-subtle cursor-pointer'>
+        <label className="w-48 h-48 border border-dashed dark:border-dark-subtle border-light-subtle rounded-full flex flex-col items-center justify-center dark:text-dark-subtle cursor-pointer">
           <AiOutlineCloudUpload size={80} />
           <p>Drop your file here!</p>
         </label>
@@ -121,14 +121,14 @@ const TrailerSelector = ({ visible, handleChange, onTypeError }) => {
 const UploadProgress = ({ width, message, visible }) => {
   if (!visible) return null;
   return (
-    <div className='dark:bg-secondary bg-white drop-shadow-lg rounded p-3'>
-      <div className='relative h-3 dark:bg-dark-subtle bg-light-subtle overflow-hidden'>
+    <div className=" drop-shadow-lg rounded p-3">
+      <div className="relative h-3 dark:bg-dark-subtle bg-light-subtle overflow-hidden">
         <div
-          style={{ width: width + '%' }}
-          className='h-full absolute left-0 dark:bg-white bg-secondary'
+          style={{ width: width + "%" }}
+          className="h-full absolute left-0  "
         />
       </div>
-      <p className='font-semibold dark:text-dark-subtle text-light-subtle animate-pulse mt-1'>
+      <p className="font-semibold dark:text-dark-subtle text-light-subtle animate-pulse mt-1">
         {message}
       </p>
     </div>

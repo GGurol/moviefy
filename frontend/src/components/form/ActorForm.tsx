@@ -1,36 +1,36 @@
-import { useEffect, useState } from 'react';
-import { commonInputClasses } from '../../utils/theme';
-import PosterSelector from '../PosterSelector';
-import Selector from '../Selector';
-import { useNotification } from '../../hooks';
-import { FaSpinner } from 'react-icons/fa';
+import { useEffect, useState } from "react";
+import { commonInputClasses } from "../../utils/theme";
+import PosterSelector from "../PosterSelector";
+import Selector from "../Selector";
+import { useNotification } from "../../hooks";
+import { FaSpinner } from "react-icons/fa";
 
 const defaultActorInfo = {
-  name: '',
-  about: '',
+  name: "",
+  about: "",
   avatar: null,
-  gender: '',
+  gender: "",
 };
 
 const genderOptions = [
-  { title: 'Male', value: 'male' },
-  { title: 'Female', value: 'female' },
-  { title: 'Other', value: 'other' },
+  { title: "Male", value: "male" },
+  { title: "Female", value: "female" },
+  { title: "Other", value: "other" },
 ];
 
 const validateActor = ({ avatar, name, about, gender }) => {
-  if (!name.trim()) return { error: 'Actor name is missing!' };
-  if (!about.trim()) return { error: 'Actor section is missing!' };
-  if (!gender.trim()) return { error: 'Actor gender is missing!' };
-  if (avatar && !avatar.type?.startsWith('image'))
-    return { error: 'Invalid image / avatar file!' };
+  if (!name.trim()) return { error: "Actor name is missing!" };
+  if (!about.trim()) return { error: "Actor section is missing!" };
+  if (!gender.trim()) return { error: "Actor gender is missing!" };
+  if (avatar && !avatar.type?.startsWith("image"))
+    return { error: "Invalid image / avatar file!" };
 
   return { error: null };
 };
 
 function ActorForm({ title, btnTitle, onSubmit, busy, initialState }) {
   const [actorInfo, setActorInfo] = useState({ ...defaultActorInfo });
-  const [selectedAvatarForUI, setSelectedAvatarForUI] = useState('');
+  const [selectedAvatarForUI, setSelectedAvatarForUI] = useState("");
   const { updateNotification } = useNotification();
 
   const updatePosterForUI = (file) => {
@@ -40,7 +40,7 @@ function ActorForm({ title, btnTitle, onSubmit, busy, initialState }) {
 
   const handleChange = ({ target }) => {
     const { value, files, name } = target;
-    if (name === 'avatar') {
+    if (name === "avatar") {
       const file = files[0];
       updatePosterForUI(file);
       return setActorInfo({ ...actorInfo, avatar: file });
@@ -52,7 +52,7 @@ function ActorForm({ title, btnTitle, onSubmit, busy, initialState }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     const { error } = validateActor(actorInfo);
-    if (error) return updateNotification('error', error);
+    if (error) return updateNotification("error", error);
 
     // submit form
     const formData = new FormData();
@@ -74,54 +74,54 @@ function ActorForm({ title, btnTitle, onSubmit, busy, initialState }) {
   return (
     <form
       onSubmit={handleSubmit}
-      className='dark:bg-primary bg-white p-3 w-[35rem] rounded'
+      className="dark:bg-primary  p-3 w-[35rem] rounded"
     >
-      <div className='flex justify-between items-center mb-3'>
-        <h1 className='font-semibold text-xl dark:text-white text-primary'>
+      <div className="flex justify-between items-center mb-3">
+        <h1 className="font-semibold text-xl dark:text-white text-primary">
           {title}
         </h1>
         <button
-          type='submit'
-          className='h-8 w-24 bg-primary text-white dark:bg-white dark:text-primary hover:opacity-80 transition rounded flex items-center justify-center'
+          type="submit"
+          className="h-8 w-24 bg-primary text-white  dark:text-primary hover:opacity-80 transition rounded flex items-center justify-center"
         >
-          {busy ? <FaSpinner className='animate-spin' /> : btnTitle}
+          {busy ? <FaSpinner className="animate-spin" /> : btnTitle}
         </button>
       </div>
-      <div className='flex space-x-2'>
+      <div className="flex space-x-2">
         <PosterSelector
           selectedPoster={selectedAvatarForUI}
-          className='w-36 h-36 aspect-square object-cover rounded'
-          name='avatar'
+          className="w-36 h-36 aspect-square object-cover rounded"
+          name="avatar"
           onChange={handleChange}
-          label='Select avatar'
-          accept='image/jpg, image/jpeg, image/png'
+          label="Select avatar"
+          accept="image/jpg, image/jpeg, image/png"
         />
-        <div className='flex-grow flex flex-col space-y-2'>
+        <div className="flex-grow flex flex-col space-y-2">
           <input
-            placeholder='Enter name'
-            type='text'
-            className={commonInputClasses + ' border-b-2'}
-            name='name'
+            placeholder="Enter name"
+            type="text"
+            className={commonInputClasses + " border-b-2"}
+            name="name"
             value={name}
             onChange={handleChange}
           />
           <textarea
-            name='about'
+            name="about"
             value={about}
             onChange={handleChange}
-            placeholder='About'
-            className={commonInputClasses + ' border-b-2 resize-none h-full'}
+            placeholder="About"
+            className={commonInputClasses + " border-b-2 resize-none h-full"}
           ></textarea>
         </div>
       </div>
 
-      <div className='mt-3'>
+      <div className="mt-3">
         <Selector
           options={genderOptions}
-          label='Gender'
+          label="Gender"
           value={gender}
           onChange={handleChange}
-          name='gender'
+          name="gender"
         />
       </div>
     </form>

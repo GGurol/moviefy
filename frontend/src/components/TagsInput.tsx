@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState } from 'react';
-import { AiOutlineClose } from 'react-icons/ai';
+import { useEffect, useRef, useState } from "react";
+import { AiOutlineClose } from "react-icons/ai";
 
 function TagsInput({ value, name, onChange }) {
-  const [tag, setTag] = useState('');
+  const [tag, setTag] = useState("");
   const [tags, setTags] = useState([]);
 
   const inputRef = useRef();
@@ -10,22 +10,22 @@ function TagsInput({ value, name, onChange }) {
 
   const handleOnChange = ({ target }) => {
     const { value } = target;
-    if (value !== ',') setTag(value);
+    if (value !== ",") setTag(value);
 
     onChange(tags);
   };
 
   const handleKeyDown = ({ key }) => {
-    if (key === ',' || key === 'Enter') {
+    if (key === "," || key === "Enter") {
       if (!tag) return;
 
-      if (tags.includes(tag)) return setTag('');
+      if (tags.includes(tag)) return setTag("");
 
       setTags([...tags, tag]);
-      setTag('');
+      setTag("");
     }
 
-    if (key === 'Backspace' && !tag && tags.length) {
+    if (key === "Backspace" && !tag && tags.length) {
       const newTags = tags.filter((_, index) => index !== tags.length - 1);
       setTags([...newTags]);
     }
@@ -38,20 +38,20 @@ function TagsInput({ value, name, onChange }) {
 
   const handleOnFocus = () => {
     tagsInputRef.current.classList.remove(
-      'dark:border-dark-subtle',
-      'border-light-subtle'
+      "dark:border-dark-subtle",
+      "border-light-subtle"
     );
-    tagsInputRef.current.classList.add('dark:border-white', 'border-primary');
+    tagsInputRef.current.classList.add("dark:border-white", "border-primary");
   };
 
   const handleOnBlur = () => {
     tagsInputRef.current.classList.add(
-      'dark:border-dark-subtle',
-      'border-light-subtle'
+      "dark:border-dark-subtle",
+      "border-light-subtle"
     );
     tagsInputRef.current.classList.remove(
-      'dark:border-white',
-      'border-primary'
+      "dark:border-white",
+      "border-primary"
     );
   };
 
@@ -69,7 +69,7 @@ function TagsInput({ value, name, onChange }) {
       <div
         ref={tagsInputRef}
         onKeyDown={handleKeyDown}
-        className='border-2 bg-transparent dark:border-dark-subtle border-light-subtle px-2 h-10 rounded w-full text-white flex items-center space-x-2 overflow-x-auto custom-scroll-bar transition'
+        className="border-2 bg-transparent dark:border-dark-subtle border-light-subtle px-2 h-10 rounded w-full text-white flex items-center space-x-2 overflow-x-auto custom-scroll-bar transition"
       >
         {tags.map((t) => (
           <Tag onClick={() => removeTag(t)} key={t}>
@@ -79,9 +79,9 @@ function TagsInput({ value, name, onChange }) {
         <input
           id={name}
           ref={inputRef}
-          type='text'
-          className='h-full flex-grow bg-transparent outline-none dark:text-white text-primary'
-          placeholder='Tag one, Tag two'
+          type="text"
+          className="h-full flex-grow bg-transparent outline-none dark:text-white text-primary"
+          placeholder="Tag one, Tag two"
           value={tag}
           onChange={handleOnChange}
           onFocus={handleOnFocus}
@@ -94,10 +94,10 @@ function TagsInput({ value, name, onChange }) {
 
 const Tag = ({ children, onClick }) => {
   return (
-    <span className='dark:bg-white bg-primary dark:text-primary text-white flex items-center text-sm px-1 whitespace-nowrap'>
+    <span className=" dark:text-primary text-white flex items-center text-sm px-1 whitespace-nowrap">
       {children}
       {/* <AiOutlineClose size={12} onClick={onClick} /> */}
-      <button type='button' onClick={onClick}>
+      <button type="button" onClick={onClick}>
         <AiOutlineClose size={12} />
       </button>
     </span>

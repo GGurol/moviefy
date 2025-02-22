@@ -137,7 +137,7 @@ export const topRatedMoviesPipeline = (type) => {
 };
 
 export const getAverageRatings = async (movieId) => {
-  const [aggregatedResponse] = await Review.aggregate(this.averageRatingPipeline(movieId));
+  const [aggregatedResponse] = await Review.aggregate(averageRatingPipeline(movieId));
 
   const reviews = {};
 

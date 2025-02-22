@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
-import { deleteMovie, getMovieForUpdate, getMovies } from '../api/movie';
-import { useMovies, useNotification } from '../hooks';
-import MovieListItem from './MovieListItem';
-import ConfirmModal from './modals/ConfirmModal';
-import UpdateMovie from './modals/UpdateMovie';
+import { useEffect, useState } from "react";
+import { deleteMovie, getMovieForUpdate, getMovies } from "../api/movie";
+import { useMovies, useNotification } from "../hooks";
+import MovieListItem from "./MovieListItem";
+import ConfirmModal from "./modals/ConfirmModal";
+import UpdateMovie from "./modals/UpdateMovie";
 
 const pageNo = 0;
 const limit = 5;
@@ -73,12 +73,12 @@ function LatestUploads() {
 
   return (
     <>
-      <div className='bg-white dark:shadow shadow dark:bg-secondary p-5 rounded col-span-2'>
-        <h1 className='font-semibold text-2xl mb-2 text-primary dark:text-white '>
+      <div className="shadow p-5 rounded col-span-2">
+        <h1 className="font-semibold text-2xl mb-2 text-primary dark:text-white ">
           Recent Uploads
         </h1>
 
-        <div className='space-y-3'>
+        <div className="space-y-3">
           {latestUploads.map((movie) => {
             return (
               <MovieListItem

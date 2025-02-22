@@ -1,15 +1,15 @@
 // const cast = [{ actor: id, roleAs: '', leadActor: true }];
 
-import { useState } from 'react';
-import LiveSearch from '../LiveSearch';
-import { commonInputClasses } from '../../utils/theme';
-import { useNotification, useSearch } from '../../hooks';
-import { renderItem } from '../../utils/helper';
-import { searchActor } from '../../api/actor';
+import { useState } from "react";
+import LiveSearch from "../LiveSearch";
+import { commonInputClasses } from "../../utils/theme";
+import { useNotification, useSearch } from "../../hooks";
+import { renderItem } from "../../utils/helper";
+import { searchActor } from "../../api/actor";
 
 const defaultCastInfo = {
   profile: {},
-  roleAs: '',
+  roleAs: "",
   leadActor: false,
 };
 
@@ -23,7 +23,7 @@ function CastForm({ onSubmit }) {
   const handleOnChange = ({ target }) => {
     const { checked, name, value } = target;
 
-    if (name === 'leadActor')
+    if (name === "leadActor")
       return setCastInfo({ ...castInfo, leadActor: checked });
 
     setCastInfo({ ...castInfo, [name]: value });
@@ -36,12 +36,12 @@ function CastForm({ onSubmit }) {
   const handleSubmit = () => {
     const { profile, roleAs } = castInfo;
     if (!profile.name)
-      return updateNotification('error', 'Cast profile is missing!');
+      return updateNotification("error", "Cast profile is missing!");
     if (!roleAs.trim())
-      return updateNotification('error', 'Cast role is missing!');
+      return updateNotification("error", "Cast role is missing!");
 
     onSubmit(castInfo);
-    setCastInfo({ ...defaultCastInfo, profile: { name: '' } });
+    setCastInfo({ ...defaultCastInfo, profile: { name: "" } });
     resetSearch();
     setProfiles([]);
   };
@@ -57,41 +57,41 @@ function CastForm({ onSubmit }) {
   const { leadActor, profile, roleAs } = castInfo;
 
   return (
-    <div className='flex items-center space-x-2'>
+    <div className="flex items-center space-x-2">
       <input
-        type='checkbox'
-        name='leadActor'
-        className='w-4 h-4'
+        type="checkbox"
+        name="leadActor"
+        className="w-4 h-4"
         checked={leadActor}
         onChange={handleOnChange}
-        title='Set as lead actor'
+        title="Set as lead actor"
       />
       <LiveSearch
-        placeholder='Search profile...'
+        placeholder="Search profile..."
         value={profile.name}
         results={profiles}
         onSelect={handleProfileSelect}
         renderItem={renderItem}
         onChange={handleProfileChange}
       />
-      <span className='dark:text-dark-subtle text-light-subtle font-semibold'>
+      <span className="dark:text-dark-subtle text-light-subtle font-semibold">
         as
       </span>
 
-      <div className='flex-grow'>
+      <div className="flex-grow">
         <input
-          type='text'
-          className={commonInputClasses + ' rounded p-1 text-lg border-2'}
-          placeholder='Role as...'
-          name='roleAs'
+          type="text"
+          className={commonInputClasses + " rounded p-1 text-lg border-2"}
+          placeholder="Role as..."
+          name="roleAs"
           value={roleAs}
           onChange={handleOnChange}
         />
       </div>
       <button
         onClick={handleSubmit}
-        type='button'
-        className='bg-secondary dark:bg-white dark:text-primary text-white px-1 rounded'
+        type="button"
+        className="bg-secondary   text-white px-1 rounded"
       >
         Add
       </button>

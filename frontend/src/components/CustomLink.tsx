@@ -1,9 +1,9 @@
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
 function CustomLink({ to, children }) {
   return (
     <Link
-      className='dark:text-dark-subtle text-light-subtle dark:hover:text-white transition hover:text-primary'
+      className="transition text-blue-500 hover:text-primary underline underline-offset-4"
       to={to}
     >
       {children}

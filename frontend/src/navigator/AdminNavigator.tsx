@@ -1,14 +1,14 @@
-import { Route, Routes } from 'react-router-dom';
-import NotFound from '../components/NotFound';
-import Dashboard from '../components/admin/Dashboard';
-import Movies from '../components/admin/Movies';
-import Actors from '../components/admin/Actors';
-import Navbar from '../components/admin/Navbar';
-import Header from '../components/admin/Header';
-import MovieUpload from '../components/admin/MovieUpload';
-import { useState } from 'react';
-import ActorUpload from '../components/modals/ActorUpload';
-import SearchMovies from '../components/admin/SearchMovies';
+import { Route, Routes } from "react-router-dom";
+import NotFound from "../components/NotFound";
+import Dashboard from "../components/admin/Dashboard";
+import Movies from "../components/admin/Movies";
+import Actors from "../components/admin/Actors";
+import Navbar from "../components/admin/Navbar";
+import Header from "../components/admin/Header";
+import MovieUpload from "../components/admin/MovieUpload";
+import { useState } from "react";
+import ActorUpload from "../components/modals/ActorUpload";
+import SearchMovies from "../components/admin/SearchMovies";
 
 function AdminNavigator() {
   const [showMovieUploadModal, setShowMovieUploadModal] = useState(false);
@@ -28,19 +28,19 @@ function AdminNavigator() {
   };
   return (
     <>
-      <div className='flex dark:bg-primary bg-white'>
+      <div className="flex ">
         <Navbar />
-        <div className='flex-1  max-w-screen-xl'>
+        <div className="flex-1  max-w-screen-xl">
           <Header
             onAddMovieClick={displayMovieUploadModal}
             onAddActorClick={displayActorUploadModal}
           />
           <Routes>
-            <Route path='/' element={<Dashboard />} />
-            <Route path='/movies' element={<Movies />} />
-            <Route path='/actors' element={<Actors />} />
-            <Route path='/search' element={<SearchMovies />} />
-            <Route path='/*' element={<NotFound />} />
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/movies" element={<Movies />} />
+            <Route path="/actors" element={<Actors />} />
+            <Route path="/search" element={<SearchMovies />} />
+            <Route path="/*" element={<NotFound />} />
           </Routes>
         </div>
       </div>

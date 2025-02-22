@@ -3,7 +3,7 @@ export const isValidEmail = (email) => {
   return isValid.test(email);
 };
 
-export const getToken = () => localStorage.getItem('auth-token');
+export const getToken = () => localStorage.getItem("auth-token");
 
 // Handling Errors
 // https://axios-http.com/docs/handling_errors
@@ -18,13 +18,13 @@ export const catchError = (error) => {
 
 export const renderItem = (result) => {
   return (
-    <div key={result.id} className='flex space-x-2 rounded overflow-hidden'>
+    <div key={result.id} className="flex space-x-2 rounded overflow-hidden">
       <img
         src={result.avatar}
         alt={result.name}
-        className='w-16 h-16 object-cover'
+        className="w-16 h-16 object-cover"
       />
-      <p className='dark:text-white font-semibold'>{result.name}</p>
+      <p className="dark:text-white font-semibold">{result.name}</p>
     </div>
   );
 };
@@ -43,5 +43,7 @@ export const getPoster = (posters = []) => {
 export const convertReviewCount = (count = 0) => {
   if (count <= 999) return count;
 
-  return parseFloat(count / 1000).toFixed(2) + 'k';
+  return parseFloat(count / 1000).toFixed(2) + "k";
 };
+
+export const OTP_LENGTH = 6;
