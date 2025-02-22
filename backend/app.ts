@@ -1,8 +1,9 @@
 import express from "express";
-require("express-async-errors");
+import "express-async-errors";
 import morgan from "morgan";
-require("dotenv").config();
-require("./db");
+import "dotenv/config";
+// require("dotenv").config();
+import "./db";
 import { errorHandler } from "./middlewares/error";
 import cors from "cors";
 import { handleNotFound } from "./utils/helper";

@@ -5,7 +5,7 @@
   "main": "app.js",
   "type": "module",
   "scripts": {
-    "start": "node app.js"
+    "dev": "tsx watch app.ts "
   },
   "author": "Nicolas",
   "license": "ISC",
@@ -18,7 +18,7 @@
     "express-async-errors": "^3.1.1",
     "express-validator": "^7.0.1",
     "jsonwebtoken": "^9.0.1",
-    "mongodb": "^6.1.0",
+    "mongodb": "^6.13.1",
     "mongoose": "^7.4.3",
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",
@@ -26,11 +26,12 @@
     "sib-api-v3-sdk": "^8.5.0"
   },
   "engines": {
-    "node": "18.x",
-    "npm": "9.x"
+    "node": "20.x",
+    "npm": "10.x"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
+    "@types/express": "^5.0.0",
     "typescript": "^5.7.3"
   }
 }
