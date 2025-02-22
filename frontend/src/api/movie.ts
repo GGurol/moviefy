@@ -1,17 +1,17 @@
-import { catchError, getToken } from '../utils/helper';
-import client from './client';
+import { AxiosResponse, CancelToken, CancelTokenSource } from "axios";
+import { catchError, getToken } from "../utils/helper";
+import client from "./client";
 
 export const uploadTrailer = async (formData, onUploadProgress) => {
   const token = getToken();
   try {
-    const { data } = await client.post('/movie/upload-trailer', formData, {
+    const { data } = await client.post("/movie/upload-trailer", formData, {
       headers: {
         authorization: `Bearer ${token}`,
-        'content-type': 'multipart/form-data',
+        "content-type": "multipart/form-data",
       },
       onUploadProgress: ({ loaded, total }) => {
-        if (onUploadProgress)
-          onUploadProgress(Math.floor((loaded / total) * 100));
+        if (onUploadProgress) onUploadProgress(Math.floor((loaded / total) * 100));
       },
     });
     return data;
@@ -23,10 +23,10 @@ export const uploadTrailer = async (formData, onUploadProgress) => {
 export const uploadMovie = async (formData) => {
   const token = getToken();
   try {
-    const { data } = await client.post('/movie/create', formData, {
+    const { data } = await client.post("/movie/create", formData, {
       headers: {
         authorization: `Bearer ${token}`,
-        'content-type': 'multipart/form-data',
+        "content-type": "multipart/form-data",
       },
     });
     return data;
@@ -38,7 +38,7 @@ export const uploadMovie = async (formData) => {
 export const getMovieForUpdate = async (id) => {
   const token = getToken();
   try {
-    const { data } = await client.get('/movie/for-update/' + id, {
+    const { data } = await client.get("/movie/for-update/" + id, {
       headers: {
         authorization: `Bearer ${token}`,
       },
@@ -52,10 +52,10 @@ export const getMovieForUpdate = async (id) => {
 export const updateMovie = async (id, formData) => {
   const token = getToken();
   try {
-    const { data } = await client.patch('/movie/update/' + id, formData, {
+    const { data } = await client.patch("/movie/update/" + id, formData, {
       headers: {
         authorization: `Bearer ${token}`,
-        'content-type': 'multipart/form-data',
+        "content-type": "multipart/form-data",
       },
     });
     return data;
@@ -67,15 +67,12 @@ export const updateMovie = async (id, formData) => {
 export const getMovies = async (pageNo, limit) => {
   const token = getToken();
   try {
-    const { data } = await client.get(
-      `/movie/movies?pageNo=${pageNo}&limit=${limit}`,
-      {
-        headers: {
-          authorization: `Bearer ${token}`,
-          'content-type': 'multipart/form-data',
-        },
-      }
-    );
+    const { data } = await client.get(`/movie/movies?pageNo=${pageNo}&limit=${limit}`, {
+      headers: {
+        authorization: `Bearer ${token}`,
+        "content-type": "multipart/form-data",
+      },
+    });
     return data;
   } catch (error) {
     return catchError(error);
@@ -112,7 +109,7 @@ export const searchMovieForAdmin = async (title) => {
 
 export const getTopRatedMovies = async (type, signal) => {
   try {
-    let endpoint = '/movie/top-rated';
+    let endpoint = "/movie/top-rated";
     if (type) endpoint = endpoint + `?type=${type}`;
 
     const { data } = await client.get(endpoint, { signal });
@@ -122,10 +119,10 @@ export const getTopRatedMovies = async (type, signal) => {
   }
 };
 
-export const getLatestUploads = async (signal) => {
+export const getLatestUploads = async () => {
   try {
-    const { data } = await client.get('/movie/latest-uploads', signal);
-    return data;
+    const response = await client.get("/movie/latest-uploads");
+    return response.data;
   } catch (error) {
     return catchError(error);
   }
@@ -133,7 +130,7 @@ export const getLatestUploads = async (signal) => {
 
 export const getSingleMovie = async (id) => {
   try {
-    const { data } = await client.get('/movie/single/' + id);
+    const { data } = await client.get("/movie/single/" + id);
     return data;
   } catch (error) {
     return catchError(error);
@@ -142,7 +139,7 @@ export const getSingleMovie = async (id) => {
 
 export const getRelatedMovies = async (id) => {
   try {
-    const { data } = await client.get('/movie/related/' + id);
+    const { data } = await client.get("/movie/related/" + id);
     return data;
   } catch (error) {
     return catchError(error);
@@ -151,7 +148,7 @@ export const getRelatedMovies = async (id) => {
 
 export const searchPublicMovies = async (title) => {
   try {
-    const { data } = await client.get('/movie/search-public?title=' + title);
+    const { data } = await client.get("/movie/search-public?title=" + title);
     return data;
   } catch (error) {
     return catchError(error);
