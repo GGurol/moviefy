@@ -17,6 +17,7 @@ import {
   Clapperboard,
   Moon,
   MoveIcon,
+  PanelLeftClose,
   ShoppingBag,
   Sun,
   User2,
@@ -25,6 +26,7 @@ import {
 import { useTheme } from "../ui/theme-provider";
 import ThemeButton from "../ui/ThemeButton";
 import { Input } from "../ui/input";
+import { SidebarTrigger } from "../ui/sidebar";
 
 export default function Header({ onAddActorClick, onAddMovieClick }) {
   // const [showOptions, setShowOptions] = useState(false);
@@ -58,14 +60,19 @@ export default function Header({ onAddActorClick, onAddMovieClick }) {
         onSubmit={handleSearchSubmit}
         placeholder="Search Movies..."
       /> */}
-      <form onSubmit={handleSubmit}>
-        <Input
-          name="search"
-          value={search}
-          onChange={handleChange}
-          placeholder="Search movies..."
-        />
-      </form>
+      <div className=" flex gap-5 items-center">
+        <SidebarTrigger />
+
+        <form onSubmit={handleSubmit}>
+          <Input
+            name="search"
+            value={search}
+            onChange={handleChange}
+            placeholder="Search movies..."
+          />
+        </form>
+      </div>
+
       <div className="flex items-center space-x-3">
         {/* <button
           onClick={toggleTheme}

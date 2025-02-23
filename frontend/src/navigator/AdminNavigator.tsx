@@ -9,6 +9,8 @@ import MovieUpload from "../components/admin/MovieUpload";
 import { useState } from "react";
 import ActorUpload from "../components/modals/ActorUpload";
 import SearchMovies from "../components/admin/SearchMovies";
+import { AppSidebar } from "@/components/ui/AppSidebar";
+import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 
 function AdminNavigator() {
   const [showMovieUploadModal, setShowMovieUploadModal] = useState(false);
@@ -28,22 +30,20 @@ function AdminNavigator() {
   };
   return (
     <>
-      <div className="flex ">
-        <Navbar />
-        <div className="flex-1  max-w-screen-xl">
-          <Header
-            onAddMovieClick={displayMovieUploadModal}
-            onAddActorClick={displayActorUploadModal}
-          />
-          <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/movies" element={<Movies />} />
-            <Route path="/actors" element={<Actors />} />
-            <Route path="/search" element={<SearchMovies />} />
-            <Route path="/*" element={<NotFound />} />
-          </Routes>
-        </div>
-      </div>
+      <AppSidebar />
+      <SidebarInset className="w-full mx-auto">
+        <Header
+          onAddMovieClick={displayMovieUploadModal}
+          onAddActorClick={displayActorUploadModal}
+        />
+        <Routes>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/movies" element={<Movies />} />
+          <Route path="/actors" element={<Actors />} />
+          <Route path="/search" element={<SearchMovies />} />
+          <Route path="/*" element={<NotFound />} />
+        </Routes>
+      </SidebarInset>
       <MovieUpload
         visible={showMovieUploadModal}
         onClose={hideMovieUploadModal}
