@@ -95,7 +95,7 @@ export function SignUpForm({
           <CardDescription>Sign up with your Google account</CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
+          <form onSubmit={handleSubmit}>
             <div className="grid gap-6">
               <div className="flex flex-col gap-4">
                 <Button variant="outline" className="w-full">
@@ -117,6 +117,8 @@ export function SignUpForm({
                     placeholder="John Doe"
                     required
                     name="username"
+                    onChange={handleChange}
+                    value={userInfo.username}
                   />
                   <Label htmlFor="email">Email</Label>
                   <Input
@@ -124,6 +126,9 @@ export function SignUpForm({
                     type="email"
                     placeholder="m@example.com"
                     required
+                    onChange={handleChange}
+                    name="email"
+                    value={userInfo.email}
                   />
                 </div>
                 <div className="grid gap-2">
@@ -135,6 +140,9 @@ export function SignUpForm({
                     type="password"
                     required
                     placeholder="****************"
+                    name="password"
+                    onChange={handleChange}
+                    value={userInfo.password}
                   />
                 </div>
                 <Button type="submit" className="w-full">
