@@ -4,6 +4,7 @@ import { useMovies, useNotification } from "../hooks";
 import MovieListItem from "./MovieListItem";
 import ConfirmModal from "./modals/ConfirmModal";
 import UpdateMovie from "./modals/UpdateMovie";
+import { Card, CardContent, CardHeader } from "./ui/card";
 
 const pageNo = 0;
 const limit = 5;
@@ -72,12 +73,11 @@ function LatestUploads() {
   const handleUIUpdate = () => fetchLatestUploads();
 
   return (
-    <>
-      <div className="shadow p-5 rounded col-span-2">
-        <h1 className="font-semibold text-2xl mb-2 text-primary dark:text-white ">
-          Recent Uploads
-        </h1>
-
+    <Card className="">
+      <CardHeader className="text-lg font-semibold">
+        <span>Recent Uploads</span>
+      </CardHeader>
+      <CardContent>
         <div className="space-y-3">
           {latestUploads.map((movie) => {
             return (
@@ -92,23 +92,8 @@ function LatestUploads() {
             );
           })}
         </div>
-      </div>
-      {/* <ConfirmModal
-        title='Are you sure?'
-        subtitle='This action will remove this movie permanently'
-        visible={showConfirmModal}
-        onCancel={hideConfirmModal}
-        onConfirm={handleOnDeleteConfirm}
-        busy={busy}
-      />
-
-      <UpdateMovie
-        visible={showUpdateModal}
-        onClose={hideUpdateModal}
-        initialState={selectedMovie}
-        onSuccess={handleOnUpdate}
-      /> */}
-    </>
+      </CardContent>
+    </Card>
   );
 }
 
