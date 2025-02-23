@@ -27,6 +27,15 @@ import { useTheme } from "../ui/theme-provider";
 import ThemeButton from "../ui/ThemeButton";
 import { Input } from "../ui/input";
 import { SidebarTrigger } from "../ui/sidebar";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../ui/dialog";
+import ActorForm from "../form/ActorForm";
 
 export default function Header({ onAddActorClick, onAddMovieClick }) {
   // const [showOptions, setShowOptions] = useState(false);
@@ -90,10 +99,23 @@ export default function Header({ onAddActorClick, onAddMovieClick }) {
               <Clapperboard size="20" />
               <span>Create movies</span>
             </DropdownMenuItem>
-            <DropdownMenuItem className="gap-4" onClick={onAddActorClick}>
-              <Users size="20" />
-              <span>Create actors</span>
-            </DropdownMenuItem>
+            <Dialog>
+              <DialogTrigger className="gap-4" asChild>
+                <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                  <Users size="20" />
+                  <span>Create actors</span>
+                </DropdownMenuItem>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Create Actor</DialogTitle>
+                  <DialogDescription>
+                    Submit to create an actor, all fields are required.
+                  </DialogDescription>
+                </DialogHeader>
+                <ActorForm />
+              </DialogContent>
+            </Dialog>
           </DropdownMenuContent>
         </DropdownMenu>
 

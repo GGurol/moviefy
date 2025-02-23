@@ -1,7 +1,7 @@
-const commonPosterUI =
-  'flex justify-center items-center border border-dashed rounded aspect-video dark:border-dark-subtle border-light-subtle cursor-pointer';
+const commonPosterStyle =
+  "flex justify-center items-center border rounded aspect-video cursor-pointer";
 
-function PosterSelector({
+export default function PosterSelector({
   name,
   accept,
   selectedPoster,
@@ -16,15 +16,15 @@ function PosterSelector({
         onChange={onChange}
         name={name}
         id={name}
-        type='file'
+        type="file"
         hidden
       />
       <label htmlFor={name}>
         {selectedPoster ? (
           <img
-            className={commonPosterUI + ' object-cover ' + className}
+            className={commonPosterStyle + " object-cover " + className}
             src={selectedPoster}
-            alt=''
+            alt=""
           />
         ) : (
           <PosterUI label={label} className={className} />
@@ -36,10 +36,8 @@ function PosterSelector({
 
 const PosterUI = ({ label, className }) => {
   return (
-    <div className={commonPosterUI + ' ' + className}>
-      <span className='dark:text-dark-subtle text-light-subtle'>{label}</span>
+    <div className={commonPosterStyle + " " + className}>
+      <span className="text-gray-400">{label}</span>
     </div>
   );
 };
-
-export default PosterSelector;
