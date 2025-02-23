@@ -16,7 +16,6 @@ dist-ssr
 todo.txt
 
 # Editor directories and files
-.vscode/*
 !.vscode/extensions.json
 .idea
 .DS_Store

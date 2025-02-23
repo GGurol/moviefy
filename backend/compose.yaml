@@ -1,0 +1,15 @@
+name: movie-review-app
+
+services:
+  mongodb:
+    image: mongodb/mongodb-community-server:7.0-ubi9
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: "user"
+      MONGO_INITDB_ROOT_PASSWORD: "pass"
+    volumes:
+      - mongo-data:/data/db
+    ports:
+      - 27017:27017
+
+volumes:
+  mongo-data:
