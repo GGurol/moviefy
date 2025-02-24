@@ -91,35 +91,34 @@ export default function Header({ onAddActorClick, onAddMovieClick }) {
           <BsFillSunFill size={24} />
         </button> */}
         <ThemeButton />
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button>Create</Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuItem className="gap-4" onClick={onAddMovieClick}>
-              <Clapperboard size="20" />
-              <span>Create movies</span>
-            </DropdownMenuItem>
-            <Dialog>
+        <Dialog>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button>Create</Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem className="gap-4" onClick={onAddMovieClick}>
+                <Clapperboard size="20" />
+                <span>Create movies</span>
+              </DropdownMenuItem>
               <DialogTrigger className="gap-4" asChild>
-                <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                <DropdownMenuItem>
                   <Users size="20" />
                   <span>Create actors</span>
                 </DropdownMenuItem>
               </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Create Actor</DialogTitle>
-                  <DialogDescription>
-                    Submit to create an actor, all fields are required.
-                  </DialogDescription>
-                </DialogHeader>
-                {/* <ActorForm /> */}
-                <ActorUpload />
-              </DialogContent>
-            </Dialog>
-          </DropdownMenuContent>
-        </DropdownMenu>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Create Actor</DialogTitle>
+              <DialogDescription>
+                Submit to create an actor, all fields are required.
+              </DialogDescription>
+            </DialogHeader>
+            <ActorUpload />
+          </DialogContent>
+        </Dialog>
 
         {/* <button
           onClick={() => setShowOptions(true)}
