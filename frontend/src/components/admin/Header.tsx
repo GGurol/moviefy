@@ -36,6 +36,7 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 import ActorForm from "../form/ActorForm";
+import ActorUpload from "../modals/ActorUpload";
 
 export default function Header({ onAddActorClick, onAddMovieClick }) {
   // const [showOptions, setShowOptions] = useState(false);
@@ -113,7 +114,8 @@ export default function Header({ onAddActorClick, onAddMovieClick }) {
                     Submit to create an actor, all fields are required.
                   </DialogDescription>
                 </DialogHeader>
-                <ActorForm />
+                {/* <ActorForm /> */}
+                <ActorUpload />
               </DialogContent>
             </Dialog>
           </DropdownMenuContent>

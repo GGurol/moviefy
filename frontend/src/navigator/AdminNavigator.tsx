@@ -48,10 +48,10 @@ function AdminNavigator() {
         visible={showMovieUploadModal}
         onClose={hideMovieUploadModal}
       />
-      <ActorUpload
+      {/* <ActorUpload
         visible={showActorUploadModal}
         onClose={hideActorUploadModal}
-      />
+      /> */}
     </>
   );
 }
