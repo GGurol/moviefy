@@ -51,6 +51,7 @@ import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { Calendar } from "../ui/calendar";
 import { cn } from "@/lib/utils";
+import { MultiSelect } from "../ui/MultiSelect";
 
 const defaultMovieInfo = {
   title: "",
@@ -484,6 +485,19 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
                 </FormItem>
               )}
             />
+            <FormField
+              control={form.control}
+              name="genres"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Genres</FormLabel>
+                  <FormControl>
+                    <MultiSelect />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             {/* <GenresSelector
               badge={genres.length}
               onClick={displayGenresModal}
@@ -560,7 +574,7 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
             label="Select poster"
           />
           {/* <GenresSelector badge={genres.length} onClick={displayGenresModal} /> */}
-          <Selector
+          {/* <Selector
             value={type}
             onChange={handleChange}
             name="type"
@@ -580,28 +594,28 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
             name="status"
             options={statusOptions}
             label="Status"
-          />
+          /> */}
         </div>
       </form>
 
-      <WritersModal
+      {/* <WritersModal
         onClose={hideWritersModal}
         profiles={writers}
         visible={showWritersModal}
         onRemoveClick={handleWriterRemove}
-      />
+      /> */}
       {/* <CastModal
         onClose={hideCastModal}
         casts={cast}
         visible={showCastModal}
         onRemoveClick={handleCastRemove}
       /> */}
-      <GenresModal
+      {/* <GenresModal
         onSubmit={updateGenres}
         visible={showGenresModal}
         onClose={hideGenresModal}
         previousSelection={genres}
-      />
+      /> */}
     </Form>
   );
 }
