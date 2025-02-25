@@ -39,6 +39,12 @@ import { InputTags } from "../ui/InputTags";
 import { Select, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import useActorStore from "@/store/actor";
 import { useArray } from "@/store/array";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { Button } from "../ui/button";
+import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
+import { Calendar } from "../ui/calendar";
+import { cn } from "@/lib/utils";
 
 const defaultMovieInfo = {
   title: "",
@@ -63,6 +69,7 @@ const formSchema = z.object({
   director: z.string(),
   writer: z.string(),
   cast: z.array(z.string()),
+  releaseDate: z.date(),
 });
 
 export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
@@ -255,7 +262,7 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
   return (
     <Form {...form}>
       <form className="flex space-x-3 ">
-        <div className="w-[70%] space-y-5">
+        <div className="w-[70%] flex gap-5">
           <div className="space-y-5">
             <FormField
               name="title"
@@ -336,6 +343,8 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
                 </FormItem>
               )}
             />
+          </div>
+          <div className="space-y-5">
             <FormField
               name="cast"
               control={form.control}
@@ -353,18 +362,47 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
                 </FormItem>
               )}
             />
-            {/* <Label htmlFor="title">Title</Label>
-            <input
-              id="title"
-              value={title}
-              onChange={handleChange}
-              name="title"
-              type="text"
-              className={
-                commonInputClasses + " border-b-2  font-semibold  text-xl"
-              }
-              placeholder="Titanic"
-            /> */}
+            <FormField
+              control={form.control}
+              name="releaseDate"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>Release Date</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            "w-[240px] pl-3 text-left font-normal",
+                            !field.value && "text-muted-foreground"
+                          )}
+                        >
+                          {field.value ? (
+                            format(field.value, "PPP")
+                          ) : (
+                            <span>Pick a date</span>
+                          )}
+                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={field.value}
+                        onSelect={field.onChange}
+                        disabled={(date) =>
+                          date > new Date() || date < new Date("1900-01-01")
+                        }
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </div>
 
           {/* <div>
