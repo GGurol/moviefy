@@ -21,7 +21,7 @@ export default function PosterSelector({
         hidden
         ref={ref}
       />
-      <label htmlFor={name}>
+      <label htmlFor={name} tabIndex={0}>
         {selectedPoster ? (
           <img
             className={commonPosterStyle + " object-cover " + className}

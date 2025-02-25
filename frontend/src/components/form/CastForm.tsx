@@ -1,11 +1,12 @@
 // const cast = [{ actor: id, roleAs: '', leadActor: true }];
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import LiveSearch from "../LiveSearch";
 import { commonInputClasses } from "../../utils/theme";
 import { useNotification, useSearch } from "../../hooks";
 import { renderItem } from "../../utils/helper";
 import { searchActor } from "../../api/actor";
+import LiveSearchCast from "../LiveSearchCast";
 
 const defaultCastInfo = {
   profile: {},
@@ -13,12 +14,23 @@ const defaultCastInfo = {
   leadActor: false,
 };
 
-function CastForm({ onSubmit }) {
+function CastForm({
+  onSubmit,
+  updateCast,
+  onUniqValuesChange,
+  uniqValues,
+  setUniqValues,
+}) {
   const [castInfo, setCastInfo] = useState({ ...defaultCastInfo });
   const [profiles, setProfiles] = useState([]);
+  const [value, setValue] = useState("");
+  const [values, setValues] = useState([]);
+  const [dupValues, setDupValues] = useState([]);
 
   const { updateNotification } = useNotification();
   const { handleSearch, resetSearch } = useSearch();
+
+  console.log(dupValues);
 
   const handleOnChange = ({ target }) => {
     const { checked, name, value } = target;
@@ -32,6 +44,24 @@ function CastForm({ onSubmit }) {
   const handleProfileSelect = (profile) => {
     setCastInfo({ ...castInfo, profile });
   };
+
+  const handleOnSelect = (profile) => {
+    // setValue(profile?.name);
+    // setValues([...values, profile]);
+    // const newValue = new Set([...values, profile.id]);
+    // setValues(Array.from(newValue));
+    setDupValues([...dupValues, profile]);
+    updateCast(profile);
+    setProfiles([]);
+    resetSearch();
+  };
+
+  useEffect(() => {
+    const uniq = dupValues.filter(
+      (obj1, i, arr) => arr.findIndex((obj2) => obj2.id === obj1.id) === i
+    );
+    onUniqValuesChange(uniq);
+  }, [JSON.stringify(dupValues)]);
 
   const handleSubmit = () => {
     const { profile, roleAs } = castInfo;
@@ -48,33 +78,43 @@ function CastForm({ onSubmit }) {
 
   const handleProfileChange = ({ target }) => {
     const { value } = target;
+    setValue(value);
     const { profile } = castInfo;
     profile.name = value;
     setCastInfo({ ...castInfo, ...profile });
     handleSearch(searchActor, value, setProfiles);
+    console.log("handleProfileChange", value);
   };
 
   const { leadActor, profile, roleAs } = castInfo;
 
   return (
-    <div className="flex items-center space-x-2">
-      <input
+    <>
+      {/* <input
         type="checkbox"
         name="leadActor"
         className="w-4 h-4"
         checked={leadActor}
         onChange={handleOnChange}
         title="Set as lead actor"
-      />
-      <LiveSearch
+      /> */}
+      <LiveSearchCast
         placeholder="Search profile..."
-        value={profile.name}
+        value={value}
+        values={values}
+        dupValues={dupValues}
+        setValue={setValue}
+        setValues={setValues}
+        setDupValues={setDupValues}
         results={profiles}
-        onSelect={handleProfileSelect}
+        // onSelect={handleProfileSelect}
         renderItem={renderItem}
         onChange={handleProfileChange}
+        onSelect={handleOnSelect}
+        uniqValues={uniqValues}
+        setUniqValues={setUniqValues}
       />
-      <span className="dark:text-dark-subtle text-light-subtle font-semibold">
+      {/* <span className="dark:text-dark-subtle text-light-subtle font-semibold">
         as
       </span>
 
@@ -94,8 +134,8 @@ function CastForm({ onSubmit }) {
         className="bg-secondary   text-white px-1 rounded"
       >
         Add
-      </button>
-    </div>
+      </button> */}
+    </>
   );
 }
 

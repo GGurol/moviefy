@@ -1,55 +1,95 @@
-import { useEffect, useState } from 'react';
-import { commonInputClasses } from '../../utils/theme';
-import TagsInput from '../TagsInput';
-import Submit from '../form/Submit';
-import { useNotification } from '../../hooks';
-import WritersModal from '../modals/WritersModal';
-import CastForm from '../form/CastForm';
-import CastModal from '../modals/CastModal';
-import PosterSelector from '../PosterSelector';
-import GenresSelector from '../GenresSelector';
-import GenresModal from '../modals/GenresModal';
-import Selector from '../Selector';
+import { useEffect, useState } from "react";
+import { commonInputClasses } from "../../utils/theme";
+import TagsInput from "../TagsInput";
+import Submit from "../form/Submit";
+import { useNotification } from "../../hooks";
+import WritersModal from "../modals/WritersModal";
+import CastForm from "../form/CastForm";
+import CastModal from "../modals/CastModal";
+import PosterSelector from "../PosterSelector";
+import GenresSelector from "../GenresSelector";
+import GenresModal from "../modals/GenresModal";
+import Selector from "../Selector";
 import {
   languageOptions,
   statusOptions,
   typeOptions,
-} from '../../utils/options';
-import Label from '../Label';
-import DirectorSelector from '../DirectorSelector';
-import WriterSelector from '../WriterSelector';
-import { ViewAllBtn } from '../ViewAllButton';
-import { LabelWithBadge } from '../LabelWithBadge';
-import { validateMovie } from '../../utils/validator';
+} from "../../utils/options";
+import Label from "../Label";
+import DirectorSelector from "../DirectorSelector";
+import WriterSelector from "../WriterSelector";
+import { ViewAllBtn } from "../ViewAllButton";
+import { LabelWithBadge } from "../LabelWithBadge";
+import { validateMovie } from "../../utils/validator";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "../ui/form";
+import { Input } from "../ui/input";
+import { Textarea } from "../ui/textarea";
+import { InputTags } from "../ui/InputTags";
+import { Select, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import useActorStore from "@/store/actor";
+import { useArray } from "@/store/array";
 
 const defaultMovieInfo = {
-  title: '',
-  storyLine: '',
+  title: "",
+  storyLine: "",
   tags: [],
   cast: [],
   director: {},
   writers: [],
-  releseDate: '',
+  writer: "",
+  releseDate: "",
   poster: null,
   genres: [],
-  type: '',
-  language: '',
-  status: '',
+  type: "",
+  language: "",
+  status: "",
 };
 
-function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
+const formSchema = z.object({
+  title: z.string().min(2).max(50),
+  storyLine: z.string().min(2).max(200),
+  tags: z.array(z.string()),
+  director: z.string(),
+  writer: z.string(),
+  cast: z.array(z.string()),
+});
+
+export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
   const [movieInfo, setMovieInfo] = useState({ ...defaultMovieInfo });
   const [showWritersModal, setShowWritersModal] = useState(false);
   const [showCastModal, setShowCastModal] = useState(false);
   const [showGenresModal, setShowGenresModal] = useState(false);
-  const [selectedPosterForUI, setSelectedPosterForUI] = useState('');
+  const [selectedPosterForUI, setSelectedPosterForUI] = useState("");
 
   const { updateNotification } = useNotification();
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      title: "",
+      storyLine: "",
+      tags: [],
+      director: "",
+      writer: "",
+      cast: [],
+    },
+  });
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const { error } = validateMovie(movieInfo);
-    if (error) return updateNotification('error', error);
+    if (error) return updateNotification("error", error);
 
     const { tags, genres, cast, writers, director, poster } = movieInfo;
 
@@ -100,7 +140,7 @@ function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
 
   const handleChange = ({ target }) => {
     const { name, value, files } = target;
-    if (name === 'poster') {
+    if (name === "poster") {
       const poster = files[0];
       updatePosterForUI(poster);
       return setMovieInfo({ ...movieInfo, poster });
@@ -114,6 +154,9 @@ function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
 
   const updateDirector = (profile) => {
     setMovieInfo({ ...movieInfo, director: profile });
+  };
+  const updateWriter = (profile) => {
+    setMovieInfo({ ...movieInfo, writer: profile });
   };
 
   const updateCast = (castInfo) => {
@@ -130,8 +173,8 @@ function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
     for (let writer of writers) {
       if (writer.id === profile.id) {
         return updateNotification(
-          'warning',
-          'This profile is already selected!'
+          "warning",
+          "This profile is already selected!"
         );
       }
     }
@@ -180,11 +223,22 @@ function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
       setMovieInfo({
         ...initialState,
         poster: null,
-        releseDate: initialState.releseDate.split('T')[0],
+        releseDate: initialState.releseDate.split("T")[0],
       });
       setSelectedPosterForUI(initialState.poster);
     }
   }, [initialState]);
+  const [values, setValues] = useState<string[]>([]);
+
+  // const leaderActors = useActorStore((state) => state.leaderActors);
+  // console.log(leaderActors);
+
+  const [uniqValues, setUniqValues] = useState([]);
+
+  const handleUniqValuesChange = (newValues) => {
+    setUniqValues(newValues);
+  };
+  console.log(uniqValues);
 
   const {
     title,
@@ -199,46 +253,142 @@ function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
     releseDate,
   } = movieInfo;
   return (
-    <>
-      <div className='flex space-x-3 '>
-        <div className='w-[70%] space-y-5'>
-          <div>
-            <Label htmlFor='title'>Title</Label>
+    <Form {...form}>
+      <form className="flex space-x-3 ">
+        <div className="w-[70%] space-y-5">
+          <div className="space-y-5">
+            <FormField
+              name="title"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Title</FormLabel>
+                  <FormControl>
+                    <Input {...field} placeholder="Enter movie title" />
+                  </FormControl>
+                  {/* <FormDescription>Please enter movie title</FormDescription> */}
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              name="storyLine"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Story Line</FormLabel>
+                  <FormControl>
+                    <Textarea {...field} placeholder="Enter movie story line" />
+                  </FormControl>
+                  {/* <FormDescription>
+                    Please enter movie story line
+                  </FormDescription> */}
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              name="tags"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Movie Tags</FormLabel>
+                  <FormControl>
+                    {/* <TagsInput value={tags} name="tags" onChange={updateTags} /> */}
+                    {/* <Input {...field} /> */}
+                    <InputTags
+                      value={values}
+                      onChange={(values) => {
+                        setValues(values);
+                        field.value = values;
+                      }}
+                      placeholder="Enter values, comma separated"
+                    />
+                  </FormControl>
+                  {/* <FormDescription>
+                    Please enter movie tags, separate by comma
+                  </FormDescription> */}
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              name="director"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Director</FormLabel>
+                  <FormControl>
+                    <DirectorSelector updateDirector={updateDirector} />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              name="writer"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Writer</FormLabel>
+                  <FormControl>
+                    <WriterSelector updateWriter={updateWriter} />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              name="cast"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Leader Actors</FormLabel>
+                  <FormControl>
+                    <CastForm
+                      updateCast={updateCast}
+                      onUniqValuesChange={handleUniqValuesChange}
+                      uniqValues={uniqValues}
+                      setUniqValues={setUniqValues}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            {/* <Label htmlFor="title">Title</Label>
             <input
-              id='title'
+              id="title"
               value={title}
               onChange={handleChange}
-              name='title'
-              type='text'
+              name="title"
+              type="text"
               className={
-                commonInputClasses + ' border-b-2  font-semibold  text-xl'
+                commonInputClasses + " border-b-2  font-semibold  text-xl"
               }
-              placeholder='Titanic'
-            />
+              placeholder="Titanic"
+            /> */}
           </div>
 
-          <div>
-            <Label htmlFor='storyLine'>Story line</Label>
+          {/* <div>
+            <Label htmlFor="storyLine">Story line</Label>
             <textarea
-              id='storyLine'
+              id="storyLine"
               value={storyLine}
               onChange={handleChange}
-              name='storyLine'
-              className={commonInputClasses + ' resize-none h-24 border-b-2'}
-              placeholder='Movie story line...'
+              name="storyLine"
+              className={commonInputClasses + " resize-none h-24 border-b-2"}
+              placeholder="Movie story line..."
             ></textarea>
-          </div>
+          </div> */}
 
-          <div>
-            <Label htmlFor='tags'>Tags</Label>
-            <TagsInput value={tags} name='tags' onChange={updateTags} />
-          </div>
+          {/* <div>
+            <Label htmlFor="tags">Tags</Label>
+            <TagsInput value={tags} name="tags" onChange={updateTags} />
+          </div> */}
 
-          <DirectorSelector onSelect={updateDirector} />
+          {/* <DirectorSelector onSelect={updateDirector} /> */}
 
-          <div>
-            <div className='flex justify-between'>
-              <LabelWithBadge badge={writers.length} htmlFor='writers'>
+          {/* <div>
+            <div className="flex justify-between">
+              <LabelWithBadge badge={writers.length} htmlFor="writers">
                 Writers
               </LabelWithBadge>
               <ViewAllBtn
@@ -249,10 +399,10 @@ function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
               </ViewAllBtn>
             </div>
             <WriterSelector onSelect={updateWriters} />
-          </div>
+          </div> */}
 
-          <div>
-            <div className='flex justify-between'>
+          {/* <div>
+            <div className="flex justify-between">
               <LabelWithBadge badge={cast.length}>
                 Add Cast & Crew
               </LabelWithBadge>
@@ -261,13 +411,13 @@ function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
               </ViewAllBtn>
             </div>
             <CastForm onSubmit={updateCast} />
-          </div>
+          </div> */}
 
           <input
-            type='date'
-            className={commonInputClasses + ' border-2 rounded p-1 w-auto'}
+            type="date"
+            className={commonInputClasses + " border-2 rounded p-1 w-auto"}
             onChange={handleChange}
-            name='releseDate'
+            name="releseDate"
             value={releseDate}
           />
 
@@ -275,41 +425,41 @@ function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
             busy={busy}
             value={btnTitle}
             onClick={handleSubmit}
-            type='button'
+            type="button"
           />
         </div>
-        <div className='w-[30%] space-y-5'>
+        <div className="w-[30%] space-y-5">
           <PosterSelector
-            name='poster'
+            name="poster"
             onChange={handleChange}
             selectedPoster={selectedPosterForUI}
-            accept='image/jpg, image/jpeg, image/png'
-            label='Select poster'
+            accept="image/jpg, image/jpeg, image/png"
+            label="Select poster"
           />
           <GenresSelector badge={genres.length} onClick={displayGenresModal} />
           <Selector
             value={type}
             onChange={handleChange}
-            name='type'
+            name="type"
             options={typeOptions}
-            label='Type'
+            label="Type"
           />
           <Selector
             value={language}
             onChange={handleChange}
-            name='language'
+            name="language"
             options={languageOptions}
-            label='Language'
+            label="Language"
           />
           <Selector
             value={status}
             onChange={handleChange}
-            name='status'
+            name="status"
             options={statusOptions}
-            label='Status'
+            label="Status"
           />
         </div>
-      </div>
+      </form>
 
       <WritersModal
         onClose={hideWritersModal}
@@ -317,20 +467,18 @@ function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
         visible={showWritersModal}
         onRemoveClick={handleWriterRemove}
       />
-      <CastModal
+      {/* <CastModal
         onClose={hideCastModal}
         casts={cast}
         visible={showCastModal}
         onRemoveClick={handleCastRemove}
-      />
+      /> */}
       <GenresModal
         onSubmit={updateGenres}
         visible={showGenresModal}
         onClose={hideGenresModal}
         previousSelection={genres}
       />
-    </>
+    </Form>
   );
 }
-
-export default MovieForm;

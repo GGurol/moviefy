@@ -4,18 +4,25 @@ import { useNotification } from "../../hooks";
 import ActorForm from "../form/ActorForm";
 import ModalContainer from "./ModalContainer";
 
-function ActorUpload({ visible, onClose }) {
+function ActorUpload({ visible, onClose, setOpen }) {
   const [busy, setBusy] = useState(false);
   const { updateNotification } = useNotification();
+  const [disable, setDisable] = useState(false);
 
   const handleSubmit = async (data) => {
     setBusy(true);
+    setDisable(true);
     const { error, actor } = await createActor(data);
     setBusy(false);
-    if (error) return updateNotification("error", error);
+    setDisable(false);
+    if (error) {
+      return updateNotification("error", error);
+    }
+    if (!error) {
+      setOpen(false);
+    }
 
     updateNotification("success", "Actor created successfully!");
-    onClose();
   };
 
   return (
@@ -25,6 +32,7 @@ function ActorUpload({ visible, onClose }) {
       title="Create New Actor"
       btnTitle="Create"
       busy={busy}
+      disable={disable}
     />
     // </ModalContainer>
   );
