@@ -37,12 +37,14 @@ import {
 } from "../ui/dialog";
 import ActorForm from "../form/ActorForm";
 import ActorUpload from "../modals/ActorUpload";
+import MovieForm from "./MovieForm";
 
 export default function Header({ onAddActorClick, onAddMovieClick }) {
   // const [showOptions, setShowOptions] = useState(false);
   // // const { toggleTheme } = useTheme();
   // const { setTheme } = useTheme();
   const [search, setSearch] = useState("");
+  const [open, setOpen] = useState(false);
 
   const navigate = useNavigate();
 
@@ -91,34 +93,52 @@ export default function Header({ onAddActorClick, onAddMovieClick }) {
           <BsFillSunFill size={24} />
         </button> */}
         <ThemeButton />
-        <Dialog>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button>Create</Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuItem className="gap-4" onClick={onAddMovieClick}>
-                <Clapperboard size="20" />
-                <span>Create movies</span>
-              </DropdownMenuItem>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button>Create</Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <Dialog>
+              <DialogTrigger>
+                <DropdownMenuItem
+                  className="gap-4"
+                  // onClick={onAddMovieClick}
+                  onSelect={(e) => e.preventDefault()}
+                >
+                  <Clapperboard size="20" />
+                  <span>Create movies</span>
+                </DropdownMenuItem>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Create Movie</DialogTitle>
+                  <DialogDescription>
+                    Submit to create a movie, all fields are required.
+                  </DialogDescription>
+                </DialogHeader>
+                <MovieForm />
+              </DialogContent>
+            </Dialog>
+            <DropdownMenuSeparator />
+            <Dialog open={open} onOpenChange={setOpen}>
               <DialogTrigger className="gap-4" asChild>
-                <DropdownMenuItem>
+                <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
                   <Users size="20" />
                   <span>Create actors</span>
                 </DropdownMenuItem>
               </DialogTrigger>
-            </DropdownMenuContent>
-          </DropdownMenu>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Create Actor</DialogTitle>
-              <DialogDescription>
-                Submit to create an actor, all fields are required.
-              </DialogDescription>
-            </DialogHeader>
-            <ActorUpload />
-          </DialogContent>
-        </Dialog>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Create Actor</DialogTitle>
+                  <DialogDescription>
+                    Submit to create an actor, all fields are required.
+                  </DialogDescription>
+                </DialogHeader>
+                <ActorUpload setOpen={setOpen} />
+              </DialogContent>
+            </Dialog>
+          </DropdownMenuContent>
+        </DropdownMenu>
 
         {/* <button
           onClick={() => setShowOptions(true)}
