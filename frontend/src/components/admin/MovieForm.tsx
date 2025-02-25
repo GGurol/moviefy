@@ -36,7 +36,13 @@ import {
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import { InputTags } from "../ui/InputTags";
-import { Select, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 import useActorStore from "@/store/actor";
 import { useArray } from "@/store/array";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
@@ -403,6 +409,85 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
                 </FormItem>
               )}
             />
+            <FormField
+              control={form.control}
+              name="language"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Language</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a language" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {languageOptions.map((e) => (
+                        <SelectItem value={e.value}>{e.title}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="status"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Status</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a status" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {statusOptions.map((e) => (
+                        <SelectItem value={e.value}>{e.title}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="type"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Type</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a type" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {typeOptions.map((e) => (
+                        <SelectItem value={e.value}>{e.title}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            {/* <GenresSelector
+              badge={genres.length}
+              onClick={displayGenresModal}
+            /> */}
           </div>
 
           {/* <div>
@@ -451,13 +536,13 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
             <CastForm onSubmit={updateCast} />
           </div> */}
 
-          <input
+          {/* <input
             type="date"
             className={commonInputClasses + " border-2 rounded p-1 w-auto"}
             onChange={handleChange}
             name="releseDate"
             value={releseDate}
-          />
+          /> */}
 
           <Submit
             busy={busy}
@@ -474,7 +559,7 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
             accept="image/jpg, image/jpeg, image/png"
             label="Select poster"
           />
-          <GenresSelector badge={genres.length} onClick={displayGenresModal} />
+          {/* <GenresSelector badge={genres.length} onClick={displayGenresModal} /> */}
           <Selector
             value={type}
             onChange={handleChange}
