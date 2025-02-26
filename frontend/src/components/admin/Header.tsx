@@ -109,7 +109,12 @@ export default function Header({ onAddActorClick, onAddMovieClick }) {
                   <span>Create movies</span>
                 </DropdownMenuItem>
               </DialogTrigger>
-              <DialogContent className="w-[900px]">
+              <DialogContent
+                className="w-[900px]"
+                onInteractOutside={(e) => {
+                  e.preventDefault();
+                }}
+              >
                 <DialogHeader>
                   <DialogTitle>Create Movie</DialogTitle>
                 </DialogHeader>
@@ -124,7 +129,12 @@ export default function Header({ onAddActorClick, onAddMovieClick }) {
                   <span>Create actors</span>
                 </DropdownMenuItem>
               </DialogTrigger>
-              <DialogContent className="w-[500px]">
+              <DialogContent
+                className="w-[500px]"
+                onInteractOutside={(e) => {
+                  e.preventDefault();
+                }}
+              >
                 <DialogHeader>
                   <DialogTitle>Create Actor</DialogTitle>
                   <DialogDescription>

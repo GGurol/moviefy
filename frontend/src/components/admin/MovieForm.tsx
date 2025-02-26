@@ -23,7 +23,7 @@ import DirectorSelector from "../DirectorSelector";
 import CastForm from "../form/CastForm";
 import Submit from "../form/Submit";
 import PosterSelector from "../PosterSelector";
-import { Button } from "../ui/button";
+import { Button, buttonVariants } from "../ui/button";
 import { Calendar } from "../ui/calendar";
 import {
   Form,
@@ -62,6 +62,17 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "../ui/tooltip";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "../ui/alert-dialog";
 
 const defaultMovieInfo = {
   title: "",
@@ -88,6 +99,9 @@ const formSchema = z.object({
   cast: z.array(z.string()),
   releaseDate: z.date(),
   file: z.any(),
+  language: z.string(),
+  status: z.string(),
+  type: z.string(),
 });
 
 export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
@@ -306,7 +320,7 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
   } = movieInfo;
   return (
     <Form {...form}>
-      <form className="flex gap-10">
+      <form className="flex gap-10" onSubmit={form.handleSubmit(handleSubmit)}>
         <div className="space-y-5 w-[33%]">
           <FormField
             name="title"
@@ -604,14 +618,36 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
               </CardContent>
             </Card>
           )}
-          <Button
-            onClick={handleSubmit}
-            type="submit"
-            variant="default"
-            className="w-60"
-          >
-            Submit
-          </Button>
+          <div className="flex flex-col gap-2 w-60">
+            <Button onClick={handleSubmit} type="submit" variant="default">
+              Submit
+            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button type="button" variant="secondary">
+                  Reset
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    All the form data will be removed, if you accidentally
+                    clicked it, please click "Cancel" to avoid data loss.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    className={buttonVariants({ variant: "destructive" })}
+                    type="reset"
+                  >
+                    Reset
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
         </div>
       </form>
     </Form>
