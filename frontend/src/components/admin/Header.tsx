@@ -112,9 +112,6 @@ export default function Header({ onAddActorClick, onAddMovieClick }) {
               <DialogContent className="w-[900px]">
                 <DialogHeader>
                   <DialogTitle>Create Movie</DialogTitle>
-                  <DialogDescription>
-                    Submit to create a movie, all fields are required.
-                  </DialogDescription>
                 </DialogHeader>
                 <MovieForm />
               </DialogContent>

@@ -5,6 +5,7 @@ import { uploadMovie, uploadTrailer } from "../../api/movie";
 import { useState } from "react";
 import MovieForm from "./MovieForm";
 import ModalContainer from "../modals/ModalContainer";
+import { Upload } from "lucide-react";
 
 function MovieUpload({ visible, onClose }) {
   const [videoSelected, setVideoSelected] = useState(false);
@@ -71,31 +72,20 @@ function MovieUpload({ visible, onClose }) {
   };
 
   return (
-    <ModalContainer visible={visible}>
-      <div className="mb-5">
+    <>
+      <div className="m-4">
         <UploadProgress
           visible={!videoUploaded && videoSelected}
           message={getUploadProgressValue()}
           width={uploadProgress}
         />
       </div>
-
-      {!videoSelected ? (
-        <>
-          <TrailerSelector
-            visible={!videoSelected}
-            onTypeError={handleTypeError}
-            handleChange={handleChange}
-          />
-        </>
-      ) : (
-        <MovieForm
-          btnTitle="Upload"
-          busy={busy}
-          onSubmit={!busy ? handleSubmit : null}
-        />
-      )}
-    </ModalContainer>
+      <TrailerSelector
+        visible={!videoSelected}
+        onTypeError={handleTypeError}
+        handleChange={handleChange}
+      />
+    </>
   );
 }
 
@@ -110,8 +100,8 @@ const TrailerSelector = ({ visible, handleChange, onTypeError }) => {
         types={["mp4", "avi"]}
       >
         <label className="w-48 h-48 border border-dashed dark:border-dark-subtle border-light-subtle rounded-full flex flex-col items-center justify-center dark:text-dark-subtle cursor-pointer">
-          <AiOutlineCloudUpload size={80} />
-          <p>Drop your file here!</p>
+          <Upload size={80} strokeWidth={0.75} />
+          <p>Drop your video file here</p>
         </label>
       </FileUploader>
     </div>

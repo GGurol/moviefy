@@ -1,7 +1,14 @@
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
+import {
+  CalendarIcon,
+  Delete,
+  DeleteIcon,
+  FileCheck2Icon,
+  Trash,
+  Trash2,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -39,6 +46,22 @@ import {
 } from "../ui/select";
 import { Textarea } from "../ui/textarea";
 import WriterSelector from "../WriterSelector";
+import MovieUpload from "./MovieUpload";
+import Dropzone from "../ui/DropZone";
+import { Label } from "../ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../ui/card";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../ui/tooltip";
 
 const defaultMovieInfo = {
   title: "",
@@ -64,6 +87,7 @@ const formSchema = z.object({
   writer: z.string(),
   cast: z.array(z.string()),
   releaseDate: z.date(),
+  file: z.any(),
 });
 
 export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
@@ -84,6 +108,7 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
       director: "",
       writer: "",
       cast: [],
+      file: null,
     },
   });
 
@@ -240,6 +265,32 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
     setUniqValues(newValues);
   };
   console.log(uniqValues);
+  const [files, setFiles] = useState<string[]>([]);
+
+  function handleOnDrop(acceptedFiles: FileList | null) {
+    if (acceptedFiles && acceptedFiles.length > 0) {
+      const allowedTypes = ["video/mp4", "video/mpeg"];
+      const fileType = allowedTypes.find(
+        (type) => type === acceptedFiles[0].type
+      );
+      if (!fileType) {
+        form.setValue("file", null);
+        form.setError("file", {
+          message: "File type is not valid",
+          type: "typeError",
+        });
+      } else {
+        form.setValue("file", acceptedFiles[0]);
+        form.clearErrors("file");
+      }
+    } else {
+      form.setValue("file", null);
+      form.setError("file", {
+        message: "File is required",
+        type: "typeError",
+      });
+    }
+  }
 
   const {
     title,
@@ -407,7 +458,7 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
                   defaultValue={field.value}
                 >
                   <FormControl>
-                    <SelectTrigger>
+                    <SelectTrigger className="hover:bg-muted">
                       <SelectValue placeholder="Select a language" />
                     </SelectTrigger>
                   </FormControl>
@@ -432,7 +483,7 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
                   defaultValue={field.value}
                 >
                   <FormControl>
-                    <SelectTrigger>
+                    <SelectTrigger className="hover:bg-muted">
                       <SelectValue placeholder="Select a status" />
                     </SelectTrigger>
                   </FormControl>
@@ -457,7 +508,7 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
                   defaultValue={field.value}
                 >
                   <FormControl>
-                    <SelectTrigger>
+                    <SelectTrigger className="hover:bg-muted">
                       <SelectValue placeholder="Select a type" />
                     </SelectTrigger>
                   </FormControl>
@@ -497,7 +548,7 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
                     name="poster"
                     selectedPoster={selectedPosterForUI}
                     label="Select poster"
-                    className="w-64 h-52 aspect-square object-cover rounded"
+                    className="w-60 h-36 aspect-square object-cover rounded-md hover:bg-muted"
                     onChange={(e) => {
                       field.onChange(e.target.files && e.target.files[0]);
                       handleChange(e);
@@ -510,13 +561,58 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
               </FormItem>
             )}
           />
-        </div>
-        {/* <Submit
-            busy={busy}
-            value={btnTitle}
+          <FormField
+            control={form.control}
+            name="file"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Video</FormLabel>
+                <FormControl>
+                  <Dropzone
+                    {...field}
+                    dropMessage="Drop file or click"
+                    handleOnDrop={handleOnDrop}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          {form.watch("file") && (
+            <Card className="w-60 h-20">
+              <CardHeader className="p-2">
+                <CardDescription className="flex items-center justify-between">
+                  <span>Selected Video</span>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Trash2
+                          size={25}
+                          className="hover:bg-muted cursor-pointer rounded border p-1 "
+                          onClick={() => form.setValue("file", null)}
+                        />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Remove the video</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="text-xs pt-1 pl-2 pb-4 flex justify-between items-center overflow-auto ">
+                <span>{form.watch("file")?.name}</span>
+              </CardContent>
+            </Card>
+          )}
+          <Button
             onClick={handleSubmit}
-            type="button"
-          /> */}
+            type="submit"
+            variant="default"
+            className="w-60"
+          >
+            Submit
+          </Button>
+        </div>
       </form>
     </Form>
   );

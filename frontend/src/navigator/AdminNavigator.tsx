@@ -44,10 +44,10 @@ function AdminNavigator() {
           <Route path="/*" element={<NotFound />} />
         </Routes>
       </SidebarInset>
-      <MovieUpload
+      {/* <MovieUpload
         visible={showMovieUploadModal}
         onClose={hideMovieUploadModal}
-      />
+      /> */}
       {/* <ActorUpload
         visible={showActorUploadModal}
         onClose={hideActorUploadModal}
