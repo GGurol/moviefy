@@ -109,7 +109,7 @@ export default function Header({ onAddActorClick, onAddMovieClick }) {
                   <span>Create movies</span>
                 </DropdownMenuItem>
               </DialogTrigger>
-              <DialogContent>
+              <DialogContent className="w-[900px]">
                 <DialogHeader>
                   <DialogTitle>Create Movie</DialogTitle>
                   <DialogDescription>
@@ -127,7 +127,7 @@ export default function Header({ onAddActorClick, onAddMovieClick }) {
                   <span>Create actors</span>
                 </DropdownMenuItem>
               </DialogTrigger>
-              <DialogContent>
+              <DialogContent className="w-[500px]">
                 <DialogHeader>
                   <DialogTitle>Create Actor</DialogTitle>
                   <DialogDescription>
