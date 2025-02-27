@@ -38,6 +38,7 @@ import {
 import ActorForm from "../form/ActorForm";
 import ActorUpload from "../modals/ActorUpload";
 import MovieForm from "./MovieForm";
+import { createMovie, uploadTrailer } from "@/api/movie";
 
 export default function Header({ onAddActorClick, onAddMovieClick }) {
   // const [showOptions, setShowOptions] = useState(false);
@@ -47,6 +48,13 @@ export default function Header({ onAddActorClick, onAddMovieClick }) {
   const [open, setOpen] = useState(false);
 
   const navigate = useNavigate();
+
+  const handleSubmitMovie = async (data) => {
+    const { error, movie, message } = await createMovie(data);
+    console.log("error:", error);
+    console.log("movie:", movie);
+    console.log("message", message);
+  };
 
   // const options = [
   //   { title: "Add Movie", onClick: onAddMovieClick },
@@ -118,7 +126,7 @@ export default function Header({ onAddActorClick, onAddMovieClick }) {
                 <DialogHeader>
                   <DialogTitle>Create Movie</DialogTitle>
                 </DialogHeader>
-                <MovieForm />
+                <MovieForm onSubmit={handleSubmitMovie} />
               </DialogContent>
             </Dialog>
             <DropdownMenuSeparator />

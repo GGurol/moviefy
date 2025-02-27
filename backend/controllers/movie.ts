@@ -11,55 +11,66 @@ import Movie from "../models/movie";
 import Review from "../models/review";
 import { isValidObjectId } from "mongoose";
 
-export const uploadTrailer = async (req, res) => {
-  const { file } = req;
-  if (!file) return sendError(res, "Video file is missing!");
+// export const uploadTrailer = async (req, res) => {
+//   const { file, files } = req;
+//   console.log(files);
+//   if (!file) return sendError(res, "Video file is missing!");
 
-  const { secure_url: url, public_id } = await cloudinary.uploader.upload(file.path, {
-    resource_type: "video",
-  });
+//   const { secure_url: url, public_id } = await cloudinary.uploader.upload(file.path, {
+//     resource_type: "video",
+//   });
 
-  res.status(201).json({ url, public_id });
-};
+//   res.status(201).json({ url, public_id });
+// };
 
 export const createMovie = async (req, res) => {
-  const { file, body } = req;
+  const { files, body } = req;
+  if (!files) {
+    return sendError(res, "File is missing!");
+  }
 
-  const { title, storyLine, director, releseDate, status, type, genres, tags, cast, writers, trailer, language } = body;
+  const { title, storyLine, director, releaseDate, status, type, genres, tags, cast, writer, language } = body;
 
   const newMovie = new Movie({
     title,
     storyLine,
-    releseDate,
+    releaseDate,
     status,
     type,
     genres,
     tags,
     cast,
-    trailer,
     language,
   });
 
   if (director) {
-    if (!isValidObjectId(director)) return sendError(res, "Invalid director id!");
+    if (!isValidObjectId(director)) {
+      return sendError(res, "Invalid director id!");
+    }
     newMovie.director = director;
   }
 
-  if (writers) {
-    for (let writerId of writers) {
-      if (!isValidObjectId(writerId)) return sendError(res, "Invalid writer id!");
+  if (writer) {
+    if (!isValidObjectId(writer)) {
+      return sendError(res, "Invalid writer id!");
     }
+    newMovie.writer = writer;
+  }
 
-    newMovie.writers = writers;
+  if (files.video[0]) {
+    const { secure_url: url, public_id } = await cloudinary.uploader.upload(files.video[0].path, {
+      resource_type: "video",
+    });
+    newMovie.video = { url, public_id };
   }
 
   // uploading poster
-  if (file) {
+  if (files.poster[0]) {
     const {
       secure_url: url,
       public_id,
       responsive_breakpoints,
-    } = await cloudinary.uploader.upload(file.path, {
+    } = await cloudinary.uploader.upload(files.poster[0].path, {
       transformation: {
         width: 1280,
         height: 720,

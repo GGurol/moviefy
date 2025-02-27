@@ -40,7 +40,7 @@ export const validateMovie = [
   body("title", "Title is missing!").trim().notEmpty(),
   body("storyLine").trim().notEmpty().withMessage("Storyline is missing!"),
   body("language").trim().notEmpty().withMessage("language is missing!"),
-  body("releseDate").isDate().withMessage("Relese date is missing!"),
+  // body("releaseDate").isDate().withMessage("Release date is missing!"),
   body("status").isIn(["public", "private"]).withMessage("Movie status must be public or private!"),
   body("type").trim().notEmpty().withMessage("Movie type is missing!"),
   body("genres")
@@ -63,12 +63,13 @@ export const validateMovie = [
     }),
   body("cast")
     .isArray()
-    .withMessage("Cast must be an array of objects!")
+    // .withMessage("Cast must be an array of objects!")
+    .withMessage("Cast must be an array of string!")
     .custom((cast) => {
       for (let c of cast) {
-        if (!isValidObjectId(c.actor)) throw Error("Invalid cast id inside cast");
-        if (!c.roleAs?.trim()) throw Error("Role as is missing!");
-        if (typeof c.leadActor !== "boolean") throw Error("Only accept boolean value for leadActor");
+        if (!isValidObjectId(c)) throw Error("Invalid cast id inside cast");
+        // if (!c.roleAs?.trim()) throw Error("Role as is missing!");
+        // if (typeof c.leadActor !== "boolean") throw Error("Only accept boolean value for leadActor");
       }
       return true;
     }),
@@ -79,23 +80,23 @@ export const validateMovie = [
   // }),
 ];
 
-export const validateTrailer = check("trailer")
-  .isObject()
-  .withMessage("Trailer must be an object with url and public_id!")
-  .custom(({ url, public_id }) => {
-    try {
-      const result = new URL(url);
-      if (!result.protocol.includes("http")) throw Error("Invalid url!");
+// export const validateTrailer = check("trailer")
+//   .isObject()
+//   .withMessage("Trailer must be an object with url and public_id!")
+//   .custom(({ url, public_id }) => {
+//     try {
+//       const result = new URL(url);
+//       if (!result.protocol.includes("http")) throw Error("Invalid url!");
 
-      const arr = url.split("/");
-      const publicId = arr[arr.length - 1].split(".")[0];
+//       const arr = url.split("/");
+//       const publicId = arr[arr.length - 1].split(".")[0];
 
-      if (public_id !== publicId) throw Error("Trailer public_id is invalid");
-      return true;
-    } catch (error) {
-      throw Error("Invalid url!!!!!!!!");
-    }
-  });
+//       if (public_id !== publicId) throw Error("Trailer public_id is invalid");
+//       return true;
+//     } catch (error) {
+//       throw Error("Invalid url!!!!!!!!");
+//     }
+//   });
 
 export const validateRatings = check("rating", "Rating must be a number between 0 and 10").isFloat({ min: 0, max: 10 });
 

@@ -1,6 +1,6 @@
 import express from "express";
 import { isAuth, isAdmin } from "../middlewares/auth";
-import { uploadVideo, uploadImage } from "../middlewares/multer";
+import { uploadVideo, uploadImage, upload } from "../middlewares/multer";
 import {
   uploadTrailer,
   createMovie,
@@ -20,16 +20,29 @@ import { validateMovie, validate, validateTrailer } from "../middlewares/validat
 
 const router = express.Router();
 
-router.post("/upload-trailer", isAuth, isAdmin, uploadVideo.single("video"), uploadTrailer);
+// router.post("/upload-trailer", isAuth, isAdmin, uploadVideo.single("video"), uploadTrailer);
+// router.post(
+//   "/upload-trailer",
+//   isAuth,
+//   isAdmin,
+//   upload.fields([
+//     { name: "video", maxCount: 1 },
+//     { name: "poster", maxCount: 1 },
+//   ]),
+//   uploadTrailer
+// );
 
 router.post(
   "/create",
   isAuth,
   isAdmin,
-  uploadImage.single("poster"),
+  upload.fields([
+    { name: "video", maxCount: 1 },
+    { name: "poster", maxCount: 1 },
+  ]),
   parseData,
   validateMovie,
-  validateTrailer,
+  // validateTrailer,
   validate,
   createMovie
 );

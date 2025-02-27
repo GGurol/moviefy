@@ -181,29 +181,29 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
 
   const handleSubmit = (values: z.infer<typeof formSchema>) => {
     console.log("values:", values);
-    //  form.trigger(["tags", "director", "writer"]);
     // const { error } = validateMovie(movieInfo);
     // if (error) return updateNotification("error", error);
 
     // const { tags, genres, cast, writers, director, poster } = movieInfo;
 
-    // const formData = new FormData();
-    // const finalMovieInfo = {
-    //   ...movieInfo,
-    // };
+    const formData = new FormData();
+    const finalMovieInfo = {
+      ...values,
+    };
 
-    // finalMovieInfo.tags = JSON.stringify(tags);
-    // finalMovieInfo.genres = JSON.stringify(genres);
+    finalMovieInfo.tags = JSON.stringify(values.tags);
+    finalMovieInfo.genres = JSON.stringify(values.genres);
+    finalMovieInfo.cast = JSON.stringify(values.cast);
 
-    // // cast: [
-    // //   {
-    // //     actor: { type: mongoose.Schema.Types.ObjectId, ref: 'Actor' },
-    // //     roleAs: String,
-    // //     leadActor: Boolean,
-    // //   },
-    // // ],
+    // cast: [
+    //   {
+    //     actor: { type: mongoose.Schema.Types.ObjectId, ref: 'Actor' },
+    //     roleAs: String,
+    //     leadActor: Boolean,
+    //   },
+    // ],
 
-    // // console.log(cast);
+    // console.log(cast);
     // const finalCast = cast.map((c) => ({
     //   actor: c.profile.id,
     //   roleAs: c.roleAs,
@@ -220,11 +220,11 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
 
     // if (poster) finalMovieInfo.poster = poster;
 
-    // for (let key in finalMovieInfo) {
-    //   formData.append(key, finalMovieInfo[key]);
-    // }
+    for (let key in finalMovieInfo) {
+      formData.append(key, finalMovieInfo[key]);
+    }
 
-    // onSubmit(formData);
+    onSubmit(formData);
   };
 
   const updatePosterForUI = (file) => {
@@ -242,9 +242,9 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
     setMovieInfo({ ...movieInfo, [name]: value });
   };
 
-  const updateTags = (tags) => {
-    setMovieInfo({ ...movieInfo, tags });
-  };
+  // const updateTags = (tags) => {
+  //   setMovieInfo({ ...movieInfo, tags });
+  // };
 
   const updateDirector = (profile) => {
     setMovieInfo({ ...movieInfo, director: profile });
@@ -258,59 +258,59 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
     setMovieInfo({ ...movieInfo, cast: [...cast, castInfo] });
   };
 
-  const updateGenres = (genres) => {
-    setMovieInfo({ ...movieInfo, genres });
-  };
+  // const updateGenres = (genres) => {
+  //   setMovieInfo({ ...movieInfo, genres });
+  // };
 
-  const updateWriters = (profile) => {
-    const { writers } = movieInfo;
-    for (let writer of writers) {
-      if (writer.id === profile.id) {
-        return updateNotification(
-          "warning",
-          "This profile is already selected!"
-        );
-      }
-    }
-    setMovieInfo({ ...movieInfo, writers: [...writers, profile] });
-  };
+  // const updateWriters = (profile) => {
+  //   const { writers } = movieInfo;
+  //   for (let writer of writers) {
+  //     if (writer.id === profile.id) {
+  //       return updateNotification(
+  //         "warning",
+  //         "This profile is already selected!"
+  //       );
+  //     }
+  //   }
+  //   setMovieInfo({ ...movieInfo, writers: [...writers, profile] });
+  // };
 
-  const hideWritersModal = () => {
-    setShowWritersModal(false);
-  };
+  // const hideWritersModal = () => {
+  //   setShowWritersModal(false);
+  // };
 
-  const displayWritersModal = () => {
-    setShowWritersModal(true);
-  };
-  const hideCastModal = () => {
-    setShowCastModal(false);
-  };
+  // const displayWritersModal = () => {
+  //   setShowWritersModal(true);
+  // };
+  // const hideCastModal = () => {
+  //   setShowCastModal(false);
+  // };
 
-  const displayCastModal = () => {
-    setShowCastModal(true);
-  };
+  // const displayCastModal = () => {
+  //   setShowCastModal(true);
+  // };
 
-  const hideGenresModal = () => {
-    setShowGenresModal(false);
-  };
+  // const hideGenresModal = () => {
+  //   setShowGenresModal(false);
+  // };
 
-  const displayGenresModal = () => {
-    setShowGenresModal(true);
-  };
+  // const displayGenresModal = () => {
+  //   setShowGenresModal(true);
+  // };
 
-  const handleWriterRemove = (profileId) => {
-    const { writers } = movieInfo;
-    const newWriters = writers.filter(({ id }) => id !== profileId);
-    if (!newWriters.length) hideWritersModal();
-    setMovieInfo({ ...movieInfo, writers: [...newWriters] });
-  };
+  // const handleWriterRemove = (profileId) => {
+  //   const { writers } = movieInfo;
+  //   const newWriters = writers.filter(({ id }) => id !== profileId);
+  //   if (!newWriters.length) hideWritersModal();
+  //   setMovieInfo({ ...movieInfo, writers: [...newWriters] });
+  // };
 
-  const handleCastRemove = (profileId) => {
-    const { cast } = movieInfo;
-    const newCast = cast.filter(({ profile }) => profile.id !== profileId);
-    if (!newCast.length) hideCastModal();
-    setMovieInfo({ ...movieInfo, cast: [...newCast] });
-  };
+  // const handleCastRemove = (profileId) => {
+  //   const { cast } = movieInfo;
+  //   const newCast = cast.filter(({ profile }) => profile.id !== profileId);
+  //   if (!newCast.length) hideCastModal();
+  //   setMovieInfo({ ...movieInfo, cast: [...newCast] });
+  // };
 
   useEffect(() => {
     if (initialState) {
@@ -337,8 +337,6 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
   const handleUniqValuesChange = (newValues) => {
     setUniqValues(newValues);
   };
-  console.log(uniqValues);
-  const [files, setFiles] = useState<string[]>([]);
 
   function handleOnDrop(acceptedFiles: FileList | null) {
     if (acceptedFiles && acceptedFiles.length > 0) {
@@ -395,67 +393,35 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
                 <FormControl>
                   <Input {...field} placeholder="Enter movie title" />
                 </FormControl>
-                {/* <FormDescription>Please enter movie title</FormDescription> */}
                 <FormMessage />
               </FormItem>
             )}
           />
           <FormField
-            name="storyLine"
             control={form.control}
+            name="genres"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Story Line</FormLabel>
+                <FormLabel>Genres</FormLabel>
                 <FormControl>
-                  <Textarea {...field} placeholder="Enter movie story line" />
+                  <MultiSelect
+                    selected={selected}
+                    setSelected={setSelected}
+                    onSelect={(values) => {
+                      // setSelected(values);
+                      const vl = values
+                        .filter((e) => e.value !== "-")
+                        .map((e) => e.value);
+                      field.value = vl;
+                      field.onChange(vl);
+                    }}
+                  />
                 </FormControl>
-                {/* <FormDescription>
-                    Please enter movie story line
-                  </FormDescription> */}
                 <FormMessage />
               </FormItem>
             )}
           />
-          <FormField
-            name="tags"
-            control={form.control}
-            render={({ field }) => {
-              return (
-                <FormItem>
-                  <FormLabel>Movie Tags</FormLabel>
-                  <FormControl>
-                    <InputTags
-                      // {...field}
-                      // ref={field.ref}
-                      // {...form.register("tags")}
-                      // {...registerWithRef("tags")}
-                      // name={field.name}
-                      // name="tags"
-                      // inputRef={field.ref}
-                      value={values}
-                      // value={field.value}
-                      onChange={(values) => {
-                        setValues(values);
-                        field.value = values;
-                        // form.setValue("tags", values);
-                        field.onChange(values);
-                      }}
-                      placeholder="Enter comma separated values..."
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              );
-            }}
-            // rules={{
-            //   validate: {
-            //     required: (values) => {
-            //       if (!values || values.length === 0)
-            //         return "Tags are required";
-            //     },
-            //   },
-            // }}
-          />
+
           <FormField
             name="director"
             control={form.control}
@@ -500,6 +466,30 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
                 <FormMessage />
               </FormItem>
             )}
+          />
+          <FormField
+            name="tags"
+            control={form.control}
+            render={({ field }) => {
+              return (
+                <FormItem>
+                  <FormLabel>Movie Tags</FormLabel>
+                  <FormControl>
+                    <InputTags
+                      value={values}
+                      onChange={(values) => {
+                        setValues(values);
+                        field.value = values;
+                        // form.setValue("tags", values);
+                        field.onChange(values);
+                      }}
+                      placeholder="Enter comma separated values..."
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              );
+            }}
           />
         </div>
         <div className="space-y-5 w-[33%]">
@@ -596,31 +586,6 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
           />
           <FormField
             control={form.control}
-            name="status"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Status</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger className="hover:bg-muted">
-                      <SelectValue placeholder="Select a status" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {statusOptions.map((e) => (
-                      <SelectItem value={e.value}>{e.title}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
             name="type"
             render={({ field }) => (
               <FormItem>
@@ -646,23 +611,38 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
           />
           <FormField
             control={form.control}
-            name="genres"
+            name="status"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Genres</FormLabel>
+                <FormLabel>Status</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger className="hover:bg-muted">
+                      <SelectValue placeholder="Select a status" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {statusOptions.map((e) => (
+                      <SelectItem value={e.value}>{e.title}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            name="storyLine"
+            control={form.control}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Story Line</FormLabel>
                 <FormControl>
-                  <MultiSelect
-                    selected={selected}
-                    setSelected={setSelected}
-                    onSelect={(values) => {
-                      // setSelected(values);
-                      const vl = values
-                        .filter((e) => e.value !== "-")
-                        .map((e) => e.value);
-                      field.value = vl;
-                      field.onChange(vl);
-                    }}
-                  />
+                  <Textarea {...field} placeholder="Enter movie story line" />
                 </FormControl>
                 <FormMessage />
               </FormItem>
