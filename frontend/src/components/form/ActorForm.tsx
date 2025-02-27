@@ -26,6 +26,7 @@ import {
   SelectValue,
 } from "../ui/select";
 import { Button } from "../ui/button";
+import { DialogClose, DialogFooter } from "../ui/dialog";
 
 const defaultActorInfo = {
   name: "",
@@ -34,30 +35,50 @@ const defaultActorInfo = {
   gender: "",
 };
 
-const genderOptions = [
-  { title: "Male", value: "male" },
-  { title: "Female", value: "female" },
-  { title: "Other", value: "other" },
+const MAX_FILE_SIZE = 1024 * 1024 * 10;
+
+const ACCEPTED_IMAGE_TYPES = [
+  "image/jpeg",
+  "image/jpg",
+  "image/png",
+  "image/webp",
 ];
 
-const validateActor = ({ avatar, name, about, gender }) => {
-  if (!name.trim()) return { error: "Actor name is missing!" };
-  if (!about.trim()) return { error: "Actor section is missing!" };
-  if (!gender.trim()) return { error: "Actor gender is missing!" };
-  if (avatar && !avatar.type?.startsWith("image"))
-    return { error: "Invalid image / avatar file!" };
-
-  return { error: null };
+const formatBytes = (bytes: number, decimals = 2) => {
+  if (bytes === 0) return "0 Bytes";
+  const k = 1024;
+  const dm = decimals < 0 ? 0 : decimals;
+  const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
 };
 
 const formSchema = z.object({
-  actorName: z.string().min(2).max(50),
+  name: z.string().min(2).max(50),
   about: z.string().min(2).max(200),
   gender: z.enum(["male", "female"]),
-  avatar: z.instanceof(File),
+  avatar: z
+    .instanceof(File, {
+      message: "Please select an image file.",
+    })
+    .refine((file) => file.size <= MAX_FILE_SIZE, {
+      message: `Please choose an image smaller than ${formatBytes(
+        MAX_FILE_SIZE
+      )}.`,
+    })
+    .refine((file) => ACCEPTED_IMAGE_TYPES.includes(file.type), {
+      message: "Please upload a valid image file (JPEG, PNG, or WebP).",
+    }),
 });
 
-export default function ActorForm({ title, btnTitle, busy, initialState }) {
+export default function ActorForm({
+  title,
+  btnTitle,
+  busy,
+  initialState,
+  onSubmit,
+  disable,
+}) {
   const [actorInfo, setActorInfo] = useState({ ...defaultActorInfo });
   const [selectedAvatarForUI, setSelectedAvatarForUI] = useState("");
   const { updateNotification } = useNotification();
@@ -81,28 +102,19 @@ export default function ActorForm({ title, btnTitle, busy, initialState }) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      actorName: "",
+      name: "",
       about: "",
       gender: "male",
       avatar: undefined,
     },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const { error } = validateActor(actorInfo);
-    if (error) return updateNotification("error", error);
-
-    // submit form
+  const handleSubmit = (values: z.infer<typeof formSchema>) => {
     const formData = new FormData();
-    for (let key in actorInfo) {
-      if (key) formData.append(key, actorInfo[key]);
+    for (const [key, value] of Object.entries(values)) {
+      formData.append(key, value);
     }
-    // onSubmit(formData);
+    onSubmit(formData);
   };
 
   useEffect(() => {
@@ -116,11 +128,11 @@ export default function ActorForm({ title, btnTitle, busy, initialState }) {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="flex gap-8">
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="flex gap-8">
         <div className="space-y-5">
           <FormField
             control={form.control}
-            name="actorName"
+            name="name"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Actor name</FormLabel>
@@ -187,9 +199,13 @@ export default function ActorForm({ title, btnTitle, busy, initialState }) {
                     selectedPoster={selectedAvatarForUI}
                     className="w-56 h-56 aspect-square object-cover rounded"
                     name="avatar"
-                    onChange={handleChange}
+                    onChange={(e) => {
+                      field.onChange(e.target.files && e.target.files[0]);
+                      handleChange(e);
+                    }}
                     label="Select avatar"
-                    accept="image/jpg, image/jpeg, image/png"
+                    accept="image/*"
+                    ref={field.ref}
                   />
                 </FormControl>
                 <FormDescription>Please select an avatar</FormDescription>
@@ -197,58 +213,17 @@ export default function ActorForm({ title, btnTitle, busy, initialState }) {
               </FormItem>
             )}
           />
-          <Button type="submit" variant="secondary" className="w-full">
-            Create
-          </Button>
+          <DialogFooter>
+            <Button
+              type="submit"
+              variant="secondary"
+              className="w-full"
+              disabled={disable}
+            >
+              Create
+            </Button>
+          </DialogFooter>
         </div>
-        {/* <div className="flex justify-between items-center mb-3">
-          <h1 className="font-semibold text-xl dark:text-white text-primary">
-            {title}
-          </h1>
-          <button
-            type="submit"
-            className="h-8 w-24 bg-primary text-white  dark:text-primary hover:opacity-80 transition rounded flex items-center justify-center"
-          >
-            {busy ? <FaSpinner className="animate-spin" /> : btnTitle}
-          </button>
-        </div> */}
-        {/* <div className="flex space-x-2">
-          <PosterSelector
-            selectedPoster={selectedAvatarForUI}
-            className="w-36 h-36 aspect-square object-cover rounded"
-            name="avatar"
-            onChange={handleChange}
-            label="Select avatar"
-            accept="image/jpg, image/jpeg, image/png"
-          />
-          <div className="flex-grow flex flex-col space-y-2">
-            <input
-              placeholder="Enter name"
-              type="text"
-              className={commonInputClasses + " border-b-2"}
-              name="name"
-              value={name}
-              onChange={handleChange}
-            />
-            <textarea
-              name="about"
-              value={about}
-              onChange={handleChange}
-              placeholder="About"
-              className={commonInputClasses + " border-b-2 resize-none h-full"}
-            ></textarea>
-          </div>
-        </div> */}
-
-        {/* <div className="mt-3">
-          <Selector
-            options={genderOptions}
-            label="Gender"
-            value={gender}
-            onChange={handleChange}
-            name="gender"
-          />
-        </div> */}
       </form>
     </Form>
   );

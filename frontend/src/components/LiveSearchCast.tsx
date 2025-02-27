@@ -3,9 +3,13 @@ import { commonInputClasses } from "../utils/theme";
 import { Badge } from "./ui/badge";
 import { XIcon } from "lucide-react";
 import { Button } from "./ui/button";
+import useActorStore from "@/store/actor";
+import { useArray } from "@/store/array";
 
-function LiveSearch({
+export default function LiveSearchCast({
   value = "",
+  values = [],
+  dupValues = [],
   placeholder = "",
   results = [],
   name,
@@ -17,12 +21,17 @@ function LiveSearch({
   onChange = null,
   onUpdate,
   setValue,
-  form,
+  setValues,
+  setDupValues,
+  sendDataToParent,
+  uniqValues,
+  setUniqValues,
   ...props
 }) {
   const [displaySearch, setDisplaySearch] = useState(false);
   const [focusedIndex, setFocusedIndex] = useState(-1);
-  const [selectRes, setSelectRes] = useState("");
+  const [selectRes, setSelectRes] = useState([]);
+  const [actors, setActors] = useState([]);
 
   const handleOnFocus = () => {
     if (results.length) setDisplaySearch(true);
@@ -41,13 +50,15 @@ function LiveSearch({
 
   const handleSelection = (selectedItem) => {
     if (selectedItem) {
-      setSelectRes(selectedItem);
-      // form.onChange(selectedItem);
-      // form.setValue(name, selectedItem);
+      setSelectRes([...selectRes, selectedItem]);
+      inputRef.current.value = "";
+      setDupValues([...dupValues, selectedItem]);
       onSelect(selectedItem);
       closeSearch();
     }
   };
+
+  const inputRef = useRef(null);
 
   const handleKeyDown = ({ key }) => {
     // console.log(key);
@@ -80,41 +91,94 @@ function LiveSearch({
     setDisplaySearch(false);
   }, [results.length]);
 
+  // const [pendingDataPoint, setPendingDataPoint] = useState("");
+
+  // useEffect(() => {
+  //   const newValue = new Set([...value]);
+  //   setValues(Array.from(newValue));
+  // }, []);
+
+  // const addPendingDataPoint = () => {
+  //   const newDataPoints = new Set([...value]);
+  //   setValues(Array.from(newDataPoints));
+  // };
+
+  // https://stackoverflow.com/questions/2218999/how-to-remove-all-duplicates-from-an-array-of-objects
+  // const uniqValues = dupValues.filter(
+  //   (obj1, i, arr) => arr.findIndex((obj2) => obj2.id === obj1.id) === i
+  // );
+
+  // const setLeaderActors = useActorStore((state) => state.setLeaderActors);
+  // setLeaderActors(uniqValues);
+
+  // const setArray = useArray((state) => state.setArray);
+  // setArray(uniqValues);
+  // console.log(uniqValues);
+
+  // useEffect(() => {
+  //   setLeaderActors(uniqValues);
+  // }, []);
+
   return (
     <div className="relative">
       <div className="has-[:focus-visible]:outline-none has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-neutral-950 has-[:focus-visible]:ring-offset-2 dark:has-[:focus-visible]:ring-neutral-300 min-h-10 flex w-full flex-wrap gap-2 rounded-md border px-3 py-2 text-sm ring-offset-white  disabled:cursor-not-allowed disabled:opacity-50 dark:border-neutral-800 dark:bg-neutral-950 dark:ring-offset-neutral-950 ">
-        {selectRes && (
-          <Badge variant="secondary">
-            {selectRes.name}
-            <Button
-              variant="ghost"
-              size="icon"
-              className="ml-2 h-3 w-3"
-              type="button"
-              onClick={() => {
-                onUpdate("");
-                setValue("");
-                setSelectRes("");
-              }}
-            >
-              <XIcon className="w-3" />
-            </Button>
-          </Badge>
-        )}
+        {/* {values.map((id) => {
+          const items = dupValues.filter((e) => e.id === id);
+          console.log(items);
+          return items.map((item) => (
+            <Badge key={item.id} variant="secondary">
+              {item.name}
+              <Button
+                variant="ghost"
+                size="icon"
+                className="ml-2 h-3 w-3"
+                onClick={() => {
+                  setValues(values.filter((i) => i !== item));
+                  onUpdate("");
+                  setValue("");
+                  setSelectRes("");
+                }}
+              >
+                <XIcon className="w-3" />
+              </Button>
+            </Badge>
+          ));
+        })} */}
+        {uniqValues &&
+          uniqValues.map((item) => (
+            <Badge key={item.id} variant="secondary">
+              {item.name}
+              <Button
+                variant="ghost"
+                size="icon"
+                type="button"
+                className="ml-2 h-3 w-3"
+                onClick={() => {
+                  setUniqValues(uniqValues.filter((i) => i !== item));
+                  setDupValues(dupValues.filter((i) => i !== item));
+                  // onUpdate("");
+                  setValue("");
+                  setSelectRes("");
+                }}
+              >
+                <XIcon className="w-3" />
+              </Button>
+            </Badge>
+          ))}
         <input
           type="text"
           id={name}
           name={name}
           // className={getInputStyle()}
           // className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
-          className="flex-1 outline-none bg-transparent placeholder:text-muted-foreground md:text-sm w-full"
-          placeholder={!!selectRes ? "" : placeholder}
+          className="flex-1 outline-none bg-transparent placeholder:text-muted-foreground md:text-sm"
+          placeholder={placeholder}
           onFocus={handleOnFocus}
           onBlur={handleOnBlur}
           onKeyDown={handleKeyDown}
-          value={!!selectRes ? "" : value}
+          // value={!!selectRes ? "" : value}
           onChange={onChange}
-          disabled={!!selectRes}
+          ref={inputRef}
           {...props}
         />
       </div>
@@ -132,15 +196,6 @@ function LiveSearch({
     </div>
   );
 }
-
-// const renderItem = ({ id, name, avatar }) => {
-//   return (
-//     <div>
-//       <img src={avatar} alt={name} className='w-16 h-16 rounded object-cover' />
-//       <p className='dark:text-white font-semibold'></p>
-//     </div>
-//   );
-// };
 
 const SearchResults = ({
   visible,
@@ -225,5 +280,3 @@ const ResultCard = forwardRef((props, ref) => {
     </div>
   );
 });
-
-export default LiveSearch;

@@ -36,12 +36,15 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 import ActorForm from "../form/ActorForm";
+import ActorUpload from "../modals/ActorUpload";
+import MovieForm from "./MovieForm";
 
 export default function Header({ onAddActorClick, onAddMovieClick }) {
   // const [showOptions, setShowOptions] = useState(false);
   // // const { toggleTheme } = useTheme();
   // const { setTheme } = useTheme();
   const [search, setSearch] = useState("");
+  const [open, setOpen] = useState(false);
 
   const navigate = useNavigate();
 
@@ -95,25 +98,50 @@ export default function Header({ onAddActorClick, onAddMovieClick }) {
             <Button>Create</Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            <DropdownMenuItem className="gap-4" onClick={onAddMovieClick}>
-              <Clapperboard size="20" />
-              <span>Create movies</span>
-            </DropdownMenuItem>
             <Dialog>
+              <DialogTrigger>
+                <DropdownMenuItem
+                  className="gap-4"
+                  // onClick={onAddMovieClick}
+                  onSelect={(e) => e.preventDefault()}
+                >
+                  <Clapperboard size="20" />
+                  <span>Create movies</span>
+                </DropdownMenuItem>
+              </DialogTrigger>
+              <DialogContent
+                className="w-[900px]"
+                onInteractOutside={(e) => {
+                  e.preventDefault();
+                }}
+              >
+                <DialogHeader>
+                  <DialogTitle>Create Movie</DialogTitle>
+                </DialogHeader>
+                <MovieForm />
+              </DialogContent>
+            </Dialog>
+            <DropdownMenuSeparator />
+            <Dialog open={open} onOpenChange={setOpen}>
               <DialogTrigger className="gap-4" asChild>
                 <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
                   <Users size="20" />
                   <span>Create actors</span>
                 </DropdownMenuItem>
               </DialogTrigger>
-              <DialogContent>
+              <DialogContent
+                className="w-[500px]"
+                onInteractOutside={(e) => {
+                  e.preventDefault();
+                }}
+              >
                 <DialogHeader>
                   <DialogTitle>Create Actor</DialogTitle>
                   <DialogDescription>
                     Submit to create an actor, all fields are required.
                   </DialogDescription>
                 </DialogHeader>
-                <ActorForm />
+                <ActorUpload setOpen={setOpen} />
               </DialogContent>
             </Dialog>
           </DropdownMenuContent>

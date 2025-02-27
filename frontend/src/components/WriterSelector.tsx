@@ -1,11 +1,11 @@
-import { useState } from 'react';
-import { renderItem } from '../utils/helper';
-import LiveSearch from './LiveSearch';
-import { useSearch } from '../hooks';
-import { searchActor } from '../api/actor';
+import { useState } from "react";
+import { renderItem } from "../utils/helper";
+import LiveSearch from "./LiveSearch";
+import { useSearch } from "../hooks";
+import { searchActor } from "../api/actor";
 
-function WriterSelector({ onSelect }) {
-  const [value, setValue] = useState('');
+function WriterSelector({ updateWriter, value, setValue, onSelect, ...props }) {
+  // const [value, setValue] = useState("");
   const [profiles, setProfiles] = useState([]);
 
   const { handleSearch, resetSearch } = useSearch();
@@ -17,21 +17,25 @@ function WriterSelector({ onSelect }) {
   };
 
   const handleOnSelect = (profile) => {
-    setValue('');
-    onSelect(profile);
+    setValue("");
+    updateWriter(profile);
+    onSelect(profile.id);
     setProfiles([]);
     resetSearch();
   };
 
   return (
     <LiveSearch
-      name='writers'
-      placeholder='Search profile...'
+      name="writers"
+      placeholder="Search profile..."
       results={profiles}
       renderItem={renderItem}
       onSelect={handleOnSelect}
       onChange={handleOnChange}
       value={value}
+      onUpdate={updateWriter}
+      setValue={setValue}
+      {...props}
     />
   );
 }

@@ -8,6 +8,7 @@ export default function PosterSelector({
   onChange,
   className,
   label,
+  ref,
 }) {
   return (
     <div>
@@ -18,8 +19,9 @@ export default function PosterSelector({
         id={name}
         type="file"
         hidden
+        ref={ref}
       />
-      <label htmlFor={name}>
+      <label htmlFor={name} tabIndex={0}>
         {selectedPoster ? (
           <img
             className={commonPosterStyle + " object-cover " + className}
