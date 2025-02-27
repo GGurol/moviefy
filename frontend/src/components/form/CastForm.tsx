@@ -20,11 +20,15 @@ function CastForm({
   onUniqValuesChange,
   uniqValues,
   setUniqValues,
+  values,
+  setValues,
+  onSelect,
+  ...props
 }) {
   const [castInfo, setCastInfo] = useState({ ...defaultCastInfo });
   const [profiles, setProfiles] = useState([]);
   const [value, setValue] = useState("");
-  const [values, setValues] = useState([]);
+  // const [values, setValues] = useState([]);
   const [dupValues, setDupValues] = useState([]);
 
   const { updateNotification } = useNotification();
@@ -50,8 +54,9 @@ function CastForm({
     // setValues([...values, profile]);
     // const newValue = new Set([...values, profile.id]);
     // setValues(Array.from(newValue));
-    setDupValues([...dupValues, profile]);
+    // setDupValues([...dupValues, profile]);
     updateCast(profile);
+    // onSelect(uniqValues.map((e) => e.id));
     setProfiles([]);
     resetSearch();
   };
@@ -62,6 +67,10 @@ function CastForm({
     );
     onUniqValuesChange(uniq);
   }, [JSON.stringify(dupValues)]);
+
+  useEffect(() => {
+    onSelect(uniqValues.map((e) => e.id));
+  }, [JSON.stringify(uniqValues)]);
 
   const handleSubmit = () => {
     const { profile, roleAs } = castInfo;
@@ -113,6 +122,7 @@ function CastForm({
         onSelect={handleOnSelect}
         uniqValues={uniqValues}
         setUniqValues={setUniqValues}
+        {...props}
       />
       {/* <span className="dark:text-dark-subtle text-light-subtle font-semibold">
         as

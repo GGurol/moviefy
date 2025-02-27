@@ -16,7 +16,14 @@ interface DropzoneProps
 
 const Dropzone = React.forwardRef<HTMLDivElement, DropzoneProps>(
   (
-    { className, classNameWrapper, dropMessage, handleOnDrop, ...props },
+    {
+      className,
+      classNameWrapper,
+      dropMessage,
+      handleOnDrop,
+      accept,
+      ...props
+    },
     ref
   ) => {
     const inputRef = useRef<HTMLInputElement | null>(null);
@@ -66,6 +73,7 @@ const Dropzone = React.forwardRef<HTMLDivElement, DropzoneProps>(
               ref={inputRef}
               type="file"
               className={cn("hidden", className)}
+              accept={accept}
               onChange={(e: ChangeEvent<HTMLInputElement>) =>
                 handleOnDrop(e.target.files)
               }

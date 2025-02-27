@@ -15,14 +15,15 @@ import { useCallback, useRef, useState, KeyboardEvent } from "react";
 
 type Genres = Record<"value" | "label" | "className", string>;
 
-export function MultiSelect() {
+export function MultiSelect({ selected, setSelected, onSelect }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [open, setOpen] = useState(false);
-  const [selected, setSelected] = useState<Genres[]>([GENRES[0]]);
+  // const [selected, setSelected] = useState<Genres[]>([GENRES[0]]);
   const [inputValue, setInputValue] = useState("");
 
   const handleUnselect = useCallback((genres: Genres) => {
     setSelected((prev) => prev.filter((s) => s.value !== genres.value));
+    onSelect([...selected]);
   }, []);
 
   const handleKeyDown = useCallback((e: KeyboardEvent<HTMLDivElement>) => {
@@ -110,6 +111,7 @@ export function MultiSelect() {
                       onSelect={(value) => {
                         setInputValue("");
                         setSelected((prev) => [...prev, genre]);
+                        onSelect([...selected, genre]);
                       }}
                       className={"cursor-pointer " + genre.className}
                     >

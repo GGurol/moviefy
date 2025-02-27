@@ -26,10 +26,11 @@ export default function LiveSearchCast({
   sendDataToParent,
   uniqValues,
   setUniqValues,
+  ...props
 }) {
   const [displaySearch, setDisplaySearch] = useState(false);
   const [focusedIndex, setFocusedIndex] = useState(-1);
-  const [selectRes, setSelectRes] = useState("");
+  const [selectRes, setSelectRes] = useState([]);
   const [actors, setActors] = useState([]);
 
   const handleOnFocus = () => {
@@ -49,11 +50,15 @@ export default function LiveSearchCast({
 
   const handleSelection = (selectedItem) => {
     if (selectedItem) {
-      setSelectRes(selectedItem);
+      setSelectRes([...selectRes, selectedItem]);
+      inputRef.current.value = "";
+      setDupValues([...dupValues, selectedItem]);
       onSelect(selectedItem);
       closeSearch();
     }
   };
+
+  const inputRef = useRef(null);
 
   const handleKeyDown = ({ key }) => {
     // console.log(key);
@@ -171,8 +176,10 @@ export default function LiveSearchCast({
           onFocus={handleOnFocus}
           onBlur={handleOnBlur}
           onKeyDown={handleKeyDown}
-          value={!!selectRes ? "" : value}
+          // value={!!selectRes ? "" : value}
           onChange={onChange}
+          ref={inputRef}
+          {...props}
         />
       </div>
 

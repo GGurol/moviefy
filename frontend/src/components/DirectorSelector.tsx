@@ -5,8 +5,16 @@ import { useSearch } from "../hooks";
 import { searchActor } from "../api/actor";
 import Label from "./Label";
 
-function DirectorSelector({ updateDirector }) {
-  const [value, setValue] = useState("");
+function DirectorSelector({
+  updateDirector,
+  register,
+  name,
+  value,
+  setValue,
+  onSelect,
+  ...props
+}) {
+  // const [value, setValue] = useState("");
   const [profiles, setProfiles] = useState([]);
   const [selectedValue, setSelectedValue] = useState([]);
 
@@ -21,6 +29,7 @@ function DirectorSelector({ updateDirector }) {
   const handleOnSelect = (profile) => {
     setValue(profile?.name);
     updateDirector(profile);
+    onSelect(profile.id);
     setProfiles([]);
     resetSearch();
   };
@@ -59,6 +68,7 @@ function DirectorSelector({ updateDirector }) {
         onChange={handleOnChange}
         onUpdate={updateDirector}
         setValue={setValue}
+        {...props}
       />
     </>
   );

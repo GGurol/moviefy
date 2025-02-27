@@ -73,6 +73,8 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "../ui/alert-dialog";
+import { GENRES } from "@/utils/genres";
+type Genres = Record<"value" | "label" | "className", string>;
 
 const defaultMovieInfo = {
   title: "",
@@ -90,18 +92,67 @@ const defaultMovieInfo = {
   status: "",
 };
 
+const MAX_FILE_SIZE = 1024 * 1024 * 10;
+
+const ACCEPTED_IMAGE_TYPES = [
+  "image/jpeg",
+  "image/jpg",
+  "image/png",
+  "image/webp",
+];
+
+const ACCEPTED_VIDEO_TYPES = [
+  "video/mp4",
+  "video/mpeg",
+  "video/x-matroska",
+  "video/x-msvideo",
+];
+
+const formatBytes = (bytes: number, decimals = 2) => {
+  if (bytes === 0) return "0 Bytes";
+  const k = 1024;
+  const dm = decimals < 0 ? 0 : decimals;
+  const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
+};
+
 const formSchema = z.object({
   title: z.string().min(2).max(50),
   storyLine: z.string().min(2).max(200),
-  tags: z.array(z.string()),
-  director: z.string(),
-  writer: z.string(),
-  cast: z.array(z.string()),
+  tags: z.array(z.string()).nonempty("At least one tag is required"),
+  director: z.string().nonempty("Must add one director"),
+  writer: z.string().nonempty("Must add one writer"),
+  cast: z.array(z.string()).nonempty("At least one actor is required"),
   releaseDate: z.date(),
-  file: z.any(),
   language: z.string(),
   status: z.string(),
   type: z.string(),
+  genres: z.array(z.string()).nonempty("At least one genre is required"),
+  poster: z
+    .instanceof(File, {
+      message: "Please select an image file.",
+    })
+    .refine((file) => file.size <= MAX_FILE_SIZE, {
+      message: `Please choose an image smaller than ${formatBytes(
+        MAX_FILE_SIZE
+      )}.`,
+    })
+    .refine((file) => ACCEPTED_IMAGE_TYPES.includes(file.type), {
+      message: "Please upload a valid image file (JPEG, PNG, or WebP).",
+    }),
+  video: z
+    .instanceof(File, {
+      message: "Please select a video file.",
+    })
+    .refine((file) => file.size <= MAX_FILE_SIZE, {
+      message: `Please choose a video file smaller than ${formatBytes(
+        MAX_FILE_SIZE
+      )}.`,
+    })
+    .refine((file) => ACCEPTED_VIDEO_TYPES.includes(file.type), {
+      message: "Please upload a valid video file (MP4, AVI, or MKV)",
+    }),
 });
 
 export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
@@ -122,55 +173,58 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
       director: "",
       writer: "",
       cast: [],
-      file: null,
+      video: undefined,
+      poster: undefined,
+      genres: [],
     },
   });
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const { error } = validateMovie(movieInfo);
-    if (error) return updateNotification("error", error);
+  const handleSubmit = (values: z.infer<typeof formSchema>) => {
+    console.log("values:", values);
+    //  form.trigger(["tags", "director", "writer"]);
+    // const { error } = validateMovie(movieInfo);
+    // if (error) return updateNotification("error", error);
 
-    const { tags, genres, cast, writers, director, poster } = movieInfo;
+    // const { tags, genres, cast, writers, director, poster } = movieInfo;
 
-    const formData = new FormData();
-    const finalMovieInfo = {
-      ...movieInfo,
-    };
+    // const formData = new FormData();
+    // const finalMovieInfo = {
+    //   ...movieInfo,
+    // };
 
-    finalMovieInfo.tags = JSON.stringify(tags);
-    finalMovieInfo.genres = JSON.stringify(genres);
+    // finalMovieInfo.tags = JSON.stringify(tags);
+    // finalMovieInfo.genres = JSON.stringify(genres);
 
-    // cast: [
-    //   {
-    //     actor: { type: mongoose.Schema.Types.ObjectId, ref: 'Actor' },
-    //     roleAs: String,
-    //     leadActor: Boolean,
-    //   },
-    // ],
+    // // cast: [
+    // //   {
+    // //     actor: { type: mongoose.Schema.Types.ObjectId, ref: 'Actor' },
+    // //     roleAs: String,
+    // //     leadActor: Boolean,
+    // //   },
+    // // ],
 
-    // console.log(cast);
-    const finalCast = cast.map((c) => ({
-      actor: c.profile.id,
-      roleAs: c.roleAs,
-      leadActor: c.leadActor,
-    }));
-    finalMovieInfo.cast = JSON.stringify(finalCast);
+    // // console.log(cast);
+    // const finalCast = cast.map((c) => ({
+    //   actor: c.profile.id,
+    //   roleAs: c.roleAs,
+    //   leadActor: c.leadActor,
+    // }));
+    // finalMovieInfo.cast = JSON.stringify(finalCast);
 
-    if (writers.length) {
-      const finalWriters = writers.map((c) => c.id);
-      finalMovieInfo.writers = JSON.stringify(finalWriters);
-    }
+    // if (writers.length) {
+    //   const finalWriters = writers.map((c) => c.id);
+    //   finalMovieInfo.writers = JSON.stringify(finalWriters);
+    // }
 
-    if (director.id) finalMovieInfo.director = director.id;
+    // if (director.id) finalMovieInfo.director = director.id;
 
-    if (poster) finalMovieInfo.poster = poster;
+    // if (poster) finalMovieInfo.poster = poster;
 
-    for (let key in finalMovieInfo) {
-      formData.append(key, finalMovieInfo[key]);
-    }
+    // for (let key in finalMovieInfo) {
+    //   formData.append(key, finalMovieInfo[key]);
+    // }
 
-    onSubmit(formData);
+    // onSubmit(formData);
   };
 
   const updatePosterForUI = (file) => {
@@ -269,6 +323,11 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
     }
   }, [initialState]);
   const [values, setValues] = useState<string[]>([]);
+  const [directorVal, setDirectorVal] = useState("");
+  const [writerVal, setWriterVal] = useState("");
+  const [castVal, setCastVal] = useState([]);
+  // const [genresVal, setGenresVal] = useState([]);
+  const [selected, setSelected] = useState<Genres[]>([GENRES[0]]);
 
   // const leaderActors = useActorStore((state) => state.leaderActors);
   // console.log(leaderActors);
@@ -283,24 +342,29 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
 
   function handleOnDrop(acceptedFiles: FileList | null) {
     if (acceptedFiles && acceptedFiles.length > 0) {
-      const allowedTypes = ["video/mp4", "video/mpeg"];
+      const allowedTypes = [
+        "video/mp4",
+        "video/mpeg",
+        "video/x-matroska",
+        "video/x-msvideo",
+      ];
       const fileType = allowedTypes.find(
         (type) => type === acceptedFiles[0].type
       );
       if (!fileType) {
-        form.setValue("file", null);
-        form.setError("file", {
+        form.setValue("video", null);
+        form.setError("video", {
           message: "File type is not valid",
           type: "typeError",
         });
       } else {
-        form.setValue("file", acceptedFiles[0]);
-        form.clearErrors("file");
+        form.setValue("video", acceptedFiles[0]);
+        form.clearErrors("video");
       }
     } else {
-      form.setValue("file", null);
-      form.setError("file", {
-        message: "File is required",
+      form.setValue("video", null);
+      form.setError("video", {
+        message: "Video is required",
         type: "typeError",
       });
     }
@@ -355,27 +419,42 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
           <FormField
             name="tags"
             control={form.control}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Movie Tags</FormLabel>
-                <FormControl>
-                  {/* <TagsInput value={tags} name="tags" onChange={updateTags} /> */}
-                  {/* <Input {...field} /> */}
-                  <InputTags
-                    value={values}
-                    onChange={(values) => {
-                      setValues(values);
-                      field.value = values;
-                    }}
-                    placeholder="Enter values, comma separated"
-                  />
-                </FormControl>
-                {/* <FormDescription>
-                    Please enter movie tags, separate by comma
-                  </FormDescription> */}
-                <FormMessage />
-              </FormItem>
-            )}
+            render={({ field }) => {
+              return (
+                <FormItem>
+                  <FormLabel>Movie Tags</FormLabel>
+                  <FormControl>
+                    <InputTags
+                      // {...field}
+                      // ref={field.ref}
+                      // {...form.register("tags")}
+                      // {...registerWithRef("tags")}
+                      // name={field.name}
+                      // name="tags"
+                      // inputRef={field.ref}
+                      value={values}
+                      // value={field.value}
+                      onChange={(values) => {
+                        setValues(values);
+                        field.value = values;
+                        // form.setValue("tags", values);
+                        field.onChange(values);
+                      }}
+                      placeholder="Enter comma separated values..."
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              );
+            }}
+            // rules={{
+            //   validate: {
+            //     required: (values) => {
+            //       if (!values || values.length === 0)
+            //         return "Tags are required";
+            //     },
+            //   },
+            // }}
           />
           <FormField
             name="director"
@@ -384,8 +463,19 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
               <FormItem>
                 <FormLabel>Director</FormLabel>
                 <FormControl>
-                  <DirectorSelector updateDirector={updateDirector} />
+                  <DirectorSelector
+                    updateDirector={updateDirector}
+                    value={directorVal}
+                    setValue={setDirectorVal}
+                    onSelect={(value) => {
+                      setDirectorVal(value);
+                      field.value = value;
+                      // form.setValue("director", value);
+                      field.onChange(value);
+                    }}
+                  />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -396,8 +486,18 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
               <FormItem>
                 <FormLabel>Writer</FormLabel>
                 <FormControl>
-                  <WriterSelector updateWriter={updateWriter} />
+                  <WriterSelector
+                    updateWriter={updateWriter}
+                    value={writerVal}
+                    setValue={setWriterVal}
+                    onSelect={(value) => {
+                      setWriterVal(value);
+                      field.value = value;
+                      field.onChange(value);
+                    }}
+                  />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -415,8 +515,16 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
                     onUniqValuesChange={handleUniqValuesChange}
                     uniqValues={uniqValues}
                     setUniqValues={setUniqValues}
+                    values={castVal}
+                    setValues={setCastVal}
+                    onSelect={(values) => {
+                      setCastVal(values);
+                      field.value = values;
+                      field.onChange(values);
+                    }}
                   />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -543,7 +651,18 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
               <FormItem>
                 <FormLabel>Genres</FormLabel>
                 <FormControl>
-                  <MultiSelect />
+                  <MultiSelect
+                    selected={selected}
+                    setSelected={setSelected}
+                    onSelect={(values) => {
+                      // setSelected(values);
+                      const vl = values
+                        .filter((e) => e.value !== "-")
+                        .map((e) => e.value);
+                      field.value = vl;
+                      field.onChange(vl);
+                    }}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -577,7 +696,7 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
           />
           <FormField
             control={form.control}
-            name="file"
+            name="video"
             render={({ field }) => (
               <FormItem className="w-full">
                 <FormLabel>Video</FormLabel>
@@ -586,13 +705,14 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
                     {...field}
                     dropMessage="Drop file or click"
                     handleOnDrop={handleOnDrop}
+                    accept="video/*"
                   />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-          {form.watch("file") && (
+          {form.watch("video") && (
             <Card className="w-60 h-20">
               <CardHeader className="p-2">
                 <CardDescription className="flex items-center justify-between">
@@ -603,7 +723,7 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
                         <Trash2
                           size={25}
                           className="hover:bg-muted cursor-pointer rounded border p-1 "
-                          onClick={() => form.setValue("file", null)}
+                          onClick={() => form.setValue("video", null)}
                         />
                       </TooltipTrigger>
                       <TooltipContent>
@@ -614,7 +734,7 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
                 </CardDescription>
               </CardHeader>
               <CardContent className="text-xs pt-1 pl-2 pb-4 flex justify-between items-center overflow-auto ">
-                <span>{form.watch("file")?.name}</span>
+                <span>{form.watch("video")?.name}</span>
               </CardContent>
             </Card>
           )}
