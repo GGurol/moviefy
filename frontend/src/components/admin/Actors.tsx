@@ -1,32 +1,11 @@
+import { Pencil, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { BsPencilSquare, BsTrash } from "react-icons/bs";
 import { deleteActor, getActors, searchActor } from "../../api/actor";
 import { useNotification, useSearch } from "../../hooks";
 import NextAndPrevButton from "../NextAndPrevButton";
-import UpdateActor from "../modals/UpdateActor";
-import AppSearchForm from "../form/AppSearchForm";
 import NotFoundText from "../NotFoundText";
-import ConfirmModal from "../modals/ConfirmModal";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "../ui/card";
-import { Pencil, Trash2 } from "lucide-react";
-import { Button } from "../ui/button";
-import ActorUpload from "../modals/ActorUpload";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogOverlay,
-  DialogPortal,
-  DialogTitle,
-  DialogTrigger,
-} from "../ui/dialog";
+import AppSearchForm from "../form/AppSearchForm";
+import UpdateActor from "../modals/UpdateActor";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -38,11 +17,27 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "../ui/alert-dialog";
+import { Button } from "../ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../ui/dialog";
 
 let currentPageNo = 0;
 const limit = 10;
 
-function Actors() {
+export default function Actors() {
   const [actors, setActors] = useState([]);
   const [results, setResults] = useState([]);
   const [reachedToEnd, setReachedToEnd] = useState(false);
@@ -110,7 +105,6 @@ function Actors() {
 
   const handleOnDeleteClick = (profile) => {
     setSelectedProfile(profile);
-    // setShowConfirmModal(true);
   };
 
   const handleOnDeleteConfirm = async () => {
@@ -176,22 +170,6 @@ function Actors() {
           />
         ) : null}
       </div>
-
-      <ConfirmModal
-        title="Are you sure?"
-        subtitle="This action will remove this profile permanently"
-        visible={showConfirmModal}
-        busy={busy}
-        onConfirm={handleOnDeleteConfirm}
-        onCancel={hideConfirmModal}
-      />
-
-      {/* <UpdateActor
-        visible={showUpdateModal}
-        onClose={hideUpdateModal}
-        initialState={selectedProfile}
-        onSuccess={handleOnActorUpdateSuccess}
-      /> */}
     </>
   );
 }
@@ -210,7 +188,9 @@ const ActorProfile = ({
     setShowOptions(true);
   };
   const handleOnMouseLeave = () => {
-    setShowOptions(false);
+    if (!open && !alertOpen) {
+      setShowOptions(false);
+    }
   };
 
   if (!profile) return null;
@@ -221,14 +201,27 @@ const ActorProfile = ({
   };
   const { name, avatar, about = "" } = profile;
 
+  const [open, setOpen] = useState(false);
+  const [alertOpen, setAlertOpen] = useState(false);
+  const setCloseModal = (val) => {
+    setOpen(val);
+    if (val === false) {
+      setShowOptions(false);
+    }
+  };
+  const setCloseAlertModal = (val) => {
+    setAlertOpen(val);
+    if (val === false) {
+      setShowOptions(false);
+    }
+  };
+
   return (
     <>
       <Card
         className="flex rounded-md gap-2  hover:bg-muted relative h-20 overflow-hidden"
         onMouseEnter={handleOnMouseEnter}
         onMouseLeave={handleOnMouseLeave}
-        // onMouseOver={handleOnMouseEnter}
-        // onMouseOut={handleOnMouseLeave}
       >
         <CardHeader className="p-0">
           <CardTitle className="w-20">
@@ -243,125 +236,68 @@ const ActorProfile = ({
           <div className="capitalize">{getName(name)}</div>
           <CardDescription> {about.substring(0, 50)}</CardDescription>
         </CardContent>
-        <Options
-          onEditClick={onEditClick}
-          visible={showOptions}
-          onDeleteClick={onDeleteClick}
-          selectedProfile={selectedProfile}
-          handleOnActorUpdateSuccess={handleOnActorUpdateSuccess}
-          setShowOptions={setShowOptions}
-        />
+        {showOptions && (
+          <div className="absolute inset-0 backdrop-blur-md flex justify-center items-center space-x-5">
+            <Dialog open={open} onOpenChange={setCloseModal}>
+              <DialogTrigger className="gap-4" asChild>
+                <Button
+                  onClick={onEditClick}
+                  className="px-3 py-1 hover:opacity-60 transition-all duration-200"
+                  type="button"
+                  variant="default"
+                >
+                  <Pencil />
+                </Button>
+              </DialogTrigger>
+              <DialogContent
+                className="w-[500px]"
+                onInteractOutside={(e) => {
+                  e.preventDefault();
+                }}
+              >
+                <DialogHeader>
+                  <DialogTitle>Update Actor</DialogTitle>
+                  <DialogDescription>
+                    Submit to update an actor.
+                  </DialogDescription>
+                </DialogHeader>
+                <UpdateActor
+                  setOpen={setOpen}
+                  initialState={selectedProfile}
+                  onSuccess={handleOnActorUpdateSuccess}
+                />
+              </DialogContent>
+            </Dialog>
+
+            <AlertDialog open={alertOpen} onOpenChange={setCloseAlertModal}>
+              <AlertDialogTrigger asChild>
+                <Button
+                  onClick={onDeleteClick}
+                  className="px-3 py-1 hover:opacity-60 transition-all duration-200"
+                  type="button"
+                  variant="destructive"
+                >
+                  <Trash2 />
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This action will remove this actor permanently!
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={() => {}}>
+                    Delete
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
+        )}
       </Card>
     </>
   );
-
-  // return (
-  //   <div className=" shadow dark:bg-secondary h-20 overflow-hidden rounded">
-  //     <div
-  // onMouseEnter={handleOnMouseEnter}
-  // onMouseLeave={handleOnMouseLeave}
-  //       className="flex cursor-pointer relative"
-  //     >
-  //       <img
-  //         src={avatar}
-  //         alt={name}
-  //         className="w-20 aspect-square object-cover"
-  //       />
-
-  //       <div className="px-2">
-  //         <h1 className="text-xl text-primary dark:text-white font-semibold whitespace-nowrap">
-  //           {getName(name)}
-  //         </h1>
-  //         <p className="text-primary dark:text-white opacity-70">
-  //           {about.substring(0, 50)}
-  //         </p>
-  //       </div>
-
-  //       <Options
-  //         onEditClick={onEditClick}
-  //         visible={showOptions}
-  //         onDeleteClick={onDeleteClick}
-  //       />
-  //     </div>
-  //   </div>
-  // );
 };
-
-const Options = ({
-  visible,
-  onDeleteClick,
-  onEditClick,
-  selectedProfile,
-  handleOnActorUpdateSuccess,
-  setShowOptions,
-}) => {
-  if (!visible) return null;
-  const [open, setOpen] = useState(false);
-  const setCloseModal = (val) => {
-    setOpen(val);
-    if (val === false) {
-      setShowOptions(false);
-    }
-  };
-  console.log("selectedProfile", selectedProfile);
-
-  return (
-    <div className="absolute inset-0 backdrop-blur-md flex justify-center items-center space-x-5">
-      <Dialog open={open} onOpenChange={setCloseModal}>
-        <DialogTrigger className="gap-4" asChild>
-          <Button
-            onClick={onEditClick}
-            className="px-3 py-1 hover:opacity-60 transition-all duration-200"
-            type="button"
-            variant="default"
-          >
-            <Pencil />
-          </Button>
-        </DialogTrigger>
-        <DialogContent
-          className="w-[500px]"
-          onInteractOutside={(e) => {
-            e.preventDefault();
-          }}
-        >
-          <DialogHeader>
-            <DialogTitle>Update Actor</DialogTitle>
-            <DialogDescription>Submit to update an actor.</DialogDescription>
-          </DialogHeader>
-          <UpdateActor
-            setOpen={setOpen}
-            initialState={selectedProfile}
-            onSuccess={handleOnActorUpdateSuccess}
-          />
-        </DialogContent>
-      </Dialog>
-
-      <AlertDialog>
-        <AlertDialogTrigger asChild>
-          <Button
-            onClick={onDeleteClick}
-            className="px-3 py-1 hover:opacity-60 transition-all duration-200"
-            type="button"
-            variant="destructive"
-          >
-            <Trash2 />
-          </Button>
-        </AlertDialogTrigger>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This action will remove this actor permanently!
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={() => {}}>Delete</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-    </div>
-  );
-};
-
-export default Actors;
