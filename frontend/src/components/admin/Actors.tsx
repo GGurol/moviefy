@@ -7,9 +7,40 @@ import UpdateActor from "../modals/UpdateActor";
 import AppSearchForm from "../form/AppSearchForm";
 import NotFoundText from "../NotFoundText";
 import ConfirmModal from "../modals/ConfirmModal";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../ui/card";
+import { Pencil, Trash2 } from "lucide-react";
+import { Button } from "../ui/button";
+import ActorUpload from "../modals/ActorUpload";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogOverlay,
+  DialogPortal,
+  DialogTitle,
+  DialogTrigger,
+} from "../ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "../ui/alert-dialog";
 
 let currentPageNo = 0;
-const limit = 4;
+const limit = 10;
 
 function Actors() {
   const [actors, setActors] = useState([]);
@@ -79,7 +110,7 @@ function Actors() {
 
   const handleOnDeleteClick = (profile) => {
     setSelectedProfile(profile);
-    setShowConfirmModal(true);
+    // setShowConfirmModal(true);
   };
 
   const handleOnDeleteConfirm = async () => {
@@ -121,6 +152,8 @@ function Actors() {
                   key={actor.id}
                   onEditClick={() => handleOnEditClick(actor)}
                   onDeleteClick={() => handleOnDeleteClick(actor)}
+                  selectedProfile={selectedProfile}
+                  handleOnActorUpdateSuccess={handleOnActorUpdateSuccess}
                 />
               ))
             : actors.map((actor) => (
@@ -129,6 +162,8 @@ function Actors() {
                   key={actor.id}
                   onEditClick={() => handleOnEditClick(actor)}
                   onDeleteClick={() => handleOnDeleteClick(actor)}
+                  selectedProfile={selectedProfile}
+                  handleOnActorUpdateSuccess={handleOnActorUpdateSuccess}
                 />
               ))}
         </div>
@@ -151,17 +186,23 @@ function Actors() {
         onCancel={hideConfirmModal}
       />
 
-      <UpdateActor
+      {/* <UpdateActor
         visible={showUpdateModal}
         onClose={hideUpdateModal}
         initialState={selectedProfile}
         onSuccess={handleOnActorUpdateSuccess}
-      />
+      /> */}
     </>
   );
 }
 
-const ActorProfile = ({ profile, onEditClick, onDeleteClick }) => {
+const ActorProfile = ({
+  profile,
+  onEditClick,
+  onDeleteClick,
+  selectedProfile,
+  handleOnActorUpdateSuccess,
+}) => {
   const [showOptions, setShowOptions] = useState(false);
   const acceptedNameLength = 15;
 
@@ -181,56 +222,144 @@ const ActorProfile = ({ profile, onEditClick, onDeleteClick }) => {
   const { name, avatar, about = "" } = profile;
 
   return (
-    <div className=" shadow dark:bg-secondary h-20 overflow-hidden rounded">
-      <div
+    <>
+      <Card
+        className="flex rounded-md gap-2  hover:bg-muted relative h-20 overflow-hidden"
         onMouseEnter={handleOnMouseEnter}
         onMouseLeave={handleOnMouseLeave}
-        className="flex cursor-pointer relative"
+        // onMouseOver={handleOnMouseEnter}
+        // onMouseOut={handleOnMouseLeave}
       >
-        <img
-          src={avatar}
-          alt={name}
-          className="w-20 aspect-square object-cover"
-        />
-
-        <div className="px-2">
-          <h1 className="text-xl text-primary dark:text-white font-semibold whitespace-nowrap">
-            {getName(name)}
-          </h1>
-          <p className="text-primary dark:text-white opacity-70">
-            {about.substring(0, 50)}
-          </p>
-        </div>
-
+        <CardHeader className="p-0">
+          <CardTitle className="w-20">
+            <img
+              src={avatar}
+              alt={name}
+              className="w-full aspect-square object-cover rounded-l-md"
+            />
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-0 py-1">
+          <div className="capitalize">{getName(name)}</div>
+          <CardDescription> {about.substring(0, 50)}</CardDescription>
+        </CardContent>
         <Options
           onEditClick={onEditClick}
           visible={showOptions}
           onDeleteClick={onDeleteClick}
+          selectedProfile={selectedProfile}
+          handleOnActorUpdateSuccess={handleOnActorUpdateSuccess}
+          setShowOptions={setShowOptions}
         />
-      </div>
-    </div>
+      </Card>
+    </>
   );
+
+  // return (
+  //   <div className=" shadow dark:bg-secondary h-20 overflow-hidden rounded">
+  //     <div
+  // onMouseEnter={handleOnMouseEnter}
+  // onMouseLeave={handleOnMouseLeave}
+  //       className="flex cursor-pointer relative"
+  //     >
+  //       <img
+  //         src={avatar}
+  //         alt={name}
+  //         className="w-20 aspect-square object-cover"
+  //       />
+
+  //       <div className="px-2">
+  //         <h1 className="text-xl text-primary dark:text-white font-semibold whitespace-nowrap">
+  //           {getName(name)}
+  //         </h1>
+  //         <p className="text-primary dark:text-white opacity-70">
+  //           {about.substring(0, 50)}
+  //         </p>
+  //       </div>
+
+  //       <Options
+  //         onEditClick={onEditClick}
+  //         visible={showOptions}
+  //         onDeleteClick={onDeleteClick}
+  //       />
+  //     </div>
+  //   </div>
+  // );
 };
 
-const Options = ({ visible, onDeleteClick, onEditClick }) => {
+const Options = ({
+  visible,
+  onDeleteClick,
+  onEditClick,
+  selectedProfile,
+  handleOnActorUpdateSuccess,
+  setShowOptions,
+}) => {
   if (!visible) return null;
+  const [open, setOpen] = useState(false);
+  const setCloseModal = (val) => {
+    setOpen(val);
+    if (val === false) {
+      setShowOptions(false);
+    }
+  };
+  console.log("selectedProfile", selectedProfile);
 
   return (
-    <div className="absolute inset-0 bg-primary bg-opacity-25 backdrop-blur-sm flex justify-center items-center space-x-5">
-      <button
-        onClick={onDeleteClick}
-        className="p-2 rounded-full  text-primary hover:opacity-80 transition"
-        type="button"
-      >
-        <BsTrash />
-      </button>
-      <button
-        onClick={onEditClick}
-        className="p-2 rounded-full  text-primary hover:opacity-80 transition"
-        type="button"
-      >
-        <BsPencilSquare />
-      </button>
+    <div className="absolute inset-0 backdrop-blur-md flex justify-center items-center space-x-5">
+      <Dialog open={open} onOpenChange={setCloseModal}>
+        <DialogTrigger className="gap-4" asChild>
+          <Button
+            onClick={onEditClick}
+            className="px-3 py-1 hover:opacity-60 transition-all duration-200"
+            type="button"
+            variant="default"
+          >
+            <Pencil />
+          </Button>
+        </DialogTrigger>
+        <DialogContent
+          className="w-[500px]"
+          onInteractOutside={(e) => {
+            e.preventDefault();
+          }}
+        >
+          <DialogHeader>
+            <DialogTitle>Update Actor</DialogTitle>
+            <DialogDescription>Submit to update an actor.</DialogDescription>
+          </DialogHeader>
+          <UpdateActor
+            setOpen={setOpen}
+            initialState={selectedProfile}
+            onSuccess={handleOnActorUpdateSuccess}
+          />
+        </DialogContent>
+      </Dialog>
+
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <Button
+            onClick={onDeleteClick}
+            className="px-3 py-1 hover:opacity-60 transition-all duration-200"
+            type="button"
+            variant="destructive"
+          >
+            <Trash2 />
+          </Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action will remove this actor permanently!
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={() => {}}>Delete</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

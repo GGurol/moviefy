@@ -31,8 +31,8 @@ import { DialogClose, DialogFooter } from "../ui/dialog";
 const defaultActorInfo = {
   name: "",
   about: "",
-  avatar: null,
-  gender: "",
+  gender: "male",
+  avatar: undefined,
 };
 
 const MAX_FILE_SIZE = 1024 * 1024 * 10;
@@ -79,7 +79,9 @@ export default function ActorForm({
   onSubmit,
   disable,
 }) {
-  const [actorInfo, setActorInfo] = useState({ ...defaultActorInfo });
+  const [actorInfo, setActorInfo] = useState({
+    ...defaultActorInfo,
+  });
   const [selectedAvatarForUI, setSelectedAvatarForUI] = useState("");
   const { updateNotification } = useNotification();
 
@@ -104,7 +106,7 @@ export default function ActorForm({
     defaultValues: {
       name: "",
       about: "",
-      gender: "male",
+      gender: undefined,
       avatar: undefined,
     },
   });
@@ -119,6 +121,10 @@ export default function ActorForm({
 
   useEffect(() => {
     if (initialState) {
+      form.setValue("name", initialState.name);
+      form.setValue("about", initialState.about);
+      form.setValue("gender", initialState.gender);
+      form.setValue("avatar", initialState.avatar);
       setActorInfo({ ...initialState, avatar: null });
       setSelectedAvatarForUI(initialState.avatar);
     }
@@ -169,6 +175,7 @@ export default function ActorForm({
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value}
+                  value={field.value}
                 >
                   <FormControl>
                     <SelectTrigger>
