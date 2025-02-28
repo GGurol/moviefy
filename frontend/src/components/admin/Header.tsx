@@ -39,6 +39,7 @@ import ActorForm from "../form/ActorForm";
 import ActorUpload from "../modals/ActorUpload";
 import MovieForm from "./MovieForm";
 import { createMovie, uploadTrailer } from "@/api/movie";
+import { toast } from "sonner";
 
 export default function Header({ onAddActorClick, onAddMovieClick }) {
   // const [showOptions, setShowOptions] = useState(false);
@@ -46,11 +47,20 @@ export default function Header({ onAddActorClick, onAddMovieClick }) {
   // const { setTheme } = useTheme();
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
+  const [busy, setBusy] = useState(false);
 
   const navigate = useNavigate();
 
   const handleSubmitMovie = async (data) => {
+    setBusy(true);
     const { error, movie, message } = await createMovie(data);
+    setBusy(false);
+    if (error) {
+      toast.error("Failed to create a movie");
+    }
+    if (!error) {
+      toast.success("Succeeded to create a movie");
+    }
     console.log("error:", error);
     console.log("movie:", movie);
     console.log("message", message);
@@ -126,7 +136,7 @@ export default function Header({ onAddActorClick, onAddMovieClick }) {
                 <DialogHeader>
                   <DialogTitle>Create Movie</DialogTitle>
                 </DialogHeader>
-                <MovieForm onSubmit={handleSubmitMovie} />
+                <MovieForm onSubmit={handleSubmitMovie} busy={busy} />
               </DialogContent>
             </Dialog>
             <DropdownMenuSeparator />

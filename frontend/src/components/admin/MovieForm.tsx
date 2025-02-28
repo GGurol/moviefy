@@ -6,6 +6,7 @@ import {
   Delete,
   DeleteIcon,
   FileCheck2Icon,
+  Loader,
   Trash,
   Trash2,
 } from "lucide-react";
@@ -719,8 +720,8 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
             </Card>
           )}
           <div className="flex flex-col gap-2 w-60">
-            <Button onClick={handleSubmit} type="submit" variant="default">
-              Submit
+            <Button type="submit" variant="default" disabled={busy}>
+              {busy ? <Loader className="animate-spin" /> : "Submit"}
             </Button>
             <AlertDialog>
               <AlertDialogTrigger asChild>

@@ -7,6 +7,7 @@ import ContextProviders from "./context/index.js";
 import { ThemeProvider } from "./components/ui/theme-provider.js";
 import { SidebarProvider, SidebarTrigger } from "./components/ui/sidebar.js";
 import { AppSidebar } from "./components/ui/AppSidebar.js";
+import { Toaster } from "./components/ui/sonner.js";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
@@ -16,6 +17,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
           <SidebarProvider>
             {/* <AppSidebar /> */}
             <App />
+            <Toaster position="top-center" />
           </SidebarProvider>
         </ContextProviders>
       </BrowserRouter>
