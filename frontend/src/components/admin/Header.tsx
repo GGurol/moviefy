@@ -1,32 +1,10 @@
-import { useEffect, useRef, useState } from "react";
-import { AiOutlinePlus } from "react-icons/ai";
-import { BsFillSunFill } from "react-icons/bs";
-// import { useTheme } from "../../hooks";
-import AppSearchForm from "../form/AppSearchForm";
+import { createMovie } from "@/api/movie";
+import { Clapperboard, Users } from "lucide-react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
+import { toast } from "sonner";
+import ActorUpload from "../modals/ActorUpload";
 import { Button } from "../ui/button";
-import {
-  Clapperboard,
-  Moon,
-  MoveIcon,
-  PanelLeftClose,
-  ShoppingBag,
-  Sun,
-  User2,
-  Users,
-} from "lucide-react";
-import { useTheme } from "../ui/theme-provider";
-import ThemeButton from "../ui/ThemeButton";
-import { Input } from "../ui/input";
-import { SidebarTrigger } from "../ui/sidebar";
 import {
   Dialog,
   DialogContent,
@@ -35,16 +13,19 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
-import ActorForm from "../form/ActorForm";
-import ActorUpload from "../modals/ActorUpload";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
+import { Input } from "../ui/input";
+import { SidebarTrigger } from "../ui/sidebar";
+import ThemeButton from "../ui/ThemeButton";
 import MovieForm from "./MovieForm";
-import { createMovie, uploadTrailer } from "@/api/movie";
-import { toast } from "sonner";
 
 export default function Header({ onAddActorClick, onAddMovieClick }) {
-  // const [showOptions, setShowOptions] = useState(false);
-  // // const { toggleTheme } = useTheme();
-  // const { setTheme } = useTheme();
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -66,11 +47,6 @@ export default function Header({ onAddActorClick, onAddMovieClick }) {
     console.log("message", message);
   };
 
-  // const options = [
-  //   { title: "Add Movie", onClick: onAddMovieClick },
-  //   { title: "Add Actor", onClick: onAddActorClick },
-  // ];
-
   const handleChange = (e) => {
     setSearch(e.target.value);
   };
@@ -86,10 +62,6 @@ export default function Header({ onAddActorClick, onAddMovieClick }) {
 
   return (
     <div className="flex items-center justify-between relative p-5">
-      {/* <AppSearchForm
-        onSubmit={handleSearchSubmit}
-        placeholder="Search Movies..."
-      /> */}
       <div className=" flex gap-5 items-center">
         <SidebarTrigger />
 
@@ -104,42 +76,12 @@ export default function Header({ onAddActorClick, onAddMovieClick }) {
       </div>
 
       <div className="flex items-center space-x-3">
-        {/* <button
-          onClick={toggleTheme}
-          className='dark:text-white text-light-subtle'
-        >
-          <BsFillSunFill size={24} />
-        </button> */}
         <ThemeButton />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button>Create</Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            <Dialog>
-              <DialogTrigger>
-                <DropdownMenuItem
-                  className="gap-4"
-                  // onClick={onAddMovieClick}
-                  onSelect={(e) => e.preventDefault()}
-                >
-                  <Clapperboard size="20" />
-                  <span>Create movies</span>
-                </DropdownMenuItem>
-              </DialogTrigger>
-              <DialogContent
-                className="w-[900px]"
-                onInteractOutside={(e) => {
-                  e.preventDefault();
-                }}
-              >
-                <DialogHeader>
-                  <DialogTitle>Create Movie</DialogTitle>
-                </DialogHeader>
-                <MovieForm onSubmit={handleSubmitMovie} busy={busy} />
-              </DialogContent>
-            </Dialog>
-            <DropdownMenuSeparator />
             <Dialog open={open} onOpenChange={setOpen}>
               <DialogTrigger className="gap-4" asChild>
                 <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
@@ -162,81 +104,32 @@ export default function Header({ onAddActorClick, onAddMovieClick }) {
                 <ActorUpload setOpen={setOpen} />
               </DialogContent>
             </Dialog>
+            <DropdownMenuSeparator />
+            <Dialog>
+              <DialogTrigger>
+                <DropdownMenuItem
+                  className="gap-4"
+                  onSelect={(e) => e.preventDefault()}
+                >
+                  <Clapperboard size="20" />
+                  <span>Create movies</span>
+                </DropdownMenuItem>
+              </DialogTrigger>
+              <DialogContent
+                className="w-[900px]"
+                onInteractOutside={(e) => {
+                  e.preventDefault();
+                }}
+              >
+                <DialogHeader>
+                  <DialogTitle>Create Movie</DialogTitle>
+                </DialogHeader>
+                <MovieForm onSubmit={handleSubmitMovie} busy={busy} />
+              </DialogContent>
+            </Dialog>
           </DropdownMenuContent>
         </DropdownMenu>
-
-        {/* <button
-          onClick={() => setShowOptions(true)}
-          className="flex items-center space-x-2 dark:border-dark-subtle border-light-subtle dark:text-dark-subtle text-light-subtle    hover:opacity-80 transition font-semibold border-2 rounded text-lg px-3 py-1"
-        >
-          <span>Create</span>
-          <AiOutlinePlus />
-        </button> */}
-        {/* <CreateOptions
-          visible={showOptions}
-          onClose={() => setShowOptions(false)}
-          options={options}
-        /> */}
       </div>
     </div>
   );
 }
-
-// const CreateOptions = ({ options, visible, onClose }) => {
-//   const container = useRef();
-//   const containerID = "option-container";
-
-//   useEffect(() => {
-//     const handleClose = (e) => {
-//       if (!visible) return;
-//       const { parentElement, id } = e.target;
-//       // console.log(parentElement, id);
-
-//       if (parentElement.id === containerID || id === containerID) return;
-//       container.current.classList.remove("animate-scale");
-//       container.current.classList.add("animate-scale-reverse");
-//     };
-
-//     document.addEventListener("click", handleClose, true);
-//     return () => document.removeEventListener("click", handleClose, true);
-//   }, [visible]);
-
-//   const handleAnimationEnd = (e) => {
-//     if (e.target.classList.contains("animate-scale-reverse")) onClose();
-//     e.target.classList.remove("animate-scale");
-//   };
-
-//   const handleClick = (fn) => {
-//     fn();
-//     onClose();
-//   };
-
-//   if (!visible) return null;
-//   return (
-//     <div
-//       id={containerID}
-//       ref={container}
-//       className="absolute right-0 top-12 z-50 flex flex-col space-y-3 p-5 dark:bg-secondary drop-shadow-lg rounded animate-scale"
-//       onAnimationEnd={handleAnimationEnd}
-//     >
-//       {options.map(({ title, onClick }) => {
-//         return (
-//           <Option key={title} onClick={() => handleClick(onClick)}>
-//             {title}
-//           </Option>
-//         );
-//       })}
-//     </div>
-//   );
-// };
-
-// const Option = ({ children, onClick }) => {
-//   return (
-//     <button
-//       onClick={onClick}
-//       className="dark:text-white text-secondary hover:opacity-80 transition"
-//     >
-//       {children}
-//     </button>
-//   );
-// };
