@@ -5,7 +5,13 @@ import { deleteMovie } from "../api/movie";
 import { useNotification } from "../hooks";
 import UpdateMovie from "./modals/UpdateMovie";
 import { getPoster } from "../utils/helper";
-import { Card } from "./ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "./ui/card";
 import {
   ExternalLink,
   FolderLock,
@@ -92,14 +98,6 @@ const MovieListItem = ({ movie, afterDelete, afterUpdate }) => {
         handleDelete={handleDelete}
       />
       <div className="p-0">
-        {/* <ConfirmModal
-          visible={showConfirmModal}
-          onConfirm={handleOnDeleteConfirm}
-          onCancel={hideConfirmModal}
-          title="Are you sure?"
-          subtitle="This action will remove this movie permanently!"
-          busy={busy}
-        /> */}
         <UpdateMovie
           movieId={selectedMovieId}
           visible={showUpdateModal}
@@ -118,133 +116,121 @@ const MovieCard = ({
   handleDelete,
 }) => {
   const { poster, title, responsivePosters, genres = [], status } = movie;
+  const [open, setOpen] = useState(false);
 
   return (
-    <Card className="rounded-sm ">
-      <table className="w-full border-b ">
-        <tbody className=" w-full">
-          <tr className="flex items-center  ">
-            <td className="">
-              <div className="w-24">
-                <img
-                  className="w-full aspect-square object-cover rounded-lg p-1"
-                  src={getPoster(responsivePosters) || poster}
-                  alt={title}
-                />
-              </div>
-            </td>
+    <Card className="rounded-sm flex items-center">
+      <CardHeader className="p-1">
+        <CardTitle className="w-24">
+          <img
+            className="w-full aspect-square object-cover rounded-lg p-1"
+            src={getPoster(responsivePosters) || poster}
+            alt={title}
+          />
+        </CardTitle>
+      </CardHeader>
+      <div className="flex items-center justify-between w-full">
+        <CardContent className="p-1 overflow-auto w-72">
+          <h1 className="text-lg font-semibold capitalize">{title}</h1>
+          <div className="space-x-1  pb-2">
+            {genres.map((g, index) => {
+              return (
+                <span key={g + index} className="text-xs text-muted-foreground">
+                  {g}
+                </span>
+              );
+            })}
+          </div>
+        </CardContent>
+        <CardFooter className="p-1">
+          {/* Status */}
+          {status === "public" ? (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <FolderOpen strokeWidth={0.75} size={20} />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <span>Public</span>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          ) : (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <FolderLock strokeWidth={0.75} size={20} />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <span>Private</span>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
 
-            <div className="flex items-center overflow-auto w-full  justify-between">
-              <td className="pl-2 overflow-auto max-w-72">
-                <div className="flex flex-col gap-1">
-                  <h1 className="text-lg font-semibold text-primary dark:text-white">
-                    {title}
-                  </h1>
-                  <div className="space-x-1  pb-2">
-                    {genres.map((g, index) => {
-                      return (
-                        <span
-                          key={g + index}
-                          className="text-primary dark:text-white text-xs"
-                        >
-                          {g}
-                        </span>
-                      );
-                    })}
-                  </div>
-                </div>
-              </td>
+          {/* Delete */}
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={() => {
+                    setOpen(true);
+                  }}
+                >
+                  <Trash2 strokeWidth={0.75} size={20} />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <span>Delete</span>
+              </TooltipContent>
+            </Tooltip>
+            <AlertDialog open={open} onOpenChange={setOpen}>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This action will remove this movie permanently!
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleDelete}>
+                    Delete
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </TooltipProvider>
 
-              <td className="pr-2 ">
-                <div className="flex items-center space-x-1 text-primary dark:text-white text-lg">
-                  {/* Status */}
-                  {status === "public" ? (
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <FolderOpen strokeWidth={0.75} size={20} />
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <span>Public</span>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  ) : (
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <FolderLock strokeWidth={0.75} size={20} />
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <span>Private</span>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  )}
+          {/* Edit */}
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button onClick={onEditClick}>
+                  <Pencil strokeWidth={0.75} size={20} />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <span>Edit</span>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
 
-                  {/* Delete */}
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <AlertDialog>
-                          <AlertDialogTrigger>
-                            <Trash2 strokeWidth={0.75} size={20} />
-                          </AlertDialogTrigger>
-                          <AlertDialogContent>
-                            <AlertDialogHeader>
-                              <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                              <AlertDialogDescription>
-                                This action will remove this movie permanently!
-                              </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                              <AlertDialogCancel>Cancel</AlertDialogCancel>
-                              <AlertDialogAction onClick={handleDelete}>
-                                Delete
-                              </AlertDialogAction>
-                            </AlertDialogFooter>
-                          </AlertDialogContent>
-                        </AlertDialog>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <span>Delete</span>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-
-                  {/* Edit */}
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <button onClick={onEditClick}>
-                          <Pencil strokeWidth={0.75} size={20} />
-                        </button>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <span>Edit</span>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-
-                  {/* Open */}
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <button onClick={onOpenClick}>
-                          <ExternalLink strokeWidth={0.75} size={20} />
-                        </button>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <span>Open</span>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                </div>
-              </td>
-            </div>
-          </tr>
-        </tbody>
-      </table>
+          {/* Open */}
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button onClick={onOpenClick}>
+                  <ExternalLink strokeWidth={0.75} size={20} />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <span>Open</span>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </CardFooter>
+      </div>
     </Card>
   );
 };

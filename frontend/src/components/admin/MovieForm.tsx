@@ -641,7 +641,7 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
                       handleChange(e);
                     }}
                     accept="image/*"
-                    ref={field.ref}
+                    // ref={field.ref}
                   />
                 </FormControl>
                 <FormMessage />
