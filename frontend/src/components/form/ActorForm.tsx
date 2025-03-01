@@ -238,7 +238,7 @@ export default function ActorForm({
                     }}
                     label="Select avatar"
                     accept="image/*"
-                    ref={field.ref}
+                    // ref={field.ref}
                   />
                 </FormControl>
                 <FormDescription>Please select an avatar</FormDescription>

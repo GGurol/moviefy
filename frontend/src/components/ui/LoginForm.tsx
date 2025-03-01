@@ -16,6 +16,7 @@ import { isValidEmail } from "@/utils/helper";
 import { useState } from "react";
 import { useAuth, useNotification } from "@/hooks";
 import { Link } from "react-router-dom";
+import { toast } from "sonner";
 
 const validateUserInfo = ({ email, password }) => {
   if (!email.trim()) {
@@ -43,7 +44,6 @@ export function LoginForm({
     password: "",
   });
 
-  const { updateNotification } = useNotification();
   const { handleLogin, authInfo } = useAuth();
   const { isPending } = authInfo;
 
@@ -57,7 +57,7 @@ export function LoginForm({
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { ok, error } = validateUserInfo(userInfo);
-    if (!ok) return updateNotification("error", error);
+    if (!ok) return toast.error(error);
     handleLogin(userInfo.email, userInfo.password);
   };
   return (

@@ -4,11 +4,17 @@ import { Link } from "react-router-dom";
 import { getLatestUploads } from "../../api/movie";
 import { useNotification } from "../../hooks";
 import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "../ui/carousel";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "../ui/carousel";
+import { toast } from "sonner";
 
 export default function HeroSlidShow() {
   const [slides, setSlides] = useState<LatestMovie[]>([]);
-  const { updateNotification } = useNotification();
 
   interface LatestMovie {
     id: string;
@@ -19,9 +25,10 @@ export default function HeroSlidShow() {
     trailer: string;
   }
   const fetchLatestUploads = async () => {
-    const { error, movies }: { error: string; movies: LatestMovie[] } = await getLatestUploads();
+    const { error, movies }: { error: string; movies: LatestMovie[] } =
+      await getLatestUploads();
     if (error) {
-      return updateNotification("error", error);
+      return toast.error(error);
     }
     setSlides([...movies]);
   };
@@ -37,7 +44,7 @@ export default function HeroSlidShow() {
           delay: 5000,
         }),
       ]}
-      className='w-full max-w-6xl mx-auto'
+      className="w-full max-w-6xl mx-auto"
     >
       <CarouselContent>
         {slides.map((s, i) => (
@@ -48,7 +55,7 @@ export default function HeroSlidShow() {
               </CardHeader>
               <CardContent>
                 <Link to={"/movie/" + s.id}>
-                  <img src={s.poster} alt='poster' />
+                  <img src={s.poster} alt="poster" />
                 </Link>
               </CardContent>
               <CardFooter>

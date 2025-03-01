@@ -47,8 +47,6 @@ export function MultiSelect({ selected, setSelected, onSelect }) {
 
   const selectables = GENRES.filter((genre) => !selected.includes(genre));
 
-  console.log(selectables, selected, inputValue);
-
   return (
     <Command
       onKeyDown={handleKeyDown}

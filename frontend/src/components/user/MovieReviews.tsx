@@ -9,6 +9,7 @@ import { useAuth, useNotification } from "../../hooks";
 import ConfirmModal from "../modals/ConfirmModal";
 import NotFoundText from "../NotFoundText";
 import EditRatingModal from "../modals/EditRatingModal";
+import { toast } from "sonner";
 
 const getNameInitial = (name = "") => {
   return name[0].toUpperCase();
@@ -27,12 +28,10 @@ function MovieReviews() {
   const { authInfo } = useAuth();
   const profileId = authInfo.profile?.id;
 
-  const { updateNotification } = useNotification();
-
   const fetchReviews = async () => {
     const { error, movie } = await getReviewByMovie(movieId);
 
-    if (error) return updateNotification("error", error);
+    if (error) return toast.error(error);
 
     setReviews([...movie.reviews]);
     setMovieTitle(movie.title);
@@ -42,8 +41,7 @@ function MovieReviews() {
     if (profileOwnersReview) return setProfileOwnersReview(null);
 
     const matched = reviews.find((review) => review.owner.id === profileId);
-    if (!matched)
-      return updateNotification("error", "You don't have any review!");
+    if (!matched) return toast.error("You don't have any review!");
 
     setProfileOwnersReview(matched);
   };
@@ -63,9 +61,9 @@ function MovieReviews() {
     setBusy(true);
     const { error, message } = await deleteReview(profileOwnersReview.id);
     setBusy(false);
-    if (error) return updateNotification("error", error);
+    if (error) return toast.error(error);
 
-    updateNotification("success", message);
+    toast.success(message);
 
     const updatedReviews = reviews.filter(
       (r) => r.id !== profileOwnersReview.id

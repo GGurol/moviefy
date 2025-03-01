@@ -163,8 +163,6 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
   const [showGenresModal, setShowGenresModal] = useState(false);
   const [selectedPosterForUI, setSelectedPosterForUI] = useState("");
 
-  const { updateNotification } = useNotification();
-
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -181,12 +179,6 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
   });
 
   const handleSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log("values:", values);
-    // const { error } = validateMovie(movieInfo);
-    // if (error) return updateNotification("error", error);
-
-    // const { tags, genres, cast, writers, director, poster } = movieInfo;
-
     const formData = new FormData();
     const finalMovieInfo = {
       ...values,
@@ -195,31 +187,6 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
     finalMovieInfo.tags = JSON.stringify(values.tags);
     finalMovieInfo.genres = JSON.stringify(values.genres);
     finalMovieInfo.cast = JSON.stringify(values.cast);
-
-    // cast: [
-    //   {
-    //     actor: { type: mongoose.Schema.Types.ObjectId, ref: 'Actor' },
-    //     roleAs: String,
-    //     leadActor: Boolean,
-    //   },
-    // ],
-
-    // console.log(cast);
-    // const finalCast = cast.map((c) => ({
-    //   actor: c.profile.id,
-    //   roleAs: c.roleAs,
-    //   leadActor: c.leadActor,
-    // }));
-    // finalMovieInfo.cast = JSON.stringify(finalCast);
-
-    // if (writers.length) {
-    //   const finalWriters = writers.map((c) => c.id);
-    //   finalMovieInfo.writers = JSON.stringify(finalWriters);
-    // }
-
-    // if (director.id) finalMovieInfo.director = director.id;
-
-    // if (poster) finalMovieInfo.poster = poster;
 
     for (let key in finalMovieInfo) {
       formData.append(key, finalMovieInfo[key]);
@@ -577,7 +544,9 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
                   </FormControl>
                   <SelectContent>
                     {languageOptions.map((e) => (
-                      <SelectItem value={e.value}>{e.title}</SelectItem>
+                      <SelectItem key={e.value} value={e.value}>
+                        {e.title}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -602,7 +571,9 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
                   </FormControl>
                   <SelectContent>
                     {typeOptions.map((e) => (
-                      <SelectItem value={e.value}>{e.title}</SelectItem>
+                      <SelectItem key={e.value} value={e.value}>
+                        {e.title}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -627,7 +598,9 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
                   </FormControl>
                   <SelectContent>
                     {statusOptions.map((e) => (
-                      <SelectItem value={e.value}>{e.title}</SelectItem>
+                      <SelectItem key={e.value} value={e.value}>
+                        {e.title}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>

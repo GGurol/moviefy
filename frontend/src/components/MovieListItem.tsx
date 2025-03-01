@@ -31,6 +31,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "./ui/alert-dialog";
+import { toast } from "sonner";
 
 const MovieListItem = ({ movie, afterDelete, afterUpdate }) => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
@@ -39,17 +40,15 @@ const MovieListItem = ({ movie, afterDelete, afterUpdate }) => {
   const [selectedMovieId, setSelectedMovieId] = useState(null);
   const navigate = useNavigate();
 
-  const { updateNotification } = useNotification();
-
   const handleOnDeleteConfirm = async () => {
     setBusy(true);
     const { error, message } = await deleteMovie(movie.id);
     setBusy(false);
 
-    if (error) return updateNotification("error", error);
+    if (error) return toast.error(error);
 
     hideConfirmModal();
-    updateNotification("success", message);
+    toast.success(message);
     afterDelete(movie);
   };
 
@@ -77,9 +76,9 @@ const MovieListItem = ({ movie, afterDelete, afterUpdate }) => {
     const { error, message } = await deleteMovie(movie.id);
     setBusy(false);
 
-    if (error) return updateNotification("error", error);
+    if (error) return toast.error(error);
 
-    updateNotification("success", message);
+    toast.success(message);
     afterDelete(movie);
   };
 

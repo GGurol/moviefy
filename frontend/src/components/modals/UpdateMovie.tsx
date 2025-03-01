@@ -1,30 +1,29 @@
-import { useState } from 'react';
-import { getMovieForUpdate, updateMovie } from '../../api/movie';
-import MovieForm from '../admin/MovieForm';
-import ModalContainer from './ModalContainer';
-import { useNotification } from '../../hooks';
-import { useEffect } from 'react';
+import { useState } from "react";
+import { getMovieForUpdate, updateMovie } from "../../api/movie";
+import MovieForm from "../admin/MovieForm";
+import ModalContainer from "./ModalContainer";
+import { useNotification } from "../../hooks";
+import { useEffect } from "react";
+import { toast } from "sonner";
 
 function UpdateMovie({ visible, onSuccess, movieId }) {
   const [busy, setBusy] = useState(false);
   const [ready, setReady] = useState(false);
   const [selectedMovie, setSelectedMovie] = useState(null);
 
-  const { updateNotification } = useNotification();
-
   const handleSubmit = async (data) => {
     setBusy(true);
     const { error, movie, message } = await updateMovie(movieId, data);
     setBusy(false);
-    if (error) return updateNotification('error', error);
+    if (error) return toast.error(error);
 
-    updateNotification('success', message);
+    toast.success(message);
     onSuccess(movie);
   };
 
   const fetchMovieToUpdate = async () => {
     const { movie, error } = await getMovieForUpdate(movieId);
-    if (error) return updateNotification('error', error);
+    if (error) return toast.error(error);
     setSelectedMovie(movie);
     setReady(true);
   };
@@ -38,13 +37,13 @@ function UpdateMovie({ visible, onSuccess, movieId }) {
       {ready ? (
         <MovieForm
           initialState={selectedMovie}
-          btnTitle='Update'
+          btnTitle="Update"
           onSubmit={!busy ? handleSubmit : null}
           busy={busy}
         />
       ) : (
-        <div className='w-full h-full flex justify-center items-center'>
-          <p className='text-light-subtle dark:text-dark-subtle animate-pulse text-xl'>
+        <div className="w-full h-full flex justify-center items-center">
+          <p className="text-light-subtle dark:text-dark-subtle animate-pulse text-xl">
             Please wait...
           </p>
         </div>

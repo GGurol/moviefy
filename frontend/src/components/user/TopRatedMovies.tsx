@@ -1,15 +1,15 @@
-import { useEffect, useState } from 'react';
-import { getTopRatedMovies } from '../../api/movie';
-import { useNotification } from '../../hooks';
-import MovieList from './MovieList';
+import { useEffect, useState } from "react";
+import { getTopRatedMovies } from "../../api/movie";
+import { useNotification } from "../../hooks";
+import MovieList from "./MovieList";
+import { toast } from "sonner";
 
 function TopRatedMovies() {
   const [movies, setMovies] = useState([]);
-  const { updateNotification } = useNotification();
 
   const fetchMovies = async (signal) => {
     const { error, movies } = await getTopRatedMovies(null, signal);
-    if (error) return updateNotification('error', error);
+    if (error) return toast.error(error);
 
     setMovies([...movies]);
   };
@@ -23,7 +23,7 @@ function TopRatedMovies() {
     };
   }, []);
 
-  return <MovieList movies={movies} title='Viewers choice (Movies)' />;
+  return <MovieList movies={movies} title="Viewers choice (Movies)" />;
 }
 
 export default TopRatedMovies;

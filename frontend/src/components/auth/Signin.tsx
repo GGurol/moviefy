@@ -10,6 +10,7 @@ import { useAuth, useNotification } from "../../hooks";
 import { isValidEmail } from "../../utils/helper";
 import { LoginForm } from "../ui/LoginForm";
 import { GalleryVerticalEnd } from "lucide-react";
+import { toast } from "sonner";
 // import { useTheme } from '../../hooks';
 
 const validateUserInfo = ({ email, password }) => {
@@ -32,7 +33,6 @@ function Signin() {
     password: "",
   });
 
-  const { updateNotification } = useNotification();
   const { handleLogin, authInfo } = useAuth();
   const { isPending } = authInfo;
 
@@ -49,7 +49,7 @@ function Signin() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { ok, error } = validateUserInfo(userInfo);
-    if (!ok) return updateNotification("error", error);
+    if (!ok) return toast.error(error);
     handleLogin(userInfo.email, userInfo.password);
   };
 

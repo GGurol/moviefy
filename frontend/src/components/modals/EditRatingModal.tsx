@@ -1,22 +1,22 @@
-import RatingForm from '../form/RatingForm';
-import ModalContainer from './ModalContainer';
-import { updateReview } from '../../api/review';
-import { useNotification } from '../../hooks';
-import { useState } from 'react';
+import RatingForm from "../form/RatingForm";
+import ModalContainer from "./ModalContainer";
+import { updateReview } from "../../api/review";
+import { useNotification } from "../../hooks";
+import { useState } from "react";
+import { toast } from "sonner";
 
 function EditRatingModal({ visible, onClose, onSuccess, initialState }) {
   const [busy, setBusy] = useState(false);
-  const { updateNotification } = useNotification();
 
   const handleSubmit = async (data) => {
     setBusy(true);
     const { error, message } = await updateReview(initialState.id, data);
     setBusy(false);
 
-    if (error) return updateNotification('error', error);
+    if (error) return toast.error(error);
 
     onSuccess({ ...data });
-    updateNotification('success', message);
+    toast.success(message);
     onClose();
   };
 

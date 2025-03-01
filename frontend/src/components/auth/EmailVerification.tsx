@@ -22,6 +22,7 @@ import {
   FormMessage,
 } from "../ui/form";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "../ui/input-otp";
+import { toast } from "sonner";
 
 // let currentOTPIndex;
 
@@ -51,7 +52,6 @@ function EmailVerification() {
   const isVerified = profile?.isVerified;
 
   const inputRef = useRef();
-  const { updateNotification } = useNotification();
 
   const { state } = useLocation();
   // const location = useLocation();
@@ -86,9 +86,9 @@ function EmailVerification() {
   const handleOTPResend = async () => {
     const { error, message } = await resendEmailVerificationToken(user.id);
 
-    if (error) return updateNotification("error", error);
+    if (error) return toast.error(error);
 
-    updateNotification("success", message);
+    toast.success(message);
   };
 
   const handleKeyDown = ({ key }, index) => {
@@ -102,7 +102,7 @@ function EmailVerification() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!isValidOTP(otp)) return updateNotification("error", "invalid OTP");
+    if (!isValidOTP(otp)) return toast.error("invalid OTP");
 
     // submit OTP
     const {
@@ -113,9 +113,9 @@ function EmailVerification() {
       OTP: otp.join(""),
       userId: user.id,
     });
-    if (error) return updateNotification("error", error);
+    if (error) return toast.error(error);
 
-    updateNotification("success", message);
+    toast.success(message);
     localStorage.setItem("auth-token", userResponse.token);
     isAuth();
   };
@@ -147,9 +147,9 @@ function EmailVerification() {
       userId: user.id,
     });
     if (error) {
-      return updateNotification("error", error);
+      return toast.error(error);
     }
-    updateNotification("success", message);
+    toast.success(message);
     localStorage.setItem("auth-token", userRep.token);
     isAuth();
   }

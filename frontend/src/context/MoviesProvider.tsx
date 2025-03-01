@@ -1,6 +1,7 @@
 import { createContext, useState } from "react";
 import { useNotification } from "../hooks";
 import { getMovies } from "../api/movie";
+import { toast } from "sonner";
 
 export const MovieContext = createContext();
 
@@ -12,18 +13,16 @@ const MoviesProvider = ({ children }) => {
   const [latestUploads, setLatestUploads] = useState([]);
   const [reachedToEnd, setReachedToEnd] = useState(false);
 
-  const { updateNotification } = useNotification();
-
   const fetchLatestUploads = async (qty = 5) => {
     const { error, movies } = await getMovies(0, qty);
-    if (error) return updateNotification("error", error);
+    if (error) return toast.error(error);
 
     setLatestUploads([...movies]);
   };
 
   const fetchMovies = async (pageNo = currentPageNo) => {
     const { error, movies } = await getMovies(pageNo, limit);
-    if (error) return updateNotification("error", error);
+    if (error) return toast.error(error);
 
     if (!movies.length) {
       currentPageNo = pageNo - 1;

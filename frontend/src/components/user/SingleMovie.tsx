@@ -10,6 +10,7 @@ import CustomButtonLink from "../CustomButtonLink";
 import ProfileModal from "../modals/ProfileModal";
 import { convertReviewCount } from "../../utils/helper";
 import { Button } from "../ui/button";
+import { toast } from "sonner";
 
 const convertDate = (date = "") => {
   return date.split("T")[0];
@@ -54,7 +55,6 @@ function SingleMovie() {
     reviews: {},
   });
 
-  const { updateNotification } = useNotification();
   const { authInfo } = useAuth();
   const { isLoggedIn } = authInfo;
   const navigate = useNavigate();
@@ -65,7 +65,7 @@ function SingleMovie() {
     const { error, movie }: { error: string; movie: SingleMovieObj } =
       await getSingleMovie(movieId);
     if (error) {
-      return updateNotification("error", error);
+      return toast.error(error);
     }
 
     setReady(true);

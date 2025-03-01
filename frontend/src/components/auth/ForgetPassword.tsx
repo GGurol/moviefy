@@ -25,6 +25,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "../ui/button";
 import { Link } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { toast } from "sonner";
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -32,7 +33,6 @@ const formSchema = z.object({
 
 export default function ForgetPassword() {
   const [email, setEmail] = useState("");
-  const { updateNotification } = useNotification();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -48,11 +48,10 @@ export default function ForgetPassword() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!isValidEmail(email))
-      return updateNotification("error", "Invalid email!");
+    if (!isValidEmail(email)) return toast.error("Invalid email!");
     const { error, message } = await forgetPassword(email);
-    if (error) return updateNotification("error", error);
-    updateNotification("success", message);
+    if (error) return toast.error(error);
+    toast.success(message);
   };
 
   return (

@@ -19,8 +19,6 @@ export default function Movies() {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [selectedMovie, setSelectedMovie] = useState(null);
 
-  const { updateNotification } = useNotification();
-
   const {
     fetchMovies,
     movies: newMovies,

@@ -17,6 +17,7 @@ import { createUser } from "@/api/auth";
 import { useAuth, useNotification } from "@/hooks";
 import { useNavigate } from "react-router-dom";
 import { isValidEmail } from "@/utils/helper";
+import { toast } from "sonner";
 
 const validateUserInfo = ({ username, email, password }) => {
   const isValidName = /^[a-z A-Z]+$/;
@@ -59,8 +60,6 @@ export function SignUpForm({
   const { authInfo } = useAuth();
   const { isLoggedIn } = authInfo;
 
-  const { updateNotification } = useNotification();
-
   const handleChange = ({ target }) => {
     // console.log(target);
     const { value, name } = target;
@@ -71,12 +70,12 @@ export function SignUpForm({
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { ok, error } = validateUserInfo(userInfo);
-    if (!ok) return updateNotification("error", error);
+    if (!ok) return toast.error(error);
 
     const response = await createUser(userInfo);
     // already defined 'error', so don't use desctructuring
     console.log(response);
-    if (response.error) return updateNotification("error", response.error);
+    if (response.error) return toast.error(response.error);
     navigate("/auth/verification", {
       state: { user: response.user },
       replace: true,

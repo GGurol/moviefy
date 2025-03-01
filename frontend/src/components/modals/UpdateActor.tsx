@@ -7,7 +7,6 @@ import { toast } from "sonner";
 
 function UpdateActor({ visible, onClose, initialState, onSuccess, setOpen }) {
   const [busy, setBusy] = useState(false);
-  const { updateNotification } = useNotification();
 
   const handleSubmit = async (data) => {
     setBusy(true);
@@ -20,7 +19,6 @@ function UpdateActor({ visible, onClose, initialState, onSuccess, setOpen }) {
     setOpen(false);
 
     onSuccess(actor);
-    // updateNotification("success", "Actor updated successfully!");
     toast.success("Actor updated successfully.");
   };
 

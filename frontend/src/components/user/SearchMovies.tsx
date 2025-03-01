@@ -5,6 +5,7 @@ import { useNotification } from "../../hooks";
 import NotFoundText from "../NotFoundText";
 import MovieList from "./MovieList";
 import Container from "../Container";
+import { toast } from "sonner";
 
 function SearchMovies() {
   const [movies, setMovies] = useState([]);
@@ -12,13 +13,11 @@ function SearchMovies() {
 
   const [searchParams] = useSearchParams();
 
-  const { updateNotification } = useNotification();
-
   const query = searchParams.get("title");
 
   const searchMovies = async (val) => {
     const { error, results } = await searchPublicMovies(val);
-    if (error) return updateNotification("error", error);
+    if (error) return toast.error(error);
 
     if (!results.length) {
       setResultNotFound(true);

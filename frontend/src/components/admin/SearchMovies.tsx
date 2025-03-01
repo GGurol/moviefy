@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import { searchMovieForAdmin } from '../../api/movie';
-import { useNotification } from '../../hooks';
-import MovieListItem from '../MovieListItem';
-import NotFoundText from '../NotFoundText';
+import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
+import { searchMovieForAdmin } from "../../api/movie";
+import { useNotification } from "../../hooks";
+import MovieListItem from "../MovieListItem";
+import NotFoundText from "../NotFoundText";
+import { toast } from "sonner";
 
 function SearchMovies() {
   const [movies, setMovies] = useState([]);
@@ -11,13 +12,11 @@ function SearchMovies() {
 
   const [searchParams] = useSearchParams();
 
-  const { updateNotification } = useNotification();
-
-  const query = searchParams.get('title');
+  const query = searchParams.get("title");
 
   const searchMovies = async (val) => {
     const { error, results } = await searchMovieForAdmin(val);
-    if (error) return updateNotification('error', error);
+    if (error) return toast.error(error);
 
     if (!results.length) {
       setResultNotFound(true);
@@ -46,8 +45,8 @@ function SearchMovies() {
   }, [query]);
 
   return (
-    <div className='p-5 space-y-3'>
-      <NotFoundText text='Record not found!' visible={resultNotFound} />
+    <div className="p-5 space-y-3">
+      <NotFoundText text="Record not found!" visible={resultNotFound} />
       {!resultNotFound &&
         movies.map((movie) => {
           return (

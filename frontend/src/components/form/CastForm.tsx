@@ -7,6 +7,7 @@ import { useNotification, useSearch } from "../../hooks";
 import { renderItem } from "../../utils/helper";
 import { searchActor } from "../../api/actor";
 import LiveSearchCast from "../LiveSearchCast";
+import { toast } from "sonner";
 
 const defaultCastInfo = {
   profile: {},
@@ -31,10 +32,7 @@ function CastForm({
   // const [values, setValues] = useState([]);
   const [dupValues, setDupValues] = useState([]);
 
-  const { updateNotification } = useNotification();
   const { handleSearch, resetSearch } = useSearch();
-
-  console.log(dupValues);
 
   const handleOnChange = ({ target }) => {
     const { checked, name, value } = target;
@@ -74,10 +72,8 @@ function CastForm({
 
   const handleSubmit = () => {
     const { profile, roleAs } = castInfo;
-    if (!profile.name)
-      return updateNotification("error", "Cast profile is missing!");
-    if (!roleAs.trim())
-      return updateNotification("error", "Cast role is missing!");
+    if (!profile.name) return toast.error("Cast profile is missing!");
+    if (!roleAs.trim()) return toast.error("Cast role is missing!");
 
     onSubmit(castInfo);
     setCastInfo({ ...defaultCastInfo, profile: { name: "" } });

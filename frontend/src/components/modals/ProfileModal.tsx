@@ -2,14 +2,14 @@ import { useEffect, useState } from "react";
 import ModalContainer from "./ModalContainer";
 import { getActorProfile } from "../../api/actor";
 import { useNotification } from "../../hooks";
+import { toast } from "sonner";
 
 function ProfileModal({ visible, profileId, onClose }) {
   const [profile, setProfile] = useState({});
-  const { updateNotification } = useNotification();
 
   const fetchActorProfile = async () => {
     const { error, actor } = await getActorProfile(profileId);
-    if (error) return updateNotification("error", error);
+    if (error) return toast.error(error);
 
     setProfile(actor);
   };
