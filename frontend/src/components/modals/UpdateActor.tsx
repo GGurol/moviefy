@@ -30,6 +30,7 @@ function UpdateActor({ visible, onClose, initialState, onSuccess, setOpen }) {
         btnTitle="Update"
         busy={busy}
         initialState={initialState}
+        isUpdate={true}
       />
       {/* </ModalContainer> */}
     </>

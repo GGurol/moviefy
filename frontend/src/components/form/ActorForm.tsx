@@ -53,6 +53,26 @@ const formatBytes = (bytes: number, decimals = 2) => {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
 };
 
+const validateAvatar = (file) => {
+  if (!file) return true;
+  if (file.size > MAX_FILE_SIZE) {
+    return new Error(
+      `Please choose an image smaller than ${formatBytes(MAX_FILE_SIZE)}.`
+    );
+  }
+  if (!ACCEPTED_IMAGE_TYPES.includes(file.type)) {
+    return new Error("Please upload a valid image file (JPEG, PNG, or WebP).");
+  }
+  return true;
+};
+
+const formUpdateSchema = z.object({
+  name: z.string().min(2).max(50),
+  about: z.string().min(2).max(200),
+  gender: z.enum(["male", "female"]),
+  avatar: z.any().optional().refine(validateAvatar),
+});
+
 const formSchema = z.object({
   name: z.string().min(2).max(50),
   about: z.string().min(2).max(200),
@@ -61,14 +81,7 @@ const formSchema = z.object({
     .instanceof(File, {
       message: "Please select an image file.",
     })
-    .refine((file) => file.size <= MAX_FILE_SIZE, {
-      message: `Please choose an image smaller than ${formatBytes(
-        MAX_FILE_SIZE
-      )}.`,
-    })
-    .refine((file) => ACCEPTED_IMAGE_TYPES.includes(file.type), {
-      message: "Please upload a valid image file (JPEG, PNG, or WebP).",
-    }),
+    .refine(validateAvatar),
 });
 
 export default function ActorForm({
@@ -78,6 +91,7 @@ export default function ActorForm({
   initialState,
   onSubmit,
   disable,
+  isUpdate = false,
 }) {
   const [actorInfo, setActorInfo] = useState({
     ...defaultActorInfo,
@@ -101,15 +115,28 @@ export default function ActorForm({
     setActorInfo({ ...actorInfo, [name]: value });
   };
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: "",
-      about: "",
-      gender: undefined,
-      avatar: undefined,
-    },
-  });
+  let form;
+  if (isUpdate) {
+    form = useForm<z.infer<typeof formUpdateSchema>>({
+      resolver: zodResolver(formUpdateSchema),
+      defaultValues: {
+        name: "",
+        about: "",
+        gender: undefined,
+        avatar: undefined,
+      },
+    });
+  } else {
+    form = useForm<z.infer<typeof formSchema>>({
+      resolver: zodResolver(formSchema),
+      defaultValues: {
+        name: "",
+        about: "",
+        gender: undefined,
+        avatar: undefined,
+      },
+    });
+  }
 
   const handleSubmit = (values: z.infer<typeof formSchema>) => {
     const formData = new FormData();
@@ -124,7 +151,7 @@ export default function ActorForm({
       form.setValue("name", initialState.name);
       form.setValue("about", initialState.about);
       form.setValue("gender", initialState.gender);
-      form.setValue("avatar", initialState.avatar);
+      // form.setValue("avatar", null);
       setActorInfo({ ...initialState, avatar: null });
       setSelectedAvatarForUI(initialState.avatar);
     }
