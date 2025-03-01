@@ -16,6 +16,7 @@ import {
   ExternalLink,
   FolderLock,
   FolderOpen,
+  Loader,
   Pencil,
   Trash2,
 } from "lucide-react";
@@ -38,6 +39,7 @@ import {
   AlertDialogTrigger,
 } from "./ui/alert-dialog";
 import { toast } from "sonner";
+import { buttonVariants } from "./ui/button";
 
 const MovieListItem = ({ movie, afterDelete, afterUpdate }) => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
@@ -59,9 +61,9 @@ const MovieListItem = ({ movie, afterDelete, afterUpdate }) => {
   };
 
   const handleOnEditClick = () => {
-    setShowUpdateModal(true);
+    // setShowUpdateModal(true);
     setSelectedMovieId(movie.id);
-    console.log(movie);
+    // console.log(movie);
   };
 
   const handleOnOpenClick = () => {
@@ -70,21 +72,21 @@ const MovieListItem = ({ movie, afterDelete, afterUpdate }) => {
 
   const handleOnUpdate = (movie) => {
     afterUpdate(movie);
-    setShowUpdateModal(false);
+    // setShowUpdateModal(false);
     setSelectedMovieId(null);
   };
 
   const displayConfirmModal = () => setShowConfirmModal(true);
   const hideConfirmModal = () => setShowConfirmModal(false);
 
-  const handleDelete = async () => {
+  const handleDelete = async (setOpenDialog) => {
     setBusy(true);
     const { error, message } = await deleteMovie(movie.id);
     setBusy(false);
 
     if (error) return toast.error(error);
-
     toast.success(message);
+    setOpenDialog(false);
     afterDelete(movie);
   };
 
@@ -96,6 +98,7 @@ const MovieListItem = ({ movie, afterDelete, afterUpdate }) => {
         onEditClick={handleOnEditClick}
         onOpenClick={handleOnOpenClick}
         handleDelete={handleDelete}
+        busy={busy}
       />
       <div className="p-0">
         <UpdateMovie
@@ -114,6 +117,7 @@ const MovieCard = ({
   onOpenClick,
   onEditClick,
   handleDelete,
+  busy,
 }) => {
   const { poster, title, responsivePosters, genres = [], status } = movie;
   const [open, setOpen] = useState(false);
@@ -184,7 +188,7 @@ const MovieCard = ({
                 <span>Delete</span>
               </TooltipContent>
             </Tooltip>
-            <AlertDialog open={open} onOpenChange={setOpen}>
+            <AlertDialog open={open}>
               <AlertDialogContent>
                 <AlertDialogHeader>
                   <AlertDialogTitle>Are you sure?</AlertDialogTitle>
@@ -193,9 +197,22 @@ const MovieCard = ({
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction onClick={handleDelete}>
-                    Delete
+                  <AlertDialogCancel
+                    disabled={busy}
+                    onClick={() => setOpen(false)}
+                  >
+                    Cancel
+                  </AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={() => {
+                      handleDelete(setOpen);
+                    }}
+                    className={buttonVariants({ variant: "destructive" })}
+                    disabled={busy}
+                  >
+                    <span className="w-12 flex items-center justify-center">
+                      {busy ? <Loader className="animate-spin" /> : "Delete"}
+                    </span>
                   </AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>

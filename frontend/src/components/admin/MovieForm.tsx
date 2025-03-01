@@ -290,12 +290,16 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
       setSelectedPosterForUI(initialState.poster);
     }
   }, [initialState]);
-  const [values, setValues] = useState<string[]>([]);
+  const [tagValues, setTagValues] = useState<string[]>([]);
   const [directorVal, setDirectorVal] = useState("");
   const [writerVal, setWriterVal] = useState("");
   const [castVal, setCastVal] = useState([]);
+  const [languageSelectVal, setLanguageSelectVal] = useState("");
   // const [genresVal, setGenresVal] = useState([]);
   const [selected, setSelected] = useState<Genres[]>([GENRES[0]]);
+  const [writerSelectRes, setWriterSelectRes] = useState("");
+  const [directorSelectRes, setDirectorSelectRes] = useState("");
+  const [dupValues, setDupValues] = useState([]);
 
   // const leaderActors = useActorStore((state) => state.leaderActors);
   // console.log(leaderActors);
@@ -335,6 +339,19 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
       });
     }
   }
+
+  const resetForm = () => {
+    form.reset();
+    setSelected([]);
+    setTagValues([]);
+    setLanguageSelectVal("");
+    setWriterSelectRes("");
+    setWriterVal("");
+    setDirectorSelectRes("");
+    setDirectorVal("");
+    setDupValues([]);
+    setSelectedPosterForUI("");
+  };
 
   const {
     title,
@@ -407,6 +424,8 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
                       // form.setValue("director", value);
                       field.onChange(value);
                     }}
+                    selectRes={directorSelectRes}
+                    setSelectRes={setDirectorSelectRes}
                   />
                 </FormControl>
                 <FormMessage />
@@ -429,6 +448,8 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
                       field.value = value;
                       field.onChange(value);
                     }}
+                    selectRes={writerSelectRes}
+                    setSelectRes={setWriterSelectRes}
                   />
                 </FormControl>
                 <FormMessage />
@@ -444,9 +465,9 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
                   <FormLabel>Movie Tags</FormLabel>
                   <FormControl>
                     <InputTags
-                      value={values}
+                      value={tagValues}
                       onChange={(values) => {
-                        setValues(values);
+                        setTagValues(values);
                         field.value = values;
                         // form.setValue("tags", values);
                         field.onChange(values);
@@ -480,6 +501,8 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
                       field.value = values;
                       field.onChange(values);
                     }}
+                    dupValues={dupValues}
+                    setDupValues={setDupValues}
                   />
                 </FormControl>
                 <FormMessage />
@@ -535,7 +558,7 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
                 <FormLabel>Language</FormLabel>
                 <Select
                   onValueChange={field.onChange}
-                  defaultValue={field.value}
+                  value={field.value || ""}
                 >
                   <FormControl>
                     <SelectTrigger className="hover:bg-muted">
@@ -562,7 +585,7 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
                 <FormLabel>Type</FormLabel>
                 <Select
                   onValueChange={field.onChange}
-                  defaultValue={field.value}
+                  value={field.value || ""}
                 >
                   <FormControl>
                     <SelectTrigger className="hover:bg-muted">
@@ -589,7 +612,7 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
                 <FormLabel>Status</FormLabel>
                 <Select
                   onValueChange={field.onChange}
-                  defaultValue={field.value}
+                  value={field.value || ""}
                 >
                   <FormControl>
                     <SelectTrigger className="hover:bg-muted">
@@ -715,6 +738,7 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
                   <AlertDialogAction
                     className={buttonVariants({ variant: "destructive" })}
                     type="reset"
+                    onClick={resetForm}
                   >
                     Reset
                   </AlertDialogAction>

@@ -24,13 +24,15 @@ function CastForm({
   values,
   setValues,
   onSelect,
+  dupValues,
+  setDupValues,
   ...props
 }) {
   const [castInfo, setCastInfo] = useState({ ...defaultCastInfo });
   const [profiles, setProfiles] = useState([]);
   const [value, setValue] = useState("");
   // const [values, setValues] = useState([]);
-  const [dupValues, setDupValues] = useState([]);
+  // const [dupValues, setDupValues] = useState([]);
 
   const { handleSearch, resetSearch } = useSearch();
 

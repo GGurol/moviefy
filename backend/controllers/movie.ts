@@ -250,19 +250,19 @@ export const removeMovie = async (req, res) => {
 
   if (posterId) {
     const { result } = await cloudinary.uploader.destroy(posterId);
-    if (result !== "ok") return sendError(res, "Could not remove poster at the moment!!!");
+    if (result !== "ok") return sendError(res, "Could not remove poster at the moment!");
   }
 
   // removing trailer
-  const trailerId = movie.trailer?.public_id;
-  if (!trailerId) return sendError(res, "Could not find trailer in the cloud!");
+  const videoId = movie.video?.public_id;
+  if (!videoId) return sendError(res, "Could not find video in the cloud!");
 
-  const { result } = await cloudinary.uploader.destroy(trailerId, {
+  const { result } = await cloudinary.uploader.destroy(videoId, {
     resource_type: "video",
     //  Default: image.
   });
 
-  if (result !== "ok") return sendError(res, "Could not remove poster at the moment!");
+  if (result !== "ok") return sendError(res, "Could not remove video at the moment!");
 
   await Movie.findByIdAndDelete(movieId);
 
@@ -294,7 +294,8 @@ export const getMovieForUpdate = async (req, res) => {
   if (!isValidObjectId(movieId)) return sendError(res, "Invalid movie id!");
 
   // Populating Multiple Paths in Middleware
-  const movie = await Movie.findById(movieId).populate("director writers cast.actor");
+  const movie = await Movie.findById(movieId).populate("director writer cast");
+  console.log(movie);
 
   res.json({
     movie: {
@@ -302,19 +303,18 @@ export const getMovieForUpdate = async (req, res) => {
       title: movie.title,
       storyLine: movie.storyLine,
       poster: movie.poster?.url,
-      releseDate: movie.releseDate,
+      releaseDate: movie.releaseDate,
       status: movie.status,
       type: movie.type,
       genres: movie.genres,
       tags: movie.tags,
       language: movie.language,
       director: formateActor(movie.director),
-      writers: movie.writers.map((w) => formateActor(w)),
+      writer: formateActor(movie?.writer),
       cast: movie.cast.map((c) => ({
-        id: c.id,
-        profile: formateActor(c.actor),
-        roleAs: c.roleAs,
-        leadActor: c.leadActor,
+        profile: formateActor(c),
+        // roleAs: c.roleAs,
+        // leadActor: c.leadActor,
       })),
     },
   });
