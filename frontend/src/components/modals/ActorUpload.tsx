@@ -7,14 +7,11 @@ import ModalContainer from "./ModalContainer";
 function ActorUpload({ visible, onClose, setOpen }) {
   const [busy, setBusy] = useState(false);
   const { updateNotification } = useNotification();
-  const [disable, setDisable] = useState(false);
 
   const handleSubmit = async (data) => {
     setBusy(true);
-    setDisable(true);
     const { error, actor } = await createActor(data);
     setBusy(false);
-    setDisable(false);
     if (error) {
       return updateNotification("error", error);
     }
@@ -32,7 +29,6 @@ function ActorUpload({ visible, onClose, setOpen }) {
       title="Create New Actor"
       btnTitle="Create"
       busy={busy}
-      disable={disable}
     />
     // </ModalContainer>
   );

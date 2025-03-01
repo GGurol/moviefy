@@ -17,7 +17,13 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
           <SidebarProvider>
             {/* <AppSidebar /> */}
             <App />
-            <Toaster position="top-center" />
+            <Toaster
+              position="top-center"
+              richColors={true}
+              // https://github.com/shadcn-ui/ui/issues/2234
+              toastOptions={{}}
+              theme="light"
+            />
           </SidebarProvider>
         </ContextProviders>
       </BrowserRouter>

@@ -3,6 +3,7 @@ import { useNotification } from "../../hooks";
 import { updateActor } from "../../api/actor";
 import ModalContainer from "./ModalContainer";
 import ActorForm from "../form/ActorForm";
+import { toast } from "sonner";
 
 function UpdateActor({ visible, onClose, initialState, onSuccess, setOpen }) {
   const [busy, setBusy] = useState(false);
@@ -13,12 +14,14 @@ function UpdateActor({ visible, onClose, initialState, onSuccess, setOpen }) {
     const { error, actor } = await updateActor(initialState.id, data);
     setBusy(false);
     if (error) {
-      setOpen(false);
-      return updateNotification("error", error);
+      return toast.error("Failed to update actor.");
     }
+
+    setOpen(false);
+
     onSuccess(actor);
-    updateNotification("success", "Actor updated successfully!");
-    onClose();
+    // updateNotification("success", "Actor updated successfully!");
+    toast.success("Actor updated successfully.");
   };
 
   return (

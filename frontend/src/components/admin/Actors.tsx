@@ -1,7 +1,8 @@
-import { Pencil, Trash2 } from "lucide-react";
+import { Loader, Pencil, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import { deleteActor, getActors, searchActor } from "../../api/actor";
-import { useNotification, useSearch } from "../../hooks";
+import { useSearch } from "../../hooks";
 import NextAndPrevButton from "../NextAndPrevButton";
 import NotFoundText from "../NotFoundText";
 import AppSearchForm from "../form/AppSearchForm";
@@ -17,7 +18,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "../ui/alert-dialog";
-import { Button } from "../ui/button";
+import { Button, buttonVariants } from "../ui/button";
 import {
   Card,
   CardContent,
@@ -42,16 +43,12 @@ export default function Actors() {
   const [results, setResults] = useState([]);
   const [reachedToEnd, setReachedToEnd] = useState(false);
   const [busy, setBusy] = useState(false);
-  const [showUpdateModal, setShowUpdateModal] = useState(false);
-  const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [selectedProfile, setSelectedProfile] = useState(null);
-
-  const { updateNotification } = useNotification();
   const { handleSearch, resetSearch, resultNotFound } = useSearch();
 
   const fetchActors = async (pageNo) => {
     const { profiles, error } = await getActors(pageNo, limit);
-    if (error) return updateNotification("error", error);
+    if (error) return toast.error(error);
 
     if (!profiles.length) {
       currentPageNo = pageNo - 1;
@@ -75,12 +72,11 @@ export default function Actors() {
   };
 
   const handleOnEditClick = (profile) => {
-    setShowUpdateModal(true);
     setSelectedProfile(profile);
   };
 
-  const hideUpdateModal = () => {
-    setShowUpdateModal(false);
+  const handleOnDeleteClick = (profile) => {
+    setSelectedProfile(profile);
   };
 
   const handleOnSearchSubmit = (value) => {
@@ -103,23 +99,19 @@ export default function Actors() {
     setActors([...updatedActors]);
   };
 
-  const handleOnDeleteClick = (profile) => {
-    setSelectedProfile(profile);
-  };
-
-  const handleOnDeleteConfirm = async () => {
+  const handleOnDeleteConfirm = async (setOpenAlertModal) => {
     setBusy(true);
     const { error, message } = await deleteActor(selectedProfile.id);
     setBusy(false);
 
-    if (error) return updateNotification("error", error);
+    if (error) {
+      return toast.error("Failed to delete an actor.");
+    }
 
-    updateNotification("success", message);
-    hideConfirmModal();
+    toast.success(message);
+    setOpenAlertModal(false);
     fetchActors(currentPageNo);
   };
-
-  const hideConfirmModal = () => setShowConfirmModal(false);
 
   useEffect(() => {
     fetchActors(currentPageNo);
@@ -148,6 +140,8 @@ export default function Actors() {
                   onDeleteClick={() => handleOnDeleteClick(actor)}
                   selectedProfile={selectedProfile}
                   handleOnActorUpdateSuccess={handleOnActorUpdateSuccess}
+                  handleOnDeleteConfirm={handleOnDeleteConfirm}
+                  busy={busy}
                 />
               ))
             : actors.map((actor) => (
@@ -158,6 +152,8 @@ export default function Actors() {
                   onDeleteClick={() => handleOnDeleteClick(actor)}
                   selectedProfile={selectedProfile}
                   handleOnActorUpdateSuccess={handleOnActorUpdateSuccess}
+                  handleOnDeleteConfirm={handleOnDeleteConfirm}
+                  busy={busy}
                 />
               ))}
         </div>
@@ -180,6 +176,8 @@ const ActorProfile = ({
   onDeleteClick,
   selectedProfile,
   handleOnActorUpdateSuccess,
+  handleOnDeleteConfirm,
+  busy,
 }) => {
   const [showOptions, setShowOptions] = useState(false);
   const acceptedNameLength = 15;
@@ -203,13 +201,13 @@ const ActorProfile = ({
 
   const [open, setOpen] = useState(false);
   const [alertOpen, setAlertOpen] = useState(false);
-  const setCloseModal = (val) => {
+  const setOpenModal = (val) => {
     setOpen(val);
     if (val === false) {
       setShowOptions(false);
     }
   };
-  const setCloseAlertModal = (val) => {
+  const setOpenAlertModal = (val) => {
     setAlertOpen(val);
     if (val === false) {
       setShowOptions(false);
@@ -238,7 +236,7 @@ const ActorProfile = ({
         </CardContent>
         {showOptions && (
           <div className="absolute inset-0 backdrop-blur-md flex justify-center items-center space-x-5">
-            <Dialog open={open} onOpenChange={setCloseModal}>
+            <Dialog open={open} onOpenChange={setOpenModal}>
               <DialogTrigger className="gap-4" asChild>
                 <Button
                   onClick={onEditClick}
@@ -262,17 +260,20 @@ const ActorProfile = ({
                   </DialogDescription>
                 </DialogHeader>
                 <UpdateActor
-                  setOpen={setOpen}
+                  setOpen={setOpenModal}
                   initialState={selectedProfile}
                   onSuccess={handleOnActorUpdateSuccess}
                 />
               </DialogContent>
             </Dialog>
 
-            <AlertDialog open={alertOpen} onOpenChange={setCloseAlertModal}>
+            <AlertDialog open={alertOpen}>
               <AlertDialogTrigger asChild>
                 <Button
-                  onClick={onDeleteClick}
+                  onClick={() => {
+                    onDeleteClick();
+                    setOpenAlertModal(true);
+                  }}
                   className="px-3 py-1 hover:opacity-60 transition-all duration-200"
                   type="button"
                   variant="destructive"
@@ -288,9 +289,22 @@ const ActorProfile = ({
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction onClick={() => {}}>
-                    Delete
+                  <AlertDialogCancel
+                    disabled={busy}
+                    onClick={() => setOpenAlertModal(false)}
+                  >
+                    Cancel
+                  </AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={() => {
+                      handleOnDeleteConfirm(setOpenAlertModal);
+                    }}
+                    disabled={busy}
+                    className={buttonVariants({ variant: "destructive" })}
+                  >
+                    <span className="w-12 flex items-center justify-center">
+                      {busy ? <Loader className="animate-spin" /> : "Delete"}
+                    </span>
                   </AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>

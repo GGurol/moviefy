@@ -27,6 +27,7 @@ import {
 } from "../ui/select";
 import { Button } from "../ui/button";
 import { DialogClose, DialogFooter } from "../ui/dialog";
+import { Loader } from "lucide-react";
 
 const defaultActorInfo = {
   name: "",
@@ -90,14 +91,12 @@ export default function ActorForm({
   busy,
   initialState,
   onSubmit,
-  disable,
   isUpdate = false,
 }) {
   const [actorInfo, setActorInfo] = useState({
     ...defaultActorInfo,
   });
   const [selectedAvatarForUI, setSelectedAvatarForUI] = useState("");
-  const { updateNotification } = useNotification();
 
   const updatePosterForUI = (file) => {
     const url = URL.createObjectURL(file);
@@ -252,9 +251,15 @@ export default function ActorForm({
               type="submit"
               variant="secondary"
               className="w-full"
-              disabled={disable}
+              disabled={busy}
             >
-              Create
+              {busy ? (
+                <Loader className="animate-spin" />
+              ) : isUpdate ? (
+                "Update"
+              ) : (
+                "Create"
+              )}
             </Button>
           </DialogFooter>
         </div>
