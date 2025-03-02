@@ -26,6 +26,8 @@ function CastForm({
   onSelect,
   dupValues,
   setDupValues,
+  selectedActors,
+  setSelectedActors,
   ...props
 }) {
   const [castInfo, setCastInfo] = useState({ ...defaultCastInfo });
@@ -61,17 +63,20 @@ function CastForm({
     resetSearch();
   };
 
-  useEffect(() => {
-    const uniq = dupValues.filter(
-      (obj1, i, arr) => arr.findIndex((obj2) => obj2.id === obj1.id) === i
-    );
-    onUniqValuesChange(uniq);
-    console.log(dupValues);
-  }, [JSON.stringify(dupValues)]);
+  // useEffect(() => {
+  //   const uniq = dupValues.filter(
+  //     (obj1, i, arr) => arr.findIndex((obj2) => obj2.id === obj1.id) === i
+  //   );
+  //   onUniqValuesChange(uniq);
+  //   console.log(dupValues);
+  // }, [JSON.stringify(dupValues)]);
 
+  // useEffect(() => {
+  //   onSelect(uniqValues.map((e) => e.id));
+  // }, [JSON.stringify(uniqValues)]);
   useEffect(() => {
-    onSelect(uniqValues.map((e) => e.id));
-  }, [JSON.stringify(uniqValues)]);
+    onSelect(selectedActors.map((e) => e.id));
+  }, [JSON.stringify(selectedActors)]);
 
   const handleSubmit = () => {
     const { profile, roleAs } = castInfo;
@@ -110,17 +115,19 @@ function CastForm({
         placeholder="Search profile..."
         value={value}
         values={values}
-        dupValues={dupValues}
+        // dupValues={dupValues}
         setValue={setValue}
         setValues={setValues}
-        setDupValues={setDupValues}
+        // setDupValues={setDupValues}
         results={profiles}
         // onSelect={handleProfileSelect}
         renderItem={renderItem}
         onChange={handleProfileChange}
         onSelect={handleOnSelect}
-        uniqValues={uniqValues}
-        setUniqValues={setUniqValues}
+        // uniqValues={uniqValues}
+        // setUniqValues={setUniqValues}
+        setSelectedActors={setSelectedActors}
+        selectedActors={selectedActors}
         {...props}
       />
       {/* <span className="dark:text-dark-subtle text-light-subtle font-semibold">

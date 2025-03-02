@@ -80,7 +80,7 @@ export default function Actors() {
   };
 
   const handleOnSearchSubmit = (value) => {
-    handleSearch(searchActor, value, setResults);
+    handleSearch(searchActor, value, [], setResults);
   };
 
   const handleSearchFormReset = () => {

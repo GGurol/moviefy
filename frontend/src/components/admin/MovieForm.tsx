@@ -335,16 +335,18 @@ export default function MovieForm({
   const [selectedGenre, setSelectedGenre] = useState<Genres[]>([GENRES[0]]);
   const [writerSelectRes, setWriterSelectRes] = useState("");
   const [directorSelectRes, setDirectorSelectRes] = useState("");
-  const [dupValues, setDupValues] = useState([]);
+  // const [dupValues, setDupValues] = useState([]);
+  const [selectedActors, setSelectedActors] = useState([]);
 
   // const leaderActors = useActorStore((state) => state.leaderActors);
   // console.log(leaderActors);
 
-  const [uniqValues, setUniqValues] = useState([]);
+  // const [uniqValues, setUniqValues] = useState([]);
 
-  const handleUniqValuesChange = (newValues) => {
-    setUniqValues(newValues);
-  };
+  // const handleUniqValuesChange = (newValues) => {
+  //   // setUniqValues(newValues);
+  //   setSelectedActors(newValues);
+  // };
 
   function handleOnDrop(acceptedFiles: FileList | null) {
     if (acceptedFiles && acceptedFiles.length > 0) {
@@ -391,7 +393,8 @@ export default function MovieForm({
         for (let p in item) return item[p];
       });
       // form.setValue("cast", initialState.cast.id);
-      setDupValues(cast);
+      // setDupValues(cast);
+      setSelectedActors(cast);
       // setUniqValues(initialState.cast);
       // setCastVal(initialState.cast.id);
       const genre = GENRES.filter((e) => initialState.genres.includes(e.value));
@@ -420,7 +423,8 @@ export default function MovieForm({
     setWriterVal("");
     setDirectorSelectRes("");
     setDirectorVal("");
-    setDupValues([]);
+    // setDupValues([]);
+    setSelectedActors([]);
     setSelectedPosterForUI("");
   };
 
@@ -561,9 +565,9 @@ export default function MovieForm({
                 <FormControl>
                   <CastForm
                     updateCast={updateCast}
-                    onUniqValuesChange={handleUniqValuesChange}
-                    uniqValues={uniqValues}
-                    setUniqValues={setUniqValues}
+                    // onUniqValuesChange={handleUniqValuesChange}
+                    // uniqValues={uniqValues}
+                    // setUniqValues={setUniqValues}
                     values={castVal}
                     setValues={setCastVal}
                     onSelect={(values) => {
@@ -571,8 +575,10 @@ export default function MovieForm({
                       field.value = values;
                       field.onChange(values);
                     }}
-                    dupValues={dupValues}
-                    setDupValues={setDupValues}
+                    // dupValues={dupValues}
+                    // setDupValues={setDupValues}
+                    setSelectedActors={setSelectedActors}
+                    selectedActors={selectedActors}
                   />
                 </FormControl>
                 <FormMessage />
