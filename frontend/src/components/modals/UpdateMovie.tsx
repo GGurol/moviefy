@@ -2,7 +2,6 @@ import { useState } from "react";
 import { getMovieForUpdate, updateMovie } from "../../api/movie";
 import MovieForm from "../admin/MovieForm";
 import ModalContainer from "./ModalContainer";
-import { useNotification } from "../../hooks";
 import { useEffect } from "react";
 import { toast } from "sonner";
 
@@ -33,23 +32,34 @@ function UpdateMovie({ visible, onSuccess, movieId }) {
   }, [movieId]);
 
   return (
-    <ModalContainer visible={visible}>
-      {ready ? (
-        <MovieForm
-          initialState={selectedMovie}
-          btnTitle="Update"
-          onSubmit={!busy ? handleSubmit : null}
-          busy={busy}
-        />
-      ) : (
-        <div className="w-full h-full flex justify-center items-center">
-          <p className="text-light-subtle dark:text-dark-subtle animate-pulse text-xl">
-            Please wait...
-          </p>
-        </div>
-      )}
-    </ModalContainer>
+    <>
+      <MovieForm
+        initialState={selectedMovie}
+        btnTitle="Update"
+        onSubmit={!busy ? handleSubmit : null}
+        busy={busy}
+        isUpdate={true}
+      />
+    </>
   );
+  // return (
+  //   <>
+  //     {ready ? (
+  //       <MovieForm
+  //         initialState={selectedMovie}
+  //         btnTitle="Update"
+  //         onSubmit={!busy ? handleSubmit : null}
+  //         busy={busy}
+  //       />
+  //     ) : (
+  //       <div className="w-full h-full flex justify-center items-center">
+  //         <p className="text-light-subtle dark:text-dark-subtle animate-pulse text-xl">
+  //           Please wait...
+  //         </p>
+  //       </div>
+  //     )}
+  //   </>
+  // );
 }
 
 export default UpdateMovie;

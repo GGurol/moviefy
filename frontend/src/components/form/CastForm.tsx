@@ -66,6 +66,7 @@ function CastForm({
       (obj1, i, arr) => arr.findIndex((obj2) => obj2.id === obj1.id) === i
     );
     onUniqValuesChange(uniq);
+    console.log(dupValues);
   }, [JSON.stringify(dupValues)]);
 
   useEffect(() => {

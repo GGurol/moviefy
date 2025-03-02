@@ -118,7 +118,33 @@ const formatBytes = (bytes: number, decimals = 2) => {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
 };
 
-const formSchema = z.object({
+const validatePoster = (file) => {
+  if (!file) return true;
+  if (file.size > MAX_FILE_SIZE) {
+    return new Error(
+      `Please choose an image smaller than ${formatBytes(MAX_FILE_SIZE)}.`
+    );
+  }
+  if (!ACCEPTED_IMAGE_TYPES.includes(file.type)) {
+    return new Error("Please upload a valid image file (JPEG, PNG, or WebP).");
+  }
+  return true;
+};
+
+const validateVideo = (file) => {
+  if (!file) return true;
+  if (file.size > MAX_FILE_SIZE) {
+    return new Error(
+      `Please choose a video file smaller than ${formatBytes(MAX_FILE_SIZE)}.`
+    );
+  }
+  if (!ACCEPTED_VIDEO_TYPES.includes(file.type)) {
+    return new Error("Please upload a valid video file (MP4, AVI, or MKV)");
+  }
+  return true;
+};
+
+const commonValidation = {
   title: z.string().min(2).max(50),
   storyLine: z.string().min(2).max(200),
   tags: z.array(z.string()).nonempty("At least one tag is required"),
@@ -130,53 +156,75 @@ const formSchema = z.object({
   status: z.string(),
   type: z.string(),
   genres: z.array(z.string()).nonempty("At least one genre is required"),
+};
+
+const formUpdateSchema = z.object({
+  ...commonValidation,
+  poster: z.any().optional().refine(validatePoster),
+  video: z.any().optional().refine(validateVideo),
+});
+
+const formSchema = z.object({
+  ...commonValidation,
   poster: z
     .instanceof(File, {
       message: "Please select an image file.",
     })
-    .refine((file) => file.size <= MAX_FILE_SIZE, {
-      message: `Please choose an image smaller than ${formatBytes(
-        MAX_FILE_SIZE
-      )}.`,
-    })
-    .refine((file) => ACCEPTED_IMAGE_TYPES.includes(file.type), {
-      message: "Please upload a valid image file (JPEG, PNG, or WebP).",
-    }),
+    .refine(validatePoster),
+
   video: z
     .instanceof(File, {
       message: "Please select a video file.",
     })
-    .refine((file) => file.size <= MAX_FILE_SIZE, {
-      message: `Please choose a video file smaller than ${formatBytes(
-        MAX_FILE_SIZE
-      )}.`,
-    })
-    .refine((file) => ACCEPTED_VIDEO_TYPES.includes(file.type), {
-      message: "Please upload a valid video file (MP4, AVI, or MKV)",
-    }),
+    .refine(validateVideo),
 });
 
-export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
+export default function MovieForm({
+  onSubmit,
+  busy,
+  initialState,
+  btnTitle,
+  isUpdate = false,
+}) {
   const [movieInfo, setMovieInfo] = useState({ ...defaultMovieInfo });
   const [showWritersModal, setShowWritersModal] = useState(false);
   const [showCastModal, setShowCastModal] = useState(false);
   const [showGenresModal, setShowGenresModal] = useState(false);
   const [selectedPosterForUI, setSelectedPosterForUI] = useState("");
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      title: "",
-      storyLine: "",
-      tags: [],
-      director: "",
-      writer: "",
-      cast: [],
-      video: undefined,
-      poster: undefined,
-      genres: [],
-    },
-  });
+  let form;
+
+  if (isUpdate) {
+    form = useForm<z.infer<typeof formUpdateSchema>>({
+      resolver: zodResolver(formUpdateSchema),
+      defaultValues: {
+        title: "",
+        storyLine: "",
+        tags: [],
+        director: "",
+        writer: "",
+        cast: [],
+        video: undefined,
+        poster: undefined,
+        genres: [],
+      },
+    });
+  } else {
+    form = useForm<z.infer<typeof formSchema>>({
+      resolver: zodResolver(formSchema),
+      defaultValues: {
+        title: "",
+        storyLine: "",
+        tags: [],
+        director: "",
+        writer: "",
+        cast: [],
+        video: undefined,
+        poster: undefined,
+        genres: [],
+      },
+    });
+  }
 
   const handleSubmit = (values: z.infer<typeof formSchema>) => {
     const formData = new FormData();
@@ -280,23 +328,11 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
   //   setMovieInfo({ ...movieInfo, cast: [...newCast] });
   // };
 
-  useEffect(() => {
-    if (initialState) {
-      setMovieInfo({
-        ...initialState,
-        poster: null,
-        releseDate: initialState.releseDate.split("T")[0],
-      });
-      setSelectedPosterForUI(initialState.poster);
-    }
-  }, [initialState]);
   const [tagValues, setTagValues] = useState<string[]>([]);
   const [directorVal, setDirectorVal] = useState("");
   const [writerVal, setWriterVal] = useState("");
   const [castVal, setCastVal] = useState([]);
-  const [languageSelectVal, setLanguageSelectVal] = useState("");
-  // const [genresVal, setGenresVal] = useState([]);
-  const [selected, setSelected] = useState<Genres[]>([GENRES[0]]);
+  const [selectedGenre, setSelectedGenre] = useState<Genres[]>([GENRES[0]]);
   const [writerSelectRes, setWriterSelectRes] = useState("");
   const [directorSelectRes, setDirectorSelectRes] = useState("");
   const [dupValues, setDupValues] = useState([]);
@@ -340,11 +376,46 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
     }
   }
 
+  useEffect(() => {
+    if (initialState) {
+      // setMovieInfo({
+      //   ...initialState,
+      //   poster: null,
+      //   releaseDate: initialState.releaseDate.split("T")[0],
+      // });
+      form.setValue("title", initialState.title);
+      form.setValue("storyLine", initialState.storyLine);
+      form.setValue("status", initialState.status);
+      form.setValue("language", initialState.language);
+      const cast = initialState.cast.map((item) => {
+        for (let p in item) return item[p];
+      });
+      // form.setValue("cast", initialState.cast.id);
+      setDupValues(cast);
+      // setUniqValues(initialState.cast);
+      // setCastVal(initialState.cast.id);
+      const genre = GENRES.filter((e) => initialState.genres.includes(e.value));
+      form.setValue("genres", initialState.genres);
+      setSelectedGenre(genre);
+      form.setValue("director", initialState.director.id);
+      setDirectorSelectRes(initialState.director);
+      form.setValue("writer", initialState.writer.id);
+      setWriterSelectRes(initialState.writer);
+      form.setValue("releaseDate", new Date(initialState.releaseDate));
+      form.setValue("tags", initialState.tags);
+      form.setValue("type", initialState.type);
+      setTagValues(initialState.tags);
+      setSelectedPosterForUI(initialState.poster);
+      // console.log(form.getValues("cast"));
+      // console.log(dupValues);
+      console.log(initialState.cast);
+    }
+  }, [initialState]);
+
   const resetForm = () => {
     form.reset();
-    setSelected([]);
+    setSelectedGenre([]);
     setTagValues([]);
-    setLanguageSelectVal("");
     setWriterSelectRes("");
     setWriterVal("");
     setDirectorSelectRes("");
@@ -390,10 +461,9 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
                 <FormLabel>Genres</FormLabel>
                 <FormControl>
                   <MultiSelect
-                    selected={selected}
-                    setSelected={setSelected}
+                    selected={selectedGenre}
+                    setSelected={setSelectedGenre}
                     onSelect={(values) => {
-                      // setSelected(values);
                       const vl = values
                         .filter((e) => e.value !== "-")
                         .map((e) => e.value);

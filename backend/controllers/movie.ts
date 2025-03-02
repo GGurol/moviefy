@@ -295,7 +295,7 @@ export const getMovieForUpdate = async (req, res) => {
 
   // Populating Multiple Paths in Middleware
   const movie = await Movie.findById(movieId).populate("director writer cast");
-  console.log(movie);
+  // console.log(movie);
 
   res.json({
     movie: {

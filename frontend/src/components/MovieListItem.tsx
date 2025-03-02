@@ -39,7 +39,15 @@ import {
   AlertDialogTrigger,
 } from "./ui/alert-dialog";
 import { toast } from "sonner";
-import { buttonVariants } from "./ui/button";
+import { Button, buttonVariants } from "./ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "./ui/dialog";
 
 const MovieListItem = ({ movie, afterDelete, afterUpdate }) => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
@@ -100,13 +108,13 @@ const MovieListItem = ({ movie, afterDelete, afterUpdate }) => {
         handleDelete={handleDelete}
         busy={busy}
       />
-      <div className="p-0">
+      {/* <div className="p-0">
         <UpdateMovie
           movieId={selectedMovieId}
           visible={showUpdateModal}
           onSuccess={handleOnUpdate}
         />
-      </div>
+      </div> */}
     </>
   );
 };
@@ -120,7 +128,8 @@ const MovieCard = ({
   busy,
 }) => {
   const { poster, title, responsivePosters, genres = [], status } = movie;
-  const [open, setOpen] = useState(false);
+  const [openDelete, setOpenDelete] = useState(false);
+  const [openEdit, setOpenEdit] = useState(false);
 
   return (
     <Card className="rounded-sm flex items-center">
@@ -178,7 +187,7 @@ const MovieCard = ({
               <TooltipTrigger asChild>
                 <button
                   onClick={() => {
-                    setOpen(true);
+                    setOpenDelete(true);
                   }}
                 >
                   <Trash2 strokeWidth={0.75} size={20} />
@@ -188,7 +197,7 @@ const MovieCard = ({
                 <span>Delete</span>
               </TooltipContent>
             </Tooltip>
-            <AlertDialog open={open}>
+            <AlertDialog open={openDelete}>
               <AlertDialogContent>
                 <AlertDialogHeader>
                   <AlertDialogTitle>Are you sure?</AlertDialogTitle>
@@ -199,13 +208,13 @@ const MovieCard = ({
                 <AlertDialogFooter>
                   <AlertDialogCancel
                     disabled={busy}
-                    onClick={() => setOpen(false)}
+                    onClick={() => setOpenDelete(false)}
                   >
                     Cancel
                   </AlertDialogCancel>
                   <AlertDialogAction
                     onClick={() => {
-                      handleDelete(setOpen);
+                      handleDelete(setOpenDelete);
                     }}
                     className={buttonVariants({ variant: "destructive" })}
                     disabled={busy}
@@ -223,7 +232,7 @@ const MovieCard = ({
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <button onClick={onEditClick}>
+                <button onClick={() => setOpenEdit(true)}>
                   <Pencil strokeWidth={0.75} size={20} />
                 </button>
               </TooltipTrigger>
@@ -231,6 +240,22 @@ const MovieCard = ({
                 <span>Edit</span>
               </TooltipContent>
             </Tooltip>
+            <Dialog open={openEdit}>
+              <DialogContent
+                className="w-[900px]"
+                onInteractOutside={(e) => {
+                  e.preventDefault();
+                }}
+              >
+                <DialogHeader>
+                  <DialogTitle>Update Actor</DialogTitle>
+                  <DialogDescription>
+                    Submit to update an actor.
+                  </DialogDescription>
+                </DialogHeader>
+                <UpdateMovie movieId={movie.id} />
+              </DialogContent>
+            </Dialog>
           </TooltipProvider>
 
           {/* Open */}

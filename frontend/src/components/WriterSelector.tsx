@@ -27,7 +27,7 @@ function WriterSelector({
   const handleOnSelect = (profile) => {
     setValue("");
     updateWriter(profile);
-    onSelect(profile.id);
+    onSelect(profile?.id);
     setProfiles([]);
     resetSearch();
   };

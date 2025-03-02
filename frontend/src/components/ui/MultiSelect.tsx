@@ -21,10 +21,21 @@ export function MultiSelect({ selected, setSelected, onSelect }) {
   // const [selected, setSelected] = useState<Genres[]>([GENRES[0]]);
   const [inputValue, setInputValue] = useState("");
 
-  const handleUnselect = useCallback((genres: Genres) => {
-    setSelected((prev) => prev.filter((s) => s.value !== genres.value));
-    onSelect([...selected]);
-  }, []);
+  const handleUnselect = useCallback(
+    (genres: Genres) => {
+      // setSelected((prev) => prev.filter((s) => s.value !== genres.value));
+      setSelected((prev) => {
+        const newSelected = prev.filter((s) => s.value !== genres.value);
+        onSelect(newSelected);
+        // console.log("inside-newSelected", newSelected);
+        return newSelected;
+      });
+      // onSelect([...selected]);
+      // console.log("inside", selected);
+    },
+    [setSelected, onSelect]
+  );
+  // console.log("outside", selected);
 
   const handleKeyDown = useCallback((e: KeyboardEvent<HTMLDivElement>) => {
     const input = inputRef.current;

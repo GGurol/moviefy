@@ -97,6 +97,7 @@ function LiveSearch({
                 onUpdate("");
                 setValue("");
                 setSelectRes("");
+                onSelect("");
               }}
             >
               <XIcon className="w-3" />
