@@ -56,7 +56,7 @@ export const columns: ColumnDef<Movie>[] = [
   {
     id: "actions",
     cell: ({ row }) => {
-      return <MovieListColumnAction />;
+      return <MovieListColumnAction movieId={row.original.id} />;
     },
   },
 ];

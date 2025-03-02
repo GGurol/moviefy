@@ -31,7 +31,7 @@ import { deleteMovie } from "@/api/movie";
 import { toast } from "sonner";
 import { useMovies } from "@/hooks";
 
-export default function MovieListColumnAction() {
+export default function MovieListColumnAction({ movieId }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   // const [hasOpenDialog, setHasOpenDialog] = useState(false);
   const dropdownTriggerRef = useRef(null);
@@ -70,7 +70,7 @@ export default function MovieListColumnAction() {
 
   const handleDelete = async (setOpenDialog) => {
     setBusy(true);
-    const { error, message } = await deleteMovie(movie.id);
+    const { error, message } = await deleteMovie(movieId);
     // await new Promise((resolve) => setTimeout(resolve, 3000));
     setBusy(false);
 
@@ -127,7 +127,7 @@ export default function MovieListColumnAction() {
           {/* <DialogHeader> */}
           <DialogTitle>Edit Movie</DialogTitle>
           {/* </DialogHeader> */}
-          <UpdateMovie />
+          <UpdateMovie movieId={movieId} />
         </DialogItem>
         {/* </DialogTrigger> */}
         {/* <DialogContent
