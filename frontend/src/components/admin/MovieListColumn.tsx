@@ -1,14 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "../ui/badge";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
-import { Button } from "../ui/button";
-import { ExternalLink, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import MovieListColumnAction from "./MovieListColumnAction";
 
 export type Movie = {
   poster: string;
@@ -64,31 +56,7 @@ export const columns: ColumnDef<Movie>[] = [
   {
     id: "actions",
     cell: ({ row }) => {
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem className="flex items-center gap-3">
-              <ExternalLink strokeWidth={0.9} size={20} />
-              <span>Open</span>
-            </DropdownMenuItem>
-            <DropdownMenuItem className="flex items-center gap-3">
-              <Pencil strokeWidth={0.9} size={20} />
-              <span>Edit</span>
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem className="flex items-center gap-3">
-              <Trash2 strokeWidth={0.9} size={20} />
-              <span>Delete</span>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
+      return <MovieListColumnAction />;
     },
   },
 ];
