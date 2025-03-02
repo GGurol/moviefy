@@ -90,7 +90,7 @@ function CastForm({
     const { profile } = castInfo;
     profile.name = value;
     setCastInfo({ ...castInfo, ...profile });
-    handleSearch(searchActor, value, setProfiles);
+    handleSearch(searchActor, value, values, setProfiles);
     console.log("handleProfileChange", value);
   };
 

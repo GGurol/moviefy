@@ -84,14 +84,19 @@ export const searchActor = async (req, res) => {
   // const result = await Actor.find({ $text: { $search: `"${query.name}"` } });
   // const { name } = req.query;
   // if (!name.trim()) return sendError(res, 'Invalid request!');
-  const { query } = req;
+  const { query, body } = req;
+  const { selectedId } = body;
+  // console.log(selectedId);
   const result = await Actor.find({
     name: { $regex: query.name, $options: "i" },
   });
 
   const actors = result.map((actor) => formateActor(actor));
+  const results = actors.filter((e) => {
+    return !selectedId.includes(e.id.toString());
+  });
 
-  res.json({ results: actors });
+  res.json({ results: results });
 };
 
 export const getLatestActors = async (req, res) => {
