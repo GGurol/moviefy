@@ -362,7 +362,7 @@ export const getSingleMovie = async (req, res) => {
 
   if (!isValidObjectId(movieId)) return sendError(res, "Invalid movie id!");
 
-  const movie = await Movie.findById(movieId).populate("director writers cast.actor");
+  const movie = await Movie.findById(movieId).populate("director writer cast");
 
   // const [aggregatedResponse] = await Review.aggregate(
   //   averageRatingPipeline(movie._id)
@@ -383,14 +383,14 @@ export const getSingleMovie = async (req, res) => {
     title,
     storyLine,
     cast,
-    writers,
+    writer,
     director,
-    releseDate,
+    releaseDate,
     genres,
     tags,
     language,
     poster,
-    trailer,
+    video,
     type,
   } = movie;
 
@@ -399,27 +399,27 @@ export const getSingleMovie = async (req, res) => {
       id,
       title,
       storyLine,
-      releseDate,
+      releaseDate,
       genres,
       tags,
       language,
       type,
       poster: poster?.url,
-      trailer: trailer?.url,
+      video: video?.url,
       cast: cast.map((c) => ({
         id: c._id,
-        profile: {
-          id: c.actor._id,
-          name: c.actor.name,
-          avatar: c.actor?.avatar?.url,
-        },
-        leadActor: c.leadActor,
-        roleAs: c.roleAs,
+        // profile: {
+        // id: c.actor._id,
+        name: c.name,
+        avatar: c.avatar?.url,
+        // },
+        // leadActor: c.leadActor,
+        // roleAs: c.roleAs,
       })),
-      writers: writers.map((w) => ({
-        id: w._id,
-        name: w.name,
-      })),
+      writer: {
+        id: writer._id,
+        name: writer.name,
+      },
       director: {
         id: director._id,
         name: director.name,

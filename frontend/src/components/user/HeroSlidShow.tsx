@@ -2,8 +2,13 @@ import Autoplay from "embla-carousel-autoplay";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getLatestUploads } from "../../api/movie";
-import { useNotification } from "../../hooks";
-import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+} from "../ui/card";
 import {
   Carousel,
   CarouselContent,
@@ -49,18 +54,15 @@ export default function HeroSlidShow() {
       <CarouselContent>
         {slides.map((s, i) => (
           <CarouselItem key={i}>
-            <Card>
-              <CardHeader>
-                <p>{s.title}</p>
-              </CardHeader>
+            <Card className="border-0">
               <CardContent>
                 <Link to={"/movie/" + s.id}>
-                  <img src={s.poster} alt="poster" />
+                  <img src={s.poster} alt="poster" className="rounded-sm" />
                 </Link>
+                <CardDescription className="text-3xl">
+                  {s.title}
+                </CardDescription>
               </CardContent>
-              <CardFooter>
-                <p>{s.storyLine}</p>
-              </CardFooter>
             </Card>
           </CarouselItem>
         ))}

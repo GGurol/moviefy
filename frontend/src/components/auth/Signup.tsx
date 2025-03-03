@@ -72,43 +72,8 @@ function Signup() {
   }, [isLoggedIn]);
 
   return (
-    // <FormContainer>
-    //   <Container>
-    //     <form onSubmit={handleSubmit} className={commonModalClasses + ' w-72'}>
-    //       <Title>Sign up</Title>
-    //       <FormInput
-    //         value={name}
-    //         onChange={handleChange}
-    //         label='Name'
-    //         placeholder='John Doe'
-    //         name='name'
-    //       />
-    //       <FormInput
-    //         value={email}
-    //         onChange={handleChange}
-    //         label='Email'
-    //         placeholder='john@email.com'
-    //         name='email'
-    //       />
-    //       <FormInput
-    //         value={password}
-    //         onChange={handleChange}
-    //         label='Password'
-    //         placeholder='********'
-    //         name='password'
-    //         type='password'
-    //       />
-    //       <Submit value='Sign up' />
-    //       <div className='flex justify-between'>
-    //         <CustomLink to='/auth/forget-password'>Forget password</CustomLink>
-    //         <CustomLink to='/auth/signin'>Sign in</CustomLink>
-    //       </div>
-    //     </form>
-    //   </Container>
-    // </FormContainer>
-
     <FormContainer>
-      <SignUpForm />
+      <SignUpForm className="w-96" />
     </FormContainer>
   );
 }

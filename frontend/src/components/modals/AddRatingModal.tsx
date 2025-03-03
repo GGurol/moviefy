@@ -2,8 +2,14 @@ import { useParams } from "react-router-dom";
 import RatingForm from "../form/RatingForm";
 import ModalContainer from "./ModalContainer";
 import { addReview } from "../../api/review";
-import { useNotification } from "../../hooks";
 import { toast } from "sonner";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "../ui/dialog";
 
 function AddRatingModal({ visible, onClose, onSuccess }) {
   const { movieId } = useParams();
@@ -17,10 +23,18 @@ function AddRatingModal({ visible, onClose, onSuccess }) {
   };
 
   return (
-    <ModalContainer visible={visible} onClose={onClose} ignoreContainer>
+    <Dialog open={visible} onOpenChange={onClose}>
+      {/* <DialogContent className="w-[30%]"> */}
       <RatingForm onSubmit={handleSubmit} />
-    </ModalContainer>
+      {/* </DialogContent> */}
+    </Dialog>
   );
+
+  // return (
+  //   <ModalContainer visible={visible} onClose={onClose} ignoreContainer>
+  //     <RatingForm onSubmit={handleSubmit} />
+  //   </ModalContainer>
+  // );
 }
 
 export default AddRatingModal;
