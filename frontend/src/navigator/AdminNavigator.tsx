@@ -13,8 +13,8 @@ function AdminNavigator() {
     <>
       <SidebarProvider
         style={{
-          "--sidebar-width": "12rem",
-          "--sidebar-width-mobile": "12rem",
+          "--sidebar-width": "10rem",
+          "--sidebar-width-mobile": "10rem",
         }}
       >
         <AppSidebar />

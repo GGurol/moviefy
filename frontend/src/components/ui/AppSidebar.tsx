@@ -2,7 +2,6 @@ import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
-  SidebarGroup,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
@@ -35,29 +34,46 @@ const items = [
 export function AppSidebar() {
   const { handleLogout } = useAuth();
   return (
-    <Sidebar className="">
+    <Sidebar variant="inset">
       <SidebarHeader className="pl-4 mb-7">
         <Link to="/">
           <img src="./logo.png" alt="logo" className="h-14 p-2" />
         </Link>
       </SidebarHeader>
-      <SidebarContent className="pl-4">
+      <SidebarContent className="">
         <SidebarMenu>
           {items.map((item) => (
             <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton asChild>
-                <NavItem to={item.url}>
-                  <item.icon size={18} />
-                  <span>{item.title}</span>
-                </NavItem>
+              <SidebarMenuButton className="p-0">
+                <NavLink
+                  to={item.url}
+                  className={({ isActive }) =>
+                    (isActive ? "bg-muted" : " ") + " w-full"
+                  }
+                >
+                  <Button
+                    variant="ghost"
+                    className="flex items-center justify-start w-full py-1 px-2"
+                    asChild
+                  >
+                    <div>
+                      <item.icon size={18} />
+                      <span>{item.title}</span>
+                    </div>
+                  </Button>
+                </NavLink>
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}
         </SidebarMenu>
       </SidebarContent>
       <SidebarRail />
-      <SidebarFooter className="pl-4">
-        <Button variant="ghost" onClick={handleLogout}>
+      <SidebarFooter className="p-0">
+        <Button
+          variant="default"
+          onClick={handleLogout}
+          className="flex items-center justify-start w-full py-1 px-2"
+        >
           <LogOut size={18} />
           <span>Log out</span>
         </Button>
@@ -65,18 +81,3 @@ export function AppSidebar() {
     </Sidebar>
   );
 }
-
-const NavItem = ({ children, to }) => {
-  const commonClasses =
-    " flex items-center text-md space-x-2 p-2 hover:opacity-80";
-  return (
-    <NavLink
-      className={({ isActive }) =>
-        (isActive ? "text-blue-400" : "") + commonClasses
-      }
-      to={to}
-    >
-      {children}
-    </NavLink>
-  );
-};

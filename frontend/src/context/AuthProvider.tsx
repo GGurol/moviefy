@@ -1,6 +1,5 @@
 import { createContext, useEffect, useState } from "react";
 import { getIsAuth, signInUser } from "../api/auth";
-import { useNotification } from "../hooks";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
@@ -60,6 +59,7 @@ function AuthProvider({ children }) {
   const handleLogout = () => {
     localStorage.removeItem("auth-token");
     setAuthInfo({ ...defaultAuthInfo });
+    navigate("/auth/signin", { replace: true });
   };
 
   useEffect(() => {
