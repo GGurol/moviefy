@@ -25,7 +25,7 @@ import { SidebarTrigger } from "../ui/sidebar";
 import ThemeButton from "../ui/ThemeButton";
 import MovieForm from "./MovieForm";
 
-export default function Header({ onAddActorClick, onAddMovieClick }) {
+export default function Header() {
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState(false);

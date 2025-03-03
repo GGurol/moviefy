@@ -11,6 +11,7 @@ import { isValidEmail } from "../../utils/helper";
 import { LoginForm } from "../ui/LoginForm";
 import { GalleryVerticalEnd } from "lucide-react";
 import { toast } from "sonner";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 // import { useTheme } from '../../hooks';
 
 const validateUserInfo = ({ email, password }) => {
@@ -86,9 +87,27 @@ function Signin() {
     //     </form>
     //   </Container>
     // </FormContainer>
-
-    <FormContainer>
-      <LoginForm />
+    <FormContainer className="w-96 mx-auto">
+      <Tabs defaultValue="user" className="w-[400px]">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="user">User</TabsTrigger>
+          <TabsTrigger value="admin">Admin</TabsTrigger>
+        </TabsList>
+        <TabsContent value="user">
+          <LoginForm
+            title="Login as User"
+            defaultEmail="test1@email.com"
+            defaultPass="123123123"
+          />
+        </TabsContent>
+        <TabsContent value="admin">
+          <LoginForm
+            title="Login as Admin"
+            defaultEmail="test@email.com"
+            defaultPass="123123123"
+          />
+        </TabsContent>
+      </Tabs>
     </FormContainer>
   );
 }

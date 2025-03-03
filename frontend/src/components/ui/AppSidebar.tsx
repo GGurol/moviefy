@@ -7,6 +7,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarRail,
 } from "@/components/ui/sidebar";
 import { Home, LogOut, MonitorPlay, UserRound } from "lucide-react";
 import { Link, NavLink } from "react-router-dom";
@@ -54,6 +55,7 @@ export function AppSidebar() {
           ))}
         </SidebarMenu>
       </SidebarContent>
+      <SidebarRail />
       <SidebarFooter className="pl-4">
         <Button variant="ghost" onClick={handleLogout}>
           <LogOut size={18} />

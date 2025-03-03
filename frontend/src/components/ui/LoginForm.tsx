@@ -37,11 +37,14 @@ const validateUserInfo = ({ email, password }) => {
 
 export function LoginForm({
   className,
+  title,
+  defaultEmail,
+  defaultPass,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
   const [userInfo, setUserInfo] = useState({
-    email: "",
-    password: "",
+    email: defaultEmail,
+    password: defaultPass,
   });
 
   const { handleLogin, authInfo } = useAuth();
@@ -61,10 +64,10 @@ export function LoginForm({
     handleLogin(userInfo.email, userInfo.password);
   };
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
+    <div className={cn("flex flex-col gap-6 ", className)} {...props}>
       <Card>
         <CardHeader className="text-center">
-          <CardTitle className="text-xl">Welcome back</CardTitle>
+          <CardTitle className="text-xl">{title}</CardTitle>
           <CardDescription>Login with your Google account</CardDescription>
         </CardHeader>
         <CardContent>
@@ -89,7 +92,7 @@ export function LoginForm({
                     type="email"
                     placeholder="m@example.com"
                     required
-                    value={userInfo.email}
+                    value={userInfo.email || defaultEmail}
                     onChange={handleChange}
                     name="email"
                   />
@@ -109,7 +112,7 @@ export function LoginForm({
                     type="password"
                     required
                     placeholder="****************"
-                    value={userInfo.password}
+                    value={userInfo.password || defaultPass}
                     onChange={handleChange}
                     name="password"
                   />
@@ -126,10 +129,6 @@ export function LoginForm({
           </form>
         </CardContent>
       </Card>
-      <div className="text-balance text-center text-xs text-muted-foreground [&_a]:underline [&_a]:underline-offset-4 [&_a]:hover:text-primary  ">
-        By clicking continue, you agree to our <a href="#">Terms of Service</a>{" "}
-        and <a href="#">Privacy Policy</a>.
-      </div>
     </div>
   );
 }

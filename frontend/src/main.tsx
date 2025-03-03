@@ -14,17 +14,17 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <BrowserRouter>
         <ContextProviders>
-          <SidebarProvider>
-            {/* <AppSidebar /> */}
-            <App />
-            <Toaster
-              position="top-center"
-              richColors={true}
-              // https://github.com/shadcn-ui/ui/issues/2234
-              toastOptions={{}}
-              theme="light"
-            />
-          </SidebarProvider>
+          {/* <SidebarProvider> */}
+          {/* <AppSidebar /> */}
+          <App />
+          <Toaster
+            position="top-center"
+            richColors={true}
+            // https://github.com/shadcn-ui/ui/issues/2234
+            toastOptions={{}}
+            theme="light"
+          />
+          {/* </SidebarProvider> */}
         </ContextProviders>
       </BrowserRouter>
     </ThemeProvider>
