@@ -1,11 +1,15 @@
-import RatingForm from "../form/RatingForm";
-import ModalContainer from "./ModalContainer";
-import { updateReview } from "../../api/review";
-import { useNotification } from "../../hooks";
 import { useState } from "react";
 import { toast } from "sonner";
+import { updateReview } from "../../api/review";
+import RatingForm from "../form/RatingForm";
+import { Dialog } from "../ui/dialog";
 
-function EditRatingModal({ visible, onClose, onSuccess, initialState }) {
+export default function EditRatingModal({
+  visible,
+  onClose,
+  onSuccess,
+  initialState,
+}) {
   const [busy, setBusy] = useState(false);
 
   const handleSubmit = async (data) => {
@@ -21,14 +25,12 @@ function EditRatingModal({ visible, onClose, onSuccess, initialState }) {
   };
 
   return (
-    <ModalContainer visible={visible} onClose={onClose} ignoreContainer>
+    <Dialog open={visible} onOpenChange={onClose}>
       <RatingForm
         busy={busy}
         initialState={initialState}
         onSubmit={handleSubmit}
       />
-    </ModalContainer>
+    </Dialog>
   );
 }
-
-export default EditRatingModal;

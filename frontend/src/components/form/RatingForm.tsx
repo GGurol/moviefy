@@ -73,7 +73,7 @@ const StarsOutlined = ({ ratings, onMouseEnter }) => {
   return ratings.map((_, index) => {
     return (
       <Star
-        stroke="#FFA725"
+        stroke="var(--rating-color)"
         strokeWidth={0.5}
         onMouseEnter={() => onMouseEnter(index)}
         className="cursor-pointer"
@@ -88,7 +88,7 @@ const StarsFill = ({ ratings, onMouseEnter }) => {
   return ratings.map((_, index) => {
     return (
       <Star
-        fill="#FFA725"
+        fill="var(--rating-color)"
         strokeWidth={0}
         onMouseEnter={() => onMouseEnter(index)}
         className="cursor-pointer"

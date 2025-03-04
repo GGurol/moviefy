@@ -1,14 +1,12 @@
-import { AiFillStar } from "react-icons/ai";
+import { Star } from "lucide-react";
 
-function RatingStar({ rating }) {
+export default function RatingStar({ rating }) {
   if (!rating) return <p className="">No rating</p>;
 
   return (
-    <p className="text-primary  font-semibold flex items-center justify-center gap-1">
+    <p className="text-rating-color font-semibold flex items-center justify-center gap-1">
       <span>{rating}</span>
-      <AiFillStar />
+      <Star fill="var(--rating-color)" strokeWidth={0} size={20} />
     </p>
   );
 }
-
-export default RatingStar;
