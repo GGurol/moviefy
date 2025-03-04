@@ -1,7 +1,17 @@
 import { Star } from "lucide-react";
 
 export default function RatingStar({ rating, className = "" }) {
-  if (!rating) return <p className="">No rating</p>;
+  if (!rating)
+    return (
+      <p
+        className={
+          "text-rating-color  flex items-center justify-center gap-1 " +
+          className
+        }
+      >
+        No rating
+      </p>
+    );
 
   return (
     <p

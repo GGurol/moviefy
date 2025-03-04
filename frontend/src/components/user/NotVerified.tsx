@@ -15,7 +15,7 @@ function NotVerified() {
   return (
     <div>
       {isLoggedIn && !isVerified ? (
-        <p className="text-sm text-center p-2 bg-muted rounded-md mb-2">
+        <p className="text-sm  text-center p-2 bg-muted rounded-md mb-2">
           {`It looks like you haven't verified your account`},{" "}
           <button
             onClick={navigateToVerification}

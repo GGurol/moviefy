@@ -17,27 +17,29 @@ export default function Navbar() {
   };
 
   return (
-    <div className="flex items-center justify-between relative p-5">
-      <div>
-        <Link to="/">
-          <img src="./logo.png" alt="" className="sm:h-10 h-8" />
-        </Link>
+    <Container>
+      <div className="flex items-center justify-between relative p-5">
+        <div>
+          <Link to="/">
+            <img src="./logo.png" alt="" className="sm:h-10 h-8" />
+          </Link>
+        </div>
+        <div className="flex items-center gap-5">
+          <AppSearchForm
+            placeholder="Search"
+            // inputClassName="border-dark-subtle text-white focus:border-white sm:w-auto w-40 sm:text-lg"
+            onSubmit={handleSearchSubmit}
+          />
+          <ThemeButton />
+          {isLoggedIn ? (
+            <Button onClick={handleLogout}>Log out</Button>
+          ) : (
+            <NavLink to="/auth/signin">
+              <Button variant="link">Login</Button>
+            </NavLink>
+          )}
+        </div>
       </div>
-      <div className="flex items-center gap-5">
-        <AppSearchForm
-          placeholder="Search"
-          // inputClassName="border-dark-subtle text-white focus:border-white sm:w-auto w-40 sm:text-lg"
-          onSubmit={handleSearchSubmit}
-        />
-        <ThemeButton />
-        {isLoggedIn ? (
-          <Button onClick={handleLogout}>Log out</Button>
-        ) : (
-          <NavLink to="/auth/signin">
-            <Button variant="link">Login</Button>
-          </NavLink>
-        )}
-      </div>
-    </div>
+    </Container>
   );
 }

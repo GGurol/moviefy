@@ -456,9 +456,9 @@ export const getRelatedMovies = async (req, res) => {
 };
 
 export const getTopRatedMovies = async (req, res) => {
-  const { type = "Film" } = req.query;
+  const { genre } = req.query;
 
-  const movies = await Movie.aggregate(topRatedMoviesPipeline(type));
+  const movies = await Movie.aggregate(topRatedMoviesPipeline(genre));
 
   const mapMovies = async (m) => {
     const reviews = await getAverageRatings(m._id);

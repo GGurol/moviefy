@@ -70,7 +70,7 @@ export function AppSidebar() {
       <SidebarRail />
       <SidebarFooter className="p-0">
         <Button
-          variant="default"
+          variant="secondary"
           onClick={handleLogout}
           className="flex items-center justify-start w-full py-1 px-2"
         >

@@ -53,8 +53,14 @@ export default function HeroSlidShow() {
     >
       <CarouselContent>
         {slides.map((s, i) => (
-          <CarouselItem key={i}>
-            <Card className="border-0">
+          <CarouselItem key={i} className="relative">
+            <Link to={"/movie/" + s.id}>
+              <img src={s.poster} alt="poster" className="rounded-sm" />
+            </Link>
+            <p className="absolute left-5 bottom-0 text-2xl font-semibold">
+              {s.title}
+            </p>
+            {/* <Card className="border-0">
               <CardContent>
                 <Link to={"/movie/" + s.id}>
                   <img src={s.poster} alt="poster" className="rounded-sm" />
@@ -63,7 +69,7 @@ export default function HeroSlidShow() {
                   {s.title}
                 </CardDescription>
               </CardContent>
-            </Card>
+            </Card> */}
           </CarouselItem>
         ))}
       </CarouselContent>

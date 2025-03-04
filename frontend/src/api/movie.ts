@@ -130,12 +130,14 @@ export const searchMovieForAdmin = async (title) => {
   }
 };
 
-export const getTopRatedMovies = async (type, signal) => {
+export const getTopRatedMovies = async (genre = "") => {
   try {
     let endpoint = "/movie/top-rated";
-    if (type) endpoint = endpoint + `?type=${type}`;
+    if (genre) {
+      endpoint = endpoint + `?genre=${genre}`;
+    }
 
-    const { data } = await client.get(endpoint, { signal });
+    const { data } = await client.get(endpoint);
     return data;
   } catch (error) {
     return catchError(error);

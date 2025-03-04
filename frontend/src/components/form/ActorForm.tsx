@@ -69,14 +69,14 @@ const validateAvatar = (file) => {
 
 const formUpdateSchema = z.object({
   name: z.string().min(2).max(50),
-  about: z.string().min(2).max(200),
+  about: z.string().min(2).max(1000),
   gender: z.enum(["male", "female"]),
   avatar: z.any().optional().refine(validateAvatar),
 });
 
 const formSchema = z.object({
   name: z.string().min(2).max(50),
-  about: z.string().min(2).max(200),
+  about: z.string().min(2).max(1000),
   gender: z.enum(["male", "female"]),
   avatar: z
     .instanceof(File, {

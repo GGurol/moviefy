@@ -240,7 +240,7 @@ const MovieCard = ({
                 <span>Edit</span>
               </TooltipContent>
             </Tooltip>
-            <Dialog open={openEdit}>
+            <Dialog open={openEdit} onOpenChange={setOpenEdit}>
               <DialogContent
                 className="w-[900px]"
                 onInteractOutside={(e) => {

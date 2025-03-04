@@ -12,7 +12,11 @@ function MostRatedMovies() {
     const { error, movies } = await getMostRatedMovies();
     if (error) toast.error(error);
 
-    setMovies([...movies]);
+    const sorted = movies.sort(
+      (a, b) => Number(b.reviews.ratingAvg) - Number(a.reviews.ratingAvg)
+    );
+
+    setMovies([...sorted]);
   };
 
   useEffect(() => {

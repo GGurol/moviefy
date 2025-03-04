@@ -146,7 +146,7 @@ const validateVideo = (file) => {
 
 const commonValidation = {
   title: z.string().min(2).max(50),
-  storyLine: z.string().min(2).max(200),
+  storyLine: z.string().min(2).max(2000),
   tags: z.array(z.string()).nonempty("At least one tag is required"),
   director: z.string().nonempty("Must add one director"),
   writer: z.string().nonempty("Must add one writer"),

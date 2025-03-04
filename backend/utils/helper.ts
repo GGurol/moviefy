@@ -99,13 +99,13 @@ export const relatedMovieAggregation = (tags, movieId) => {
   ];
 };
 
-export const topRatedMoviesPipeline = (type) => {
+export const topRatedMoviesPipeline = (genre) => {
   const matchOptions = {
-    reviews: { $exists: true },
+    reviews: { $exists: true, $ne: [] },
     status: { $eq: "public" },
   };
 
-  if (type) matchOptions.type = { $eq: type };
+  if (genre) matchOptions.genres = { $in: [genre] };
 
   return [
     // {
