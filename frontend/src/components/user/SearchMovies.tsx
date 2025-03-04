@@ -1,15 +1,17 @@
 import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { searchPublicMovies } from "../../api/movie";
-import { useNotification } from "../../hooks";
 import NotFoundText from "../NotFoundText";
 import MovieList from "./MovieList";
 import Container from "../Container";
 import { toast } from "sonner";
+import { Button } from "../ui/button";
+import { ArrowLeft } from "lucide-react";
 
 function SearchMovies() {
   const [movies, setMovies] = useState([]);
   const [resultNotFound, setResultNotFound] = useState(false);
+  const navigate = useNavigate();
 
   const [searchParams] = useSearchParams();
 
@@ -35,6 +37,14 @@ function SearchMovies() {
   return (
     <div className=" min-h-screen py-8">
       <Container className="px-2 xl:p-0">
+        <Button
+          variant="link"
+          className="mb-4 p-0"
+          onClick={() => navigate(-1)}
+        >
+          <ArrowLeft />
+          <span>Go back</span>
+        </Button>
         <NotFoundText text="Record not found!" visible={resultNotFound} />
         <MovieList movies={movies} />
       </Container>

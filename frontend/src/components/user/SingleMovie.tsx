@@ -12,6 +12,7 @@ import { convertReviewCount } from "../../utils/helper";
 import { Button } from "../ui/button";
 import { toast } from "sonner";
 import { Badge } from "../ui/badge";
+import { Card, CardContent, CardHeader } from "../ui/card";
 
 const convertDate = (date = "") => {
   return date.split("T")[0];
@@ -132,21 +133,25 @@ export default function SingleMovie() {
   return (
     <div className=" min-h-screen pb-10">
       <Container className="xl:px-0 px-2">
-        <h1 className="xl:text-4xl lg:text-3xl text-2xl font-semibold p-4 bg-muted rounded-md">
-          {title}
-        </h1>
-        <video
-          poster={poster}
-          controls
-          src={video}
-          muted
-          width={1200}
-          height={720}
-          className="w-full mx-auto mt-5 p-4 bg-muted rounded-md"
-        />
+        <div className=" bg-muted rounded-md">
+          <video
+            title={title}
+            poster={poster}
+            controls
+            src={video}
+            muted
+            width={1200}
+            height={720}
+            className="w-full mx-auto mt-5 p-4 bg-muted rounded-md"
+          />
+          <h1 className="pl-4 pb-4 font-semibold">{title}</h1>
+        </div>
+
         <div className="mt-10 bg-muted p-4 rounded-md">
           <div className="space-y-3">
-            <p className="text-muted-foreground">{storyLine}</p>
+            <ListWithLabel label="Description:">
+              <CustomButtonLink label={storyLine} clickable={false} />
+            </ListWithLabel>
 
             <ListWithLabel label="Director:">
               <CustomButtonLink
@@ -190,7 +195,7 @@ export default function SingleMovie() {
         </div>
 
         <div className="mt-10 bg-muted p-4 rounded-md">
-          <CastProfiles cast={cast} />
+          <CastProfiles cast={cast} handleProfileClick={handleProfileClick} />
         </div>
 
         <div className="mt-10 bg-muted p-4 rounded-md flex flex-col items-center">
@@ -239,7 +244,7 @@ const ListWithLabel = ({ label, children }) => {
   );
 };
 
-const CastProfiles = ({ cast }) => {
+const CastProfiles = ({ cast, handleProfileClick }) => {
   return (
     <div className="">
       <p className="text-muted-foreground mb-3">Leader Actors:</p>
@@ -249,6 +254,7 @@ const CastProfiles = ({ cast }) => {
             <div
               key={e.id}
               className="p-2 w-36 max-h-56 flex flex-col items-center text-center mb-4 pb-2 border border-primary-foreground shadow-md rounded-sm overflow-hidden gap-2 cursor-pointer"
+              onClick={() => handleProfileClick(e)}
             >
               <img
                 className="w-full aspect-square object-cover rounded-t-sm "
@@ -256,10 +262,6 @@ const CastProfiles = ({ cast }) => {
                 alt=""
               />
               <p className="text-sm ">{e.name}</p>
-
-              {/* <Button variant="link" className="underline hover:no-underline">
-                {e.name}
-              </Button> */}
             </div>
           );
         })}
