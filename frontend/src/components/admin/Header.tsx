@@ -24,6 +24,8 @@ import { Input } from "../ui/input";
 import { SidebarTrigger } from "../ui/sidebar";
 import ThemeButton from "../ui/ThemeButton";
 import MovieForm from "./MovieForm";
+import i18n from "i18next";
+import { useTranslation } from "react-i18next";
 
 export default function Header() {
   const [search, setSearch] = useState("");
@@ -32,19 +34,23 @@ export default function Header() {
 
   const navigate = useNavigate();
 
+  const lngs = [
+    { code: "en", nativeName: "English" },
+    { code: "zh", nativeName: "中文" },
+  ];
+
+  const { t } = useTranslation("translation");
+
   const handleSubmitMovie = async (data) => {
     setBusy(true);
     const { error, movie, message } = await createMovie(data);
     setBusy(false);
     if (error) {
-      toast.error("Failed to create a movie");
+      toast.error(t("Failed to create a movie"));
     }
     if (!error) {
-      toast.success("Succeeded to create a movie");
+      toast.success(t("Successfully created a movie"));
     }
-    console.log("error:", error);
-    console.log("movie:", movie);
-    console.log("message", message);
   };
 
   const handleChange = (e) => {
@@ -70,23 +76,35 @@ export default function Header() {
             name="search"
             value={search}
             onChange={handleChange}
-            placeholder="Search movies..."
+            placeholder={t("Search movies...")}
           />
         </form>
       </div>
 
       <div className="flex items-center space-x-3">
         <ThemeButton />
+        {lngs.map((lng) => {
+          return (
+            <button
+              className="m-4 p-2 bg-blue-600 rounded"
+              key={lng.code}
+              type="submit"
+              onClick={() => i18n.changeLanguage(lng.code)}
+            >
+              {lng.nativeName}
+            </button>
+          );
+        })}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button>Create</Button>
+            <Button>{t("Create")}</Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <Dialog open={open} onOpenChange={setOpen}>
               <DialogTrigger className="gap-4" asChild>
                 <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
                   <Users size="20" />
-                  <span>Create Actor</span>
+                  <span>{t("Create Actor")}</span>
                 </DropdownMenuItem>
               </DialogTrigger>
               <DialogContent
@@ -96,9 +114,9 @@ export default function Header() {
                 }}
               >
                 <DialogHeader>
-                  <DialogTitle>Create Actor</DialogTitle>
+                  <DialogTitle>{t("Create Actor")}</DialogTitle>
                   <DialogDescription>
-                    Submit to create an actor, all fields are required.
+                    {t("Submit to create an actor. All fields are required.")}
                   </DialogDescription>
                 </DialogHeader>
                 <ActorUpload setOpen={setOpen} />
@@ -112,7 +130,7 @@ export default function Header() {
                   onSelect={(e) => e.preventDefault()}
                 >
                   <Clapperboard size="20" />
-                  <span>Create Movie</span>
+                  <span>{t("Create Movie")}</span>
                 </DropdownMenuItem>
               </DialogTrigger>
               <DialogContent
@@ -122,7 +140,7 @@ export default function Header() {
                 }}
               >
                 <DialogHeader>
-                  <DialogTitle>Create Movie</DialogTitle>
+                  <DialogTitle>{t("Create Movie")}</DialogTitle>
                 </DialogHeader>
                 <MovieForm onSubmit={handleSubmitMovie} busy={busy} />
               </DialogContent>

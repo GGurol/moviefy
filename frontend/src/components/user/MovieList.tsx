@@ -4,8 +4,8 @@ import RatingStar from "../RatingStar";
 import { getPoster } from "../../utils/helper";
 
 const trimTitle = (text = "") => {
-  if (text.length <= 20) return text;
-  return text.substring(0, 20) + "...";
+  if (text.length <= 30) return text;
+  return text.substring(0, 30) + "...";
 };
 
 export default function MovieList({ title, movies = [] }) {

@@ -13,6 +13,7 @@ import SingleMovie from "./components/user/SingleMovie";
 import MovieReviews from "./components/user/MovieReviews";
 import SearchMovies from "./components/user/SearchMovies";
 import { useLayoutEffect } from "react";
+import "@/utils/i18n";
 
 function App() {
   const { authInfo } = useAuth();

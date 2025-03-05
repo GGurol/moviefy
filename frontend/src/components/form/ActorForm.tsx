@@ -1,12 +1,13 @@
-import { useEffect, useState } from "react";
-import { commonInputClasses } from "../../utils/theme";
-import PosterSelector from "../PosterSelector";
-import Selector from "../Selector";
-import { useNotification } from "../../hooks";
-import { FaSpinner } from "react-icons/fa";
-import { z } from "zod";
+import i18n from "@/utils/i18n";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
+import { z } from "zod";
+import PosterSelector from "../PosterSelector";
+import { Button } from "../ui/button";
+import { DialogFooter } from "../ui/dialog";
 import {
   Form,
   FormControl,
@@ -17,7 +18,6 @@ import {
   FormMessage,
 } from "../ui/form";
 import { Input } from "../ui/input";
-import { Textarea } from "../ui/textarea";
 import {
   Select,
   SelectContent,
@@ -25,11 +25,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { Button } from "../ui/button";
-import { DialogClose, DialogFooter } from "../ui/dialog";
-import { Loader } from "lucide-react";
-import { useTranslation } from "react-i18next";
-import i18n from "i18next";
+import { Textarea } from "../ui/textarea";
+// import i18n from "i18next";
 
 const defaultActorInfo = {
   name: "",
@@ -39,7 +36,7 @@ const defaultActorInfo = {
 };
 
 const MAX_FILE_SIZE = 1024 * 1024 * 10;
-// const MAX_FILE_SIZE = 1024;
+// const MAX_FILE_SIZE = 1024 * 10;
 
 const ACCEPTED_IMAGE_TYPES = [
   "image/jpeg",
@@ -62,36 +59,41 @@ const validateAvatar = (file, ctx) => {
   if (file.size > MAX_FILE_SIZE) {
     ctx.addIssue({
       code: z.ZodIssueCode.custom,
-      message: `Please choose an image smaller than ${formatBytes(
-        MAX_FILE_SIZE
-      )}.`,
+      message: i18n.t("avatarTooLargeMessage", {
+        maxSize: formatBytes(MAX_FILE_SIZE),
+      }),
       fatal: true,
     });
   }
   if (!ACCEPTED_IMAGE_TYPES.includes(file.type)) {
     ctx.addIssue({
       code: z.ZodIssueCode.custom,
-      message: "Please upload a valid image file (JPEG, PNG, or WebP)",
+      message: i18n.t("Please upload a valid image file (JPEG, PNG, or WebP)"),
       fatal: true,
     });
   }
   // return true;
 };
 
-const formUpdateSchema = z.object({
-  name: z.string().min(2).max(50),
+const commonValidations = {
+  name: z
+    .string()
+    .nonempty(i18n.t("Name cannot be empty"))
+    .max(50, i18n.t("Name cannot be greater than 50 characters")),
   about: z.string().min(2).max(1000),
   gender: z.enum(["male", "female"]),
+};
+
+const formUpdateSchema = z.object({
+  ...commonValidations,
   avatar: z.any().optional().superRefine(validateAvatar),
 });
 
 const formSchema = z.object({
-  name: z.string().min(2).max(50),
-  about: z.string().min(2).max(1000),
-  gender: z.enum(["male", "female"]),
+  ...commonValidations,
   avatar: z
     .instanceof(File, {
-      message: "Please select an image file",
+      message: i18n.t("Please select an image file"),
     })
     .superRefine(validateAvatar),
 });
