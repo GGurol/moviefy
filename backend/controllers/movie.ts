@@ -292,10 +292,9 @@ export const getMovies = async (req, res) => {
     responsivePosters: movie.poster?.responsive,
     genres: movie.genres,
     status: movie.status,
-    movieCount: movieCount,
   }));
 
-  res.json({ movies: results });
+  res.json({ movies: results, totalMovieCount: movieCount });
 };
 
 export const getMovieForUpdate = async (req, res) => {

@@ -119,6 +119,7 @@ export const getSingleActor = async (req, res) => {
 
 export const getActors = async (req, res) => {
   const { pageNo, limit } = req.query;
+  const actorCount = await Actor.countDocuments();
 
   const actors = await Actor.find({})
     .sort({ createdAt: -1 })
@@ -128,5 +129,6 @@ export const getActors = async (req, res) => {
   const profiles = actors.map((actor) => formateActor(actor));
   res.json({
     profiles,
+    totalActorCount: actorCount,
   });
 };

@@ -9,7 +9,7 @@ import { DataTable } from "../ui/DataTable";
 import { columns } from "./MovieListColumn";
 import { toast } from "sonner";
 
-const limit = 3;
+const limit = 6;
 let currentPageNo = 0;
 let totalPage;
 
@@ -23,13 +23,13 @@ export default function Movies() {
   const [noPrev, setNoPrev] = useState(false);
 
   const fetchMovies = async (pageNo) => {
-    const { error, movies } = await getMovies(pageNo, limit);
+    const { error, movies, totalMovieCount } = await getMovies(pageNo, limit);
     if (error) return toast.error(error);
     if (currentPageNo === 0) {
       setNoPrev(true);
     }
 
-    totalPage = Math.ceil(movies[0]?.movieCount / limit);
+    totalPage = Math.ceil(totalMovieCount / limit);
     if (currentPageNo === totalPage - 1) setNoNext(true);
 
     if (!movies.length) {

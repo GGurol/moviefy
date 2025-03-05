@@ -36,36 +36,47 @@ import {
 } from "../ui/dialog";
 
 let currentPageNo = 0;
-const limit = 12;
+const limit = 9;
+let totalPage;
 
 export default function Actors() {
   const [actors, setActors] = useState([]);
   const [results, setResults] = useState([]);
-  const [reachedToEnd, setReachedToEnd] = useState(false);
   const [busy, setBusy] = useState(false);
   const [selectedProfile, setSelectedProfile] = useState(null);
   const { handleSearch, resetSearch, resultNotFound } = useSearch();
+  const [noNext, setNoNext] = useState(false);
+  const [noPrev, setNoPrev] = useState(false);
 
   const fetchActors = async (pageNo) => {
-    const { profiles, error } = await getActors(pageNo, limit);
+    const { profiles, error, totalActorCount } = await getActors(pageNo, limit);
     if (error) return toast.error(error);
+    if (currentPageNo === 0) {
+      setNoPrev(true);
+    }
+    totalPage = Math.ceil(totalActorCount / limit);
+    if (currentPageNo === totalPage - 1) setNoNext(true);
 
     if (!profiles.length) {
       currentPageNo = pageNo - 1;
-      return setReachedToEnd(true);
+      return setNoNext(true);
     }
     setActors([...profiles]);
   };
 
   const handleOnNextClick = () => {
-    if (reachedToEnd) return;
+    if (noNext) return;
+    if (noPrev) setNoPrev(false);
     currentPageNo += 1;
     fetchActors(currentPageNo);
   };
 
   const handleOnPrevClick = () => {
-    if (currentPageNo <= 0) return;
-    if (reachedToEnd) setReachedToEnd(false);
+    if (currentPageNo <= 0) {
+      setNoPrev(true);
+      return;
+    }
+    if (noNext) setNoNext(false);
 
     currentPageNo -= 1;
     fetchActors(currentPageNo);
@@ -163,6 +174,8 @@ export default function Actors() {
             className="mt-5"
             onNextClick={handleOnNextClick}
             onPrevClick={handleOnPrevClick}
+            noNext={noNext}
+            noPrev={noPrev}
           />
         ) : null}
       </div>
