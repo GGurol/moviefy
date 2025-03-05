@@ -28,6 +28,8 @@ import {
 import { Button } from "../ui/button";
 import { DialogClose, DialogFooter } from "../ui/dialog";
 import { Loader } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 const defaultActorInfo = {
   name: "",
@@ -37,6 +39,7 @@ const defaultActorInfo = {
 };
 
 const MAX_FILE_SIZE = 1024 * 1024 * 10;
+// const MAX_FILE_SIZE = 1024;
 
 const ACCEPTED_IMAGE_TYPES = [
   "image/jpeg",
@@ -54,24 +57,32 @@ const formatBytes = (bytes: number, decimals = 2) => {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
 };
 
-const validateAvatar = (file) => {
-  if (!file) return true;
+const validateAvatar = (file, ctx) => {
+  // if (!file) return true;
   if (file.size > MAX_FILE_SIZE) {
-    return new Error(
-      `Please choose an image smaller than ${formatBytes(MAX_FILE_SIZE)}.`
-    );
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: `Please choose an image smaller than ${formatBytes(
+        MAX_FILE_SIZE
+      )}.`,
+      fatal: true,
+    });
   }
   if (!ACCEPTED_IMAGE_TYPES.includes(file.type)) {
-    return new Error("Please upload a valid image file (JPEG, PNG, or WebP).");
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: "Please upload a valid image file (JPEG, PNG, or WebP)",
+      fatal: true,
+    });
   }
-  return true;
+  // return true;
 };
 
 const formUpdateSchema = z.object({
   name: z.string().min(2).max(50),
   about: z.string().min(2).max(1000),
   gender: z.enum(["male", "female"]),
-  avatar: z.any().optional().refine(validateAvatar),
+  avatar: z.any().optional().superRefine(validateAvatar),
 });
 
 const formSchema = z.object({
@@ -80,14 +91,12 @@ const formSchema = z.object({
   gender: z.enum(["male", "female"]),
   avatar: z
     .instanceof(File, {
-      message: "Please select an image file.",
+      message: "Please select an image file",
     })
-    .refine(validateAvatar),
+    .superRefine(validateAvatar),
 });
 
 export default function ActorForm({
-  title,
-  btnTitle,
   busy,
   initialState,
   onSubmit,
@@ -97,6 +106,7 @@ export default function ActorForm({
     ...defaultActorInfo,
   });
   const [selectedAvatarForUI, setSelectedAvatarForUI] = useState("");
+  const { t } = useTranslation("translation");
 
   const updatePosterForUI = (file) => {
     const url = URL.createObjectURL(file);
@@ -167,11 +177,13 @@ export default function ActorForm({
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Actor name</FormLabel>
+                <FormLabel>{t("Actor name")}</FormLabel>
                 <FormControl>
                   <Input {...field} />
                 </FormControl>
-                <FormDescription>Please enter actor name</FormDescription>
+                <FormDescription>
+                  {t("Please enter actor name")}
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -181,12 +193,12 @@ export default function ActorForm({
             name="about"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>About</FormLabel>
+                <FormLabel>{t("About")}</FormLabel>
                 <FormControl>
                   <Textarea {...field} />
                 </FormControl>
                 <FormDescription>
-                  Please enter actor's information
+                  {t("Please enter actor's information")}
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -197,7 +209,7 @@ export default function ActorForm({
             name="gender"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Gender</FormLabel>
+                <FormLabel>{t("Gender")}</FormLabel>
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value}
@@ -205,15 +217,17 @@ export default function ActorForm({
                 >
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder="Gender" />
+                      <SelectValue placeholder={t("Gender")} />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="male">Male</SelectItem>
-                    <SelectItem value="female">Female</SelectItem>
+                    <SelectItem value="male">{t("Male")}</SelectItem>
+                    <SelectItem value="female">{t("Female")}</SelectItem>
                   </SelectContent>
                 </Select>
-                <FormDescription>Please select actor's gender</FormDescription>
+                <FormDescription>
+                  {t("Please select actor's gender")}
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -226,7 +240,7 @@ export default function ActorForm({
             name="avatar"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Avatar</FormLabel>
+                <FormLabel>{t("Avatar")}</FormLabel>
                 <FormControl>
                   <PosterSelector
                     selectedPoster={selectedAvatarForUI}
@@ -236,12 +250,14 @@ export default function ActorForm({
                       field.onChange(e.target.files && e.target.files[0]);
                       handleChange(e);
                     }}
-                    label="Select avatar"
+                    label={t("Select avatar")}
                     accept="image/*"
                     // ref={field.ref}
                   />
                 </FormControl>
-                <FormDescription>Please select an avatar</FormDescription>
+                <FormDescription>
+                  {t("Please select an avatar")}
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -256,9 +272,9 @@ export default function ActorForm({
               {busy ? (
                 <Loader className="animate-spin" />
               ) : isUpdate ? (
-                "Update"
+                t("Update")
               ) : (
-                "Create"
+                t("Create")
               )}
             </Button>
           </DialogFooter>
