@@ -279,6 +279,7 @@ export const removeMovie = async (req, res) => {
 
 export const getMovies = async (req, res) => {
   const { pageNo = 0, limit = 10 } = req.query;
+  const movieCount = await Movie.countDocuments();
   const movies = await Movie.find({})
     .sort({ createdAt: -1 })
     .skip(parseInt(pageNo) * parseInt(limit))
@@ -291,6 +292,7 @@ export const getMovies = async (req, res) => {
     responsivePosters: movie.poster?.responsive,
     genres: movie.genres,
     status: movie.status,
+    movieCount: movieCount,
   }));
 
   res.json({ movies: results });

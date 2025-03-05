@@ -5,8 +5,8 @@ import { toast } from "sonner";
 
 export const MovieContext = createContext();
 
-const limit = 10;
 let currentPageNo = 0;
+const limit = 4;
 
 const MoviesProvider = ({ children }) => {
   const [movies, setMovies] = useState([]);
@@ -20,7 +20,7 @@ const MoviesProvider = ({ children }) => {
     setLatestUploads([...movies]);
   };
 
-  const fetchMovies = async (pageNo = currentPageNo) => {
+  const fetchMovies = async (pageNo) => {
     const { error, movies } = await getMovies(pageNo, limit);
     if (error) return toast.error(error);
 
@@ -32,18 +32,21 @@ const MoviesProvider = ({ children }) => {
     setMovies([...movies]);
   };
 
-  const fetchNextPage = () => {
+  const fetchNextPage = (pageNo) => {
     if (reachedToEnd) return;
-    currentPageNo += 1;
-    fetchMovies(currentPageNo);
+    pageNo += 1;
+    fetchMovies(pageNo);
+    console.log("next", pageNo);
   };
 
-  const fetchPrevPage = () => {
-    if (currentPageNo <= 0) return;
+  const fetchPrevPage = (pageNo) => {
+    if (pageNo <= 0) return;
     if (reachedToEnd) setReachedToEnd(false);
 
-    currentPageNo -= 1;
-    fetchMovies(currentPageNo);
+    pageNo -= 1;
+    console.log("prev", pageNo);
+
+    fetchMovies(pageNo);
   };
 
   return (
