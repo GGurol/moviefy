@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { getSingleMovie } from "../../api/movie";
 import { useNavigate, useParams } from "react-router-dom";
-import { useAuth, useNotification } from "../../hooks";
+import { useAuth } from "../../hooks";
 import Container from "../Container";
 import RatingStar from "../RatingStar";
 import RelatedMovies from "../RelatedMovies";
@@ -10,6 +10,9 @@ import CustomButtonLink from "../CustomButtonLink";
 import ProfileModal from "../modals/ProfileModal";
 import { convertReviewCount } from "../../utils/helper";
 import { Button } from "../ui/button";
+import { toast } from "sonner";
+import { Badge } from "../ui/badge";
+import { Card, CardContent, CardHeader } from "../ui/card";
 
 const convertDate = (date = "") => {
   return date.split("T")[0];
@@ -20,19 +23,19 @@ interface SingleMovieObj {
   title: string;
   storyLine: string;
   cast: [];
-  writers: [];
+  writer: "";
   director: string;
-  releseDate: string;
+  releaseDate: string;
   genres: [];
   tags: [];
   language: string;
   poster: string;
-  trailer: string;
+  video: string;
   type: string;
   reviews: {};
 }
 
-function SingleMovie() {
+export default function SingleMovie() {
   const [ready, setReady] = useState(false);
   const [showRatingModal, setShowRatingModal] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
@@ -42,19 +45,18 @@ function SingleMovie() {
     title: "",
     storyLine: "",
     cast: [],
-    writers: [],
+    writer: "",
     director: "",
-    releseDate: "",
+    releaseDate: "",
     genres: [],
     tags: [],
     language: "",
     poster: "",
-    trailer: "",
+    video: "",
     type: "",
     reviews: {},
   });
 
-  const { updateNotification } = useNotification();
   const { authInfo } = useAuth();
   const { isLoggedIn } = authInfo;
   const navigate = useNavigate();
@@ -65,7 +67,7 @@ function SingleMovie() {
     const { error, movie }: { error: string; movie: SingleMovieObj } =
       await getSingleMovie(movieId);
     if (error) {
-      return updateNotification("error", error);
+      return toast.error(error);
     }
 
     setReady(true);
@@ -114,16 +116,16 @@ function SingleMovie() {
 
   const {
     id,
-    trailer,
+    video,
     poster,
     title,
     storyLine,
     language,
-    releseDate,
+    releaseDate,
     type,
     reviews,
     director,
-    writers,
+    writer,
     cast,
     genres,
   } = movie;
@@ -131,35 +133,26 @@ function SingleMovie() {
   return (
     <div className=" min-h-screen pb-10">
       <Container className="xl:px-0 px-2">
-        <video
-          poster={poster}
-          controls
-          src={trailer}
-          muted
-          width={1200}
-          height={720}
-          className="mx-auto mt-5"
-        ></video>
-        <div className="">
-          <div className="flex justify-between">
-            <h1 className="xl:text-4xl lg:text-3xl text-2xl font-semibold py-3">
-              {title}
-            </h1>
-            <div className="flex flex-col items-end">
-              <RatingStar rating={reviews.ratingAvg} />
-              <CustomButtonLink
-                label={convertReviewCount(reviews.reviewCount) + " Reviews"}
-                onClick={() => navigate("/movie/reviews/" + id)}
-              />
-              <CustomButtonLink
-                label="Rate The Movie"
-                onClick={handleOnRateMovie}
-              />
-            </div>
-          </div>
+        <div className=" bg-muted rounded-md">
+          <video
+            title={title}
+            poster={poster}
+            controls
+            src={video}
+            muted
+            width={1200}
+            height={720}
+            className="w-full mx-auto mt-5 p-4 bg-muted rounded-md"
+          />
+          <h1 className="pl-4 pb-4 font-semibold">{title}</h1>
+        </div>
 
+        <div className="mt-10 bg-muted p-4 rounded-md">
           <div className="space-y-3">
-            <p className="">{storyLine}</p>
+            {/* <ListWithLabel label="Description:">
+              <CustomButtonLink label={storyLine} clickable={false} />
+            </ListWithLabel> */}
+            <p className="text-muted-foreground">{storyLine}</p>
 
             <ListWithLabel label="Director:">
               <CustomButtonLink
@@ -168,20 +161,11 @@ function SingleMovie() {
               />
             </ListWithLabel>
 
-            <ListWithLabel label="Writers:">
-              {writers.map((w) => (
-                <CustomButtonLink key={w.id} label={w.name} />
-              ))}
-            </ListWithLabel>
-
-            <ListWithLabel label="Cast:">
-              {cast.map(({ profile, leadActor }) => {
-                return (
-                  leadActor && (
-                    <CustomButtonLink label={profile.name} key={profile.id} />
-                  )
-                );
-              })}
+            <ListWithLabel label="Writer:">
+              <CustomButtonLink
+                label={writer.name}
+                onClick={() => handleProfileClick(writer)}
+              />
             </ListWithLabel>
 
             <ListWithLabel label="Language:">
@@ -190,24 +174,50 @@ function SingleMovie() {
 
             <ListWithLabel label="Release Date:">
               <CustomButtonLink
-                label={convertDate(releseDate)}
+                label={convertDate(releaseDate)}
                 clickable={false}
               />
             </ListWithLabel>
 
             <ListWithLabel label="Genres:">
               {genres.map((g) => (
-                <CustomButtonLink label={g} key={g} clickable={false} />
+                <CustomButtonLink
+                  label={<Badge>{g}</Badge>}
+                  key={g}
+                  clickable={false}
+                />
               ))}
             </ListWithLabel>
 
             <ListWithLabel label="Type:">
               <CustomButtonLink label={type} clickable={false} />
             </ListWithLabel>
-
-            <CastProfiles cast={cast} />
-            <RelatedMovies movieId={movieId} />
           </div>
+        </div>
+
+        <div className="mt-10 bg-muted p-4 rounded-md">
+          <CastProfiles cast={cast} handleProfileClick={handleProfileClick} />
+        </div>
+
+        <div className="mt-10 bg-muted p-4 rounded-md flex flex-col items-center">
+          {/* <div className="flex flex-col items-end"> */}
+          <div className="flex items-center gap-2 text-muted-foreground">
+            <p>Rating:</p>
+            <RatingStar rating={reviews.ratingAvg} />
+          </div>
+
+          <CustomButtonLink
+            label={convertReviewCount(reviews.reviewCount) + " Reviews"}
+            onClick={() => navigate("/movie/reviews/" + id)}
+          />
+          <CustomButtonLink
+            label="Rate The Movie"
+            onClick={handleOnRateMovie}
+          />
+        </div>
+        {/* </div> */}
+        <div className="mt-10 bg-muted p-4 rounded-md">
+          <RelatedMovies movieId={movieId} />
         </div>
       </Container>
 
@@ -228,35 +238,31 @@ function SingleMovie() {
 
 const ListWithLabel = ({ label, children }) => {
   return (
-    <div className="flex space-x-3 items-center">
+    <div className="flex space-x-3 items-center text-muted-foreground">
       <p className="">{label}</p>
       {children}
     </div>
   );
 };
 
-const CastProfiles = ({ cast }) => {
+const CastProfiles = ({ cast, handleProfileClick }) => {
   return (
     <div className="">
-      <h1 className="font-semibold text-2xl mb-2">Cast:</h1>
-      <div className="flex flex-wrap space-x-4">
-        {cast.map(({ profile, roleAs }) => {
+      <p className="text-muted-foreground mb-3">Leader Actors:</p>
+      <div className="flex flex-wrap gap-4 ">
+        {cast.map((e) => {
           return (
             <div
-              key={profile.id}
-              className="basis-28 flex flex-col items-center text-center mb-4"
+              key={e.id}
+              className="p-2 w-36 max-h-56 flex flex-col items-center text-center mb-4 pb-2 border border-primary-foreground shadow-md rounded-sm overflow-hidden gap-2 cursor-pointer"
+              onClick={() => handleProfileClick(e)}
             >
               <img
-                className="w-24 h-24 aspect-square object-cover rounded-full"
-                src={profile.avatar}
+                className="w-full aspect-square object-cover rounded-t-sm "
+                src={e.avatar}
                 alt=""
               />
-
-              <Button variant="link" className="text-blue-500">
-                {profile.name}
-              </Button>
-
-              <p className=" ">{roleAs}</p>
+              <p className="text-sm ">{e.name}</p>
             </div>
           );
         })}
@@ -264,5 +270,3 @@ const CastProfiles = ({ cast }) => {
     </div>
   );
 };
-
-export default SingleMovie;

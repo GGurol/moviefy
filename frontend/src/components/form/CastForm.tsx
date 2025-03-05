@@ -7,6 +7,7 @@ import { useNotification, useSearch } from "../../hooks";
 import { renderItem } from "../../utils/helper";
 import { searchActor } from "../../api/actor";
 import LiveSearchCast from "../LiveSearchCast";
+import { toast } from "sonner";
 
 const defaultCastInfo = {
   profile: {},
@@ -23,18 +24,19 @@ function CastForm({
   values,
   setValues,
   onSelect,
+  dupValues,
+  setDupValues,
+  selectedActors,
+  setSelectedActors,
   ...props
 }) {
   const [castInfo, setCastInfo] = useState({ ...defaultCastInfo });
   const [profiles, setProfiles] = useState([]);
   const [value, setValue] = useState("");
   // const [values, setValues] = useState([]);
-  const [dupValues, setDupValues] = useState([]);
+  // const [dupValues, setDupValues] = useState([]);
 
-  const { updateNotification } = useNotification();
   const { handleSearch, resetSearch } = useSearch();
-
-  console.log(dupValues);
 
   const handleOnChange = ({ target }) => {
     const { checked, name, value } = target;
@@ -61,23 +63,25 @@ function CastForm({
     resetSearch();
   };
 
-  useEffect(() => {
-    const uniq = dupValues.filter(
-      (obj1, i, arr) => arr.findIndex((obj2) => obj2.id === obj1.id) === i
-    );
-    onUniqValuesChange(uniq);
-  }, [JSON.stringify(dupValues)]);
+  // useEffect(() => {
+  //   const uniq = dupValues.filter(
+  //     (obj1, i, arr) => arr.findIndex((obj2) => obj2.id === obj1.id) === i
+  //   );
+  //   onUniqValuesChange(uniq);
+  //   console.log(dupValues);
+  // }, [JSON.stringify(dupValues)]);
 
+  // useEffect(() => {
+  //   onSelect(uniqValues.map((e) => e.id));
+  // }, [JSON.stringify(uniqValues)]);
   useEffect(() => {
-    onSelect(uniqValues.map((e) => e.id));
-  }, [JSON.stringify(uniqValues)]);
+    onSelect(selectedActors.map((e) => e.id));
+  }, [JSON.stringify(selectedActors)]);
 
   const handleSubmit = () => {
     const { profile, roleAs } = castInfo;
-    if (!profile.name)
-      return updateNotification("error", "Cast profile is missing!");
-    if (!roleAs.trim())
-      return updateNotification("error", "Cast role is missing!");
+    if (!profile.name) return toast.error("Cast profile is missing!");
+    if (!roleAs.trim()) return toast.error("Cast role is missing!");
 
     onSubmit(castInfo);
     setCastInfo({ ...defaultCastInfo, profile: { name: "" } });
@@ -91,7 +95,7 @@ function CastForm({
     const { profile } = castInfo;
     profile.name = value;
     setCastInfo({ ...castInfo, ...profile });
-    handleSearch(searchActor, value, setProfiles);
+    handleSearch(searchActor, value, values, setProfiles);
     console.log("handleProfileChange", value);
   };
 
@@ -111,17 +115,19 @@ function CastForm({
         placeholder="Search profile..."
         value={value}
         values={values}
-        dupValues={dupValues}
+        // dupValues={dupValues}
         setValue={setValue}
         setValues={setValues}
-        setDupValues={setDupValues}
+        // setDupValues={setDupValues}
         results={profiles}
         // onSelect={handleProfileSelect}
         renderItem={renderItem}
         onChange={handleProfileChange}
         onSelect={handleOnSelect}
-        uniqValues={uniqValues}
-        setUniqValues={setUniqValues}
+        // uniqValues={uniqValues}
+        // setUniqValues={setUniqValues}
+        setSelectedActors={setSelectedActors}
+        selectedActors={selectedActors}
         {...props}
       />
       {/* <span className="dark:text-dark-subtle text-light-subtle font-semibold">

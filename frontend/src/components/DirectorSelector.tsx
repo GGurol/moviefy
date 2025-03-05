@@ -23,7 +23,7 @@ function DirectorSelector({
   const handleOnChange = ({ target }) => {
     const { value } = target;
     setValue(value);
-    handleSearch(searchActor, value, setProfiles);
+    handleSearch(searchActor, value, [], setProfiles);
   };
 
   const handleOnSelect = (profile) => {

@@ -4,7 +4,15 @@ import LiveSearch from "./LiveSearch";
 import { useSearch } from "../hooks";
 import { searchActor } from "../api/actor";
 
-function WriterSelector({ updateWriter, value, setValue, onSelect, ...props }) {
+function WriterSelector({
+  updateWriter,
+  value,
+  setValue,
+  onSelect,
+  selectRes,
+  setSelectRes,
+  ...props
+}) {
   // const [value, setValue] = useState("");
   const [profiles, setProfiles] = useState([]);
 
@@ -13,13 +21,13 @@ function WriterSelector({ updateWriter, value, setValue, onSelect, ...props }) {
   const handleOnChange = ({ target }) => {
     const { value } = target;
     setValue(value);
-    handleSearch(searchActor, value, setProfiles);
+    handleSearch(searchActor, value, [], setProfiles);
   };
 
   const handleOnSelect = (profile) => {
     setValue("");
     updateWriter(profile);
-    onSelect(profile.id);
+    onSelect(profile?.id);
     setProfiles([]);
     resetSearch();
   };
@@ -35,6 +43,8 @@ function WriterSelector({ updateWriter, value, setValue, onSelect, ...props }) {
       value={value}
       onUpdate={updateWriter}
       setValue={setValue}
+      selectRes={selectRes}
+      setSelectRes={setSelectRes}
       {...props}
     />
   );

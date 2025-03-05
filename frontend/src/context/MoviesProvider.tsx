@@ -1,29 +1,28 @@
-import { createContext, useState } from 'react';
-import { useNotification } from '../hooks';
-import { getMovies } from '../api/movie';
+import { createContext, useState } from "react";
+import { useNotification } from "../hooks";
+import { getMovies } from "../api/movie";
+import { toast } from "sonner";
 
 export const MovieContext = createContext();
 
-const limit = 2;
 let currentPageNo = 0;
+const limit = 4;
 
 const MoviesProvider = ({ children }) => {
   const [movies, setMovies] = useState([]);
   const [latestUploads, setLatestUploads] = useState([]);
   const [reachedToEnd, setReachedToEnd] = useState(false);
 
-  const { updateNotification } = useNotification();
-
   const fetchLatestUploads = async (qty = 5) => {
     const { error, movies } = await getMovies(0, qty);
-    if (error) return updateNotification('error', error);
+    if (error) return toast.error(error);
 
     setLatestUploads([...movies]);
   };
 
-  const fetchMovies = async (pageNo = currentPageNo) => {
+  const fetchMovies = async (pageNo) => {
     const { error, movies } = await getMovies(pageNo, limit);
-    if (error) return updateNotification('error', error);
+    if (error) return toast.error(error);
 
     if (!movies.length) {
       currentPageNo = pageNo - 1;
@@ -33,18 +32,21 @@ const MoviesProvider = ({ children }) => {
     setMovies([...movies]);
   };
 
-  const fetchNextPage = () => {
+  const fetchNextPage = (pageNo) => {
     if (reachedToEnd) return;
-    currentPageNo += 1;
-    fetchMovies(currentPageNo);
+    pageNo += 1;
+    fetchMovies(pageNo);
+    console.log("next", pageNo);
   };
 
-  const fetchPrevPage = () => {
-    if (currentPageNo <= 0) return;
+  const fetchPrevPage = (pageNo) => {
+    if (pageNo <= 0) return;
     if (reachedToEnd) setReachedToEnd(false);
 
-    currentPageNo -= 1;
-    fetchMovies(currentPageNo);
+    pageNo -= 1;
+    console.log("prev", pageNo);
+
+    fetchMovies(pageNo);
   };
 
   return (

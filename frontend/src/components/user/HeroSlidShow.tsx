@@ -2,13 +2,24 @@ import Autoplay from "embla-carousel-autoplay";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getLatestUploads } from "../../api/movie";
-import { useNotification } from "../../hooks";
-import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "../ui/carousel";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+} from "../ui/card";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "../ui/carousel";
+import { toast } from "sonner";
 
 export default function HeroSlidShow() {
   const [slides, setSlides] = useState<LatestMovie[]>([]);
-  const { updateNotification } = useNotification();
 
   interface LatestMovie {
     id: string;
@@ -19,9 +30,10 @@ export default function HeroSlidShow() {
     trailer: string;
   }
   const fetchLatestUploads = async () => {
-    const { error, movies }: { error: string; movies: LatestMovie[] } = await getLatestUploads();
+    const { error, movies }: { error: string; movies: LatestMovie[] } =
+      await getLatestUploads();
     if (error) {
-      return updateNotification("error", error);
+      return toast.error(error);
     }
     setSlides([...movies]);
   };
@@ -37,24 +49,27 @@ export default function HeroSlidShow() {
           delay: 5000,
         }),
       ]}
-      className='w-full max-w-6xl mx-auto'
+      className="w-full max-w-6xl mx-auto"
     >
       <CarouselContent>
         {slides.map((s, i) => (
-          <CarouselItem key={i}>
-            <Card>
-              <CardHeader>
-                <p>{s.title}</p>
-              </CardHeader>
+          <CarouselItem key={i} className="relative">
+            <Link to={"/movie/" + s.id}>
+              <img src={s.poster} alt="poster" className="rounded-sm" />
+            </Link>
+            <p className="absolute left-5 bottom-0 text-2xl font-semibold">
+              {s.title}
+            </p>
+            {/* <Card className="border-0">
               <CardContent>
                 <Link to={"/movie/" + s.id}>
-                  <img src={s.poster} alt='poster' />
+                  <img src={s.poster} alt="poster" className="rounded-sm" />
                 </Link>
+                <CardDescription className="text-3xl">
+                  {s.title}
+                </CardDescription>
               </CardContent>
-              <CardFooter>
-                <p>{s.storyLine}</p>
-              </CardFooter>
-            </Card>
+            </Card> */}
           </CarouselItem>
         ))}
       </CarouselContent>

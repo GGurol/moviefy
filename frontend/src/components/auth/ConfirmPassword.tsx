@@ -1,26 +1,26 @@
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import { commonModalClasses } from '../../utils/theme';
-import Container from '../Container';
-import FormContainer from '../form/FormContainer';
-import FormInput from '../form/FormInput';
-import Submit from '../form/Submit';
-import Title from '../form/Title';
-import { useEffect, useState } from 'react';
-import { FaSpinner } from 'react-icons/fa';
-import { resetPassword, verifyPasswordResetToken } from '../../api/auth';
-import { useNotification } from '../../hooks';
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { commonModalClasses } from "../../utils/theme";
+import Container from "../Container";
+import FormContainer from "../form/FormContainer";
+import FormInput from "../form/FormInput";
+import Submit from "../form/Submit";
+import Title from "../form/Title";
+import { useEffect, useState } from "react";
+import { FaSpinner } from "react-icons/fa";
+import { resetPassword, verifyPasswordResetToken } from "../../api/auth";
+import { useNotification } from "../../hooks";
+import { toast } from "sonner";
 
 function ConfirmPassword() {
   const [password, setPassword] = useState({
-    one: '',
-    two: '',
+    one: "",
+    two: "",
   });
   const [isVerifying, setIsVerifying] = useState(true);
   const [isValid, setIsValid] = useState(false);
   const [searchParams] = useSearchParams();
-  const token = searchParams.get('token');
-  const id = searchParams.get('id');
-  const { updateNotification } = useNotification();
+  const token = searchParams.get("token");
+  const id = searchParams.get("id");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -31,14 +31,14 @@ function ConfirmPassword() {
     const { error, valid } = await verifyPasswordResetToken(token, id);
     setIsVerifying(false);
     if (error) {
-      navigate('/auth/reset-password', { replace: true });
+      navigate("/auth/reset-password", { replace: true });
 
-      return updateNotification('error', error);
+      return toast.error(error);
     }
 
     if (!valid) {
       setIsValid(false);
-      return navigate('/auth/reset-password', { replace: true });
+      return navigate("/auth/reset-password", { replace: true });
     }
 
     setIsValid(true);
@@ -52,12 +52,11 @@ function ConfirmPassword() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!password.one.trim())
-      return updateNotification('error', 'Password is missing!');
+    if (!password.one.trim()) return toast.error("Password is missing!");
     if (password.one.trim().length < 8)
-      return updateNotification('error', 'Password must be 8 characters!');
+      return toast.error("Password must be 8 characters!");
     if (password.one !== password.two)
-      return updateNotification('error', 'Password does not match!');
+      return toast.error("Password does not match!");
 
     const { error, message } = await resetPassword({
       newPassword: password.one,
@@ -65,10 +64,10 @@ function ConfirmPassword() {
       token,
     });
 
-    if (error) return updateNotification('error', error);
+    if (error) return toast.error(error);
 
-    updateNotification('success', message);
-    navigate('/auth/signin', { replace: true });
+    toast.success(message);
+    navigate("/auth/signin", { replace: true });
 
     // console.log(password);
   };
@@ -77,11 +76,11 @@ function ConfirmPassword() {
     return (
       <FormContainer>
         <Container>
-          <div className='flex space-x-2 items-center'>
-            <h1 className='text-4xl font-semibold dark:text-white text-primary'>
+          <div className="flex space-x-2 items-center">
+            <h1 className="text-4xl font-semibold dark:text-white text-primary">
               Please wait we are verifying your token!
             </h1>
-            <FaSpinner className='animate-spin text-4xl dark:text-white text-primary' />
+            <FaSpinner className="animate-spin text-4xl dark:text-white text-primary" />
           </div>
         </Container>
       </FormContainer>
@@ -91,7 +90,7 @@ function ConfirmPassword() {
     return (
       <FormContainer>
         <Container>
-          <h1 className='text-4xl font-semibold dark:text-white text-primary'>
+          <h1 className="text-4xl font-semibold dark:text-white text-primary">
             Sorry the token is invalid!
           </h1>
         </Container>
@@ -101,25 +100,25 @@ function ConfirmPassword() {
   return (
     <FormContainer>
       <Container>
-        <form onSubmit={handleSubmit} className={commonModalClasses + ' w-96'}>
+        <form onSubmit={handleSubmit} className={commonModalClasses + " w-96"}>
           <Title>Enter New Password</Title>
           <FormInput
             value={password.one}
             onChange={handleChange}
-            label='New Password'
-            placeholder='********'
-            name='one'
-            type='password'
+            label="New Password"
+            placeholder="********"
+            name="one"
+            type="password"
           />
           <FormInput
             value={password.two}
             onChange={handleChange}
-            label='Confirm Password'
-            placeholder='********'
-            name='two'
-            type='password'
+            label="Confirm Password"
+            placeholder="********"
+            name="two"
+            type="password"
           />
-          <Submit value='Confirm Password' />
+          <Submit value="Confirm Password" />
         </form>
       </Container>
     </FormContainer>

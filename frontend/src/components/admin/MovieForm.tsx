@@ -6,6 +6,7 @@ import {
   Delete,
   DeleteIcon,
   FileCheck2Icon,
+  Loader,
   Trash,
   Trash2,
 } from "lucide-react";
@@ -117,9 +118,35 @@ const formatBytes = (bytes: number, decimals = 2) => {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
 };
 
-const formSchema = z.object({
+const validatePoster = (file) => {
+  if (!file) return true;
+  if (file.size > MAX_FILE_SIZE) {
+    return new Error(
+      `Please choose an image smaller than ${formatBytes(MAX_FILE_SIZE)}.`
+    );
+  }
+  if (!ACCEPTED_IMAGE_TYPES.includes(file.type)) {
+    return new Error("Please upload a valid image file (JPEG, PNG, or WebP).");
+  }
+  return true;
+};
+
+const validateVideo = (file) => {
+  if (!file) return true;
+  if (file.size > MAX_FILE_SIZE) {
+    return new Error(
+      `Please choose a video file smaller than ${formatBytes(MAX_FILE_SIZE)}.`
+    );
+  }
+  if (!ACCEPTED_VIDEO_TYPES.includes(file.type)) {
+    return new Error("Please upload a valid video file (MP4, AVI, or MKV)");
+  }
+  return true;
+};
+
+const commonValidation = {
   title: z.string().min(2).max(50),
-  storyLine: z.string().min(2).max(200),
+  storyLine: z.string().min(2).max(2000),
   tags: z.array(z.string()).nonempty("At least one tag is required"),
   director: z.string().nonempty("Must add one director"),
   writer: z.string().nonempty("Must add one writer"),
@@ -129,102 +156,91 @@ const formSchema = z.object({
   status: z.string(),
   type: z.string(),
   genres: z.array(z.string()).nonempty("At least one genre is required"),
+};
+
+const formUpdateSchema = z.object({
+  ...commonValidation,
+  poster: z.any().optional().refine(validatePoster),
+  video: z.any().optional().refine(validateVideo),
+});
+
+const formSchema = z.object({
+  ...commonValidation,
   poster: z
     .instanceof(File, {
       message: "Please select an image file.",
     })
-    .refine((file) => file.size <= MAX_FILE_SIZE, {
-      message: `Please choose an image smaller than ${formatBytes(
-        MAX_FILE_SIZE
-      )}.`,
-    })
-    .refine((file) => ACCEPTED_IMAGE_TYPES.includes(file.type), {
-      message: "Please upload a valid image file (JPEG, PNG, or WebP).",
-    }),
+    .refine(validatePoster),
+
   video: z
     .instanceof(File, {
       message: "Please select a video file.",
     })
-    .refine((file) => file.size <= MAX_FILE_SIZE, {
-      message: `Please choose a video file smaller than ${formatBytes(
-        MAX_FILE_SIZE
-      )}.`,
-    })
-    .refine((file) => ACCEPTED_VIDEO_TYPES.includes(file.type), {
-      message: "Please upload a valid video file (MP4, AVI, or MKV)",
-    }),
+    .refine(validateVideo),
 });
 
-export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
+export default function MovieForm({
+  onSubmit,
+  busy,
+  initialState,
+  btnTitle,
+  isUpdate = false,
+}) {
   const [movieInfo, setMovieInfo] = useState({ ...defaultMovieInfo });
   const [showWritersModal, setShowWritersModal] = useState(false);
   const [showCastModal, setShowCastModal] = useState(false);
   const [showGenresModal, setShowGenresModal] = useState(false);
   const [selectedPosterForUI, setSelectedPosterForUI] = useState("");
 
-  const { updateNotification } = useNotification();
+  let form;
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      title: "",
-      storyLine: "",
-      tags: [],
-      director: "",
-      writer: "",
-      cast: [],
-      video: undefined,
-      poster: undefined,
-      genres: [],
-    },
-  });
+  if (isUpdate) {
+    form = useForm<z.infer<typeof formUpdateSchema>>({
+      resolver: zodResolver(formUpdateSchema),
+      defaultValues: {
+        title: "",
+        storyLine: "",
+        tags: [],
+        director: "",
+        writer: "",
+        cast: [],
+        video: undefined,
+        poster: undefined,
+        genres: [],
+      },
+    });
+  } else {
+    form = useForm<z.infer<typeof formSchema>>({
+      resolver: zodResolver(formSchema),
+      defaultValues: {
+        title: "",
+        storyLine: "",
+        tags: [],
+        director: "",
+        writer: "",
+        cast: [],
+        video: undefined,
+        poster: undefined,
+        genres: [],
+      },
+    });
+  }
 
   const handleSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log("values:", values);
-    //  form.trigger(["tags", "director", "writer"]);
-    // const { error } = validateMovie(movieInfo);
-    // if (error) return updateNotification("error", error);
+    const formData = new FormData();
+    const finalMovieInfo = {
+      ...values,
+    };
 
-    // const { tags, genres, cast, writers, director, poster } = movieInfo;
+    finalMovieInfo.tags = JSON.stringify(values.tags);
+    finalMovieInfo.genres = JSON.stringify(values.genres);
+    finalMovieInfo.cast = JSON.stringify(values.cast);
 
-    // const formData = new FormData();
-    // const finalMovieInfo = {
-    //   ...movieInfo,
-    // };
+    for (let key in finalMovieInfo) {
+      formData.append(key, finalMovieInfo[key]);
+    }
 
-    // finalMovieInfo.tags = JSON.stringify(tags);
-    // finalMovieInfo.genres = JSON.stringify(genres);
-
-    // // cast: [
-    // //   {
-    // //     actor: { type: mongoose.Schema.Types.ObjectId, ref: 'Actor' },
-    // //     roleAs: String,
-    // //     leadActor: Boolean,
-    // //   },
-    // // ],
-
-    // // console.log(cast);
-    // const finalCast = cast.map((c) => ({
-    //   actor: c.profile.id,
-    //   roleAs: c.roleAs,
-    //   leadActor: c.leadActor,
-    // }));
-    // finalMovieInfo.cast = JSON.stringify(finalCast);
-
-    // if (writers.length) {
-    //   const finalWriters = writers.map((c) => c.id);
-    //   finalMovieInfo.writers = JSON.stringify(finalWriters);
-    // }
-
-    // if (director.id) finalMovieInfo.director = director.id;
-
-    // if (poster) finalMovieInfo.poster = poster;
-
-    // for (let key in finalMovieInfo) {
-    //   formData.append(key, finalMovieInfo[key]);
-    // }
-
-    // onSubmit(formData);
+    onSubmit(formData);
   };
 
   const updatePosterForUI = (file) => {
@@ -242,9 +258,9 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
     setMovieInfo({ ...movieInfo, [name]: value });
   };
 
-  const updateTags = (tags) => {
-    setMovieInfo({ ...movieInfo, tags });
-  };
+  // const updateTags = (tags) => {
+  //   setMovieInfo({ ...movieInfo, tags });
+  // };
 
   const updateDirector = (profile) => {
     setMovieInfo({ ...movieInfo, director: profile });
@@ -258,87 +274,79 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
     setMovieInfo({ ...movieInfo, cast: [...cast, castInfo] });
   };
 
-  const updateGenres = (genres) => {
-    setMovieInfo({ ...movieInfo, genres });
-  };
+  // const updateGenres = (genres) => {
+  //   setMovieInfo({ ...movieInfo, genres });
+  // };
 
-  const updateWriters = (profile) => {
-    const { writers } = movieInfo;
-    for (let writer of writers) {
-      if (writer.id === profile.id) {
-        return updateNotification(
-          "warning",
-          "This profile is already selected!"
-        );
-      }
-    }
-    setMovieInfo({ ...movieInfo, writers: [...writers, profile] });
-  };
+  // const updateWriters = (profile) => {
+  //   const { writers } = movieInfo;
+  //   for (let writer of writers) {
+  //     if (writer.id === profile.id) {
+  //       return updateNotification(
+  //         "warning",
+  //         "This profile is already selected!"
+  //       );
+  //     }
+  //   }
+  //   setMovieInfo({ ...movieInfo, writers: [...writers, profile] });
+  // };
 
-  const hideWritersModal = () => {
-    setShowWritersModal(false);
-  };
+  // const hideWritersModal = () => {
+  //   setShowWritersModal(false);
+  // };
 
-  const displayWritersModal = () => {
-    setShowWritersModal(true);
-  };
-  const hideCastModal = () => {
-    setShowCastModal(false);
-  };
+  // const displayWritersModal = () => {
+  //   setShowWritersModal(true);
+  // };
+  // const hideCastModal = () => {
+  //   setShowCastModal(false);
+  // };
 
-  const displayCastModal = () => {
-    setShowCastModal(true);
-  };
+  // const displayCastModal = () => {
+  //   setShowCastModal(true);
+  // };
 
-  const hideGenresModal = () => {
-    setShowGenresModal(false);
-  };
+  // const hideGenresModal = () => {
+  //   setShowGenresModal(false);
+  // };
 
-  const displayGenresModal = () => {
-    setShowGenresModal(true);
-  };
+  // const displayGenresModal = () => {
+  //   setShowGenresModal(true);
+  // };
 
-  const handleWriterRemove = (profileId) => {
-    const { writers } = movieInfo;
-    const newWriters = writers.filter(({ id }) => id !== profileId);
-    if (!newWriters.length) hideWritersModal();
-    setMovieInfo({ ...movieInfo, writers: [...newWriters] });
-  };
+  // const handleWriterRemove = (profileId) => {
+  //   const { writers } = movieInfo;
+  //   const newWriters = writers.filter(({ id }) => id !== profileId);
+  //   if (!newWriters.length) hideWritersModal();
+  //   setMovieInfo({ ...movieInfo, writers: [...newWriters] });
+  // };
 
-  const handleCastRemove = (profileId) => {
-    const { cast } = movieInfo;
-    const newCast = cast.filter(({ profile }) => profile.id !== profileId);
-    if (!newCast.length) hideCastModal();
-    setMovieInfo({ ...movieInfo, cast: [...newCast] });
-  };
+  // const handleCastRemove = (profileId) => {
+  //   const { cast } = movieInfo;
+  //   const newCast = cast.filter(({ profile }) => profile.id !== profileId);
+  //   if (!newCast.length) hideCastModal();
+  //   setMovieInfo({ ...movieInfo, cast: [...newCast] });
+  // };
 
-  useEffect(() => {
-    if (initialState) {
-      setMovieInfo({
-        ...initialState,
-        poster: null,
-        releseDate: initialState.releseDate.split("T")[0],
-      });
-      setSelectedPosterForUI(initialState.poster);
-    }
-  }, [initialState]);
-  const [values, setValues] = useState<string[]>([]);
+  const [tagValues, setTagValues] = useState<string[]>([]);
   const [directorVal, setDirectorVal] = useState("");
   const [writerVal, setWriterVal] = useState("");
   const [castVal, setCastVal] = useState([]);
-  // const [genresVal, setGenresVal] = useState([]);
-  const [selected, setSelected] = useState<Genres[]>([GENRES[0]]);
+  const [selectedGenre, setSelectedGenre] = useState<Genres[]>([GENRES[0]]);
+  const [writerSelectRes, setWriterSelectRes] = useState("");
+  const [directorSelectRes, setDirectorSelectRes] = useState("");
+  // const [dupValues, setDupValues] = useState([]);
+  const [selectedActors, setSelectedActors] = useState([]);
 
   // const leaderActors = useActorStore((state) => state.leaderActors);
   // console.log(leaderActors);
 
-  const [uniqValues, setUniqValues] = useState([]);
+  // const [uniqValues, setUniqValues] = useState([]);
 
-  const handleUniqValuesChange = (newValues) => {
-    setUniqValues(newValues);
-  };
-  console.log(uniqValues);
-  const [files, setFiles] = useState<string[]>([]);
+  // const handleUniqValuesChange = (newValues) => {
+  //   // setUniqValues(newValues);
+  //   setSelectedActors(newValues);
+  // };
 
   function handleOnDrop(acceptedFiles: FileList | null) {
     if (acceptedFiles && acceptedFiles.length > 0) {
@@ -370,6 +378,56 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
     }
   }
 
+  useEffect(() => {
+    if (initialState) {
+      // setMovieInfo({
+      //   ...initialState,
+      //   poster: null,
+      //   releaseDate: initialState.releaseDate.split("T")[0],
+      // });
+      form.setValue("title", initialState.title);
+      form.setValue("storyLine", initialState.storyLine);
+      form.setValue("status", initialState.status);
+      form.setValue("language", initialState.language);
+      const cast = initialState.cast.map((item) => {
+        for (let p in item) return item[p];
+      });
+      // form.setValue("cast", initialState.cast.id);
+      // setDupValues(cast);
+      setSelectedActors(cast);
+      // setUniqValues(initialState.cast);
+      // setCastVal(initialState.cast.id);
+      const genre = GENRES.filter((e) => initialState.genres.includes(e.value));
+      form.setValue("genres", initialState.genres);
+      setSelectedGenre(genre);
+      form.setValue("director", initialState.director.id);
+      setDirectorSelectRes(initialState.director);
+      form.setValue("writer", initialState.writer.id);
+      setWriterSelectRes(initialState.writer);
+      form.setValue("releaseDate", new Date(initialState.releaseDate));
+      form.setValue("tags", initialState.tags);
+      form.setValue("type", initialState.type);
+      setTagValues(initialState.tags);
+      setSelectedPosterForUI(initialState.poster);
+      // console.log(form.getValues("cast"));
+      // console.log(dupValues);
+      console.log(initialState.cast);
+    }
+  }, [initialState]);
+
+  const resetForm = () => {
+    form.reset();
+    setSelectedGenre([]);
+    setTagValues([]);
+    setWriterSelectRes("");
+    setWriterVal("");
+    setDirectorSelectRes("");
+    setDirectorVal("");
+    // setDupValues([]);
+    setSelectedActors([]);
+    setSelectedPosterForUI("");
+  };
+
   const {
     title,
     storyLine,
@@ -395,67 +453,34 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
                 <FormControl>
                   <Input {...field} placeholder="Enter movie title" />
                 </FormControl>
-                {/* <FormDescription>Please enter movie title</FormDescription> */}
                 <FormMessage />
               </FormItem>
             )}
           />
           <FormField
-            name="storyLine"
             control={form.control}
+            name="genres"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Story Line</FormLabel>
+                <FormLabel>Genres</FormLabel>
                 <FormControl>
-                  <Textarea {...field} placeholder="Enter movie story line" />
+                  <MultiSelect
+                    selected={selectedGenre}
+                    setSelected={setSelectedGenre}
+                    onSelect={(values) => {
+                      const vl = values
+                        .filter((e) => e.value !== "-")
+                        .map((e) => e.value);
+                      field.value = vl;
+                      field.onChange(vl);
+                    }}
+                  />
                 </FormControl>
-                {/* <FormDescription>
-                    Please enter movie story line
-                  </FormDescription> */}
                 <FormMessage />
               </FormItem>
             )}
           />
-          <FormField
-            name="tags"
-            control={form.control}
-            render={({ field }) => {
-              return (
-                <FormItem>
-                  <FormLabel>Movie Tags</FormLabel>
-                  <FormControl>
-                    <InputTags
-                      // {...field}
-                      // ref={field.ref}
-                      // {...form.register("tags")}
-                      // {...registerWithRef("tags")}
-                      // name={field.name}
-                      // name="tags"
-                      // inputRef={field.ref}
-                      value={values}
-                      // value={field.value}
-                      onChange={(values) => {
-                        setValues(values);
-                        field.value = values;
-                        // form.setValue("tags", values);
-                        field.onChange(values);
-                      }}
-                      placeholder="Enter comma separated values..."
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              );
-            }}
-            // rules={{
-            //   validate: {
-            //     required: (values) => {
-            //       if (!values || values.length === 0)
-            //         return "Tags are required";
-            //     },
-            //   },
-            // }}
-          />
+
           <FormField
             name="director"
             control={form.control}
@@ -473,6 +498,8 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
                       // form.setValue("director", value);
                       field.onChange(value);
                     }}
+                    selectRes={directorSelectRes}
+                    setSelectRes={setDirectorSelectRes}
                   />
                 </FormControl>
                 <FormMessage />
@@ -495,11 +522,37 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
                       field.value = value;
                       field.onChange(value);
                     }}
+                    selectRes={writerSelectRes}
+                    setSelectRes={setWriterSelectRes}
                   />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
+          />
+          <FormField
+            name="tags"
+            control={form.control}
+            render={({ field }) => {
+              return (
+                <FormItem>
+                  <FormLabel>Movie Tags</FormLabel>
+                  <FormControl>
+                    <InputTags
+                      value={tagValues}
+                      onChange={(values) => {
+                        setTagValues(values);
+                        field.value = values;
+                        // form.setValue("tags", values);
+                        field.onChange(values);
+                      }}
+                      placeholder="Enter comma separated values..."
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              );
+            }}
           />
         </div>
         <div className="space-y-5 w-[33%]">
@@ -512,9 +565,9 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
                 <FormControl>
                   <CastForm
                     updateCast={updateCast}
-                    onUniqValuesChange={handleUniqValuesChange}
-                    uniqValues={uniqValues}
-                    setUniqValues={setUniqValues}
+                    // onUniqValuesChange={handleUniqValuesChange}
+                    // uniqValues={uniqValues}
+                    // setUniqValues={setUniqValues}
                     values={castVal}
                     setValues={setCastVal}
                     onSelect={(values) => {
@@ -522,6 +575,10 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
                       field.value = values;
                       field.onChange(values);
                     }}
+                    // dupValues={dupValues}
+                    // setDupValues={setDupValues}
+                    setSelectedActors={setSelectedActors}
+                    selectedActors={selectedActors}
                   />
                 </FormControl>
                 <FormMessage />
@@ -577,7 +634,7 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
                 <FormLabel>Language</FormLabel>
                 <Select
                   onValueChange={field.onChange}
-                  defaultValue={field.value}
+                  value={field.value || ""}
                 >
                   <FormControl>
                     <SelectTrigger className="hover:bg-muted">
@@ -586,32 +643,9 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
                   </FormControl>
                   <SelectContent>
                     {languageOptions.map((e) => (
-                      <SelectItem value={e.value}>{e.title}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="status"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Status</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger className="hover:bg-muted">
-                      <SelectValue placeholder="Select a status" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {statusOptions.map((e) => (
-                      <SelectItem value={e.value}>{e.title}</SelectItem>
+                      <SelectItem key={e.value} value={e.value}>
+                        {e.title}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -627,7 +661,7 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
                 <FormLabel>Type</FormLabel>
                 <Select
                   onValueChange={field.onChange}
-                  defaultValue={field.value}
+                  value={field.value || ""}
                 >
                   <FormControl>
                     <SelectTrigger className="hover:bg-muted">
@@ -636,7 +670,9 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
                   </FormControl>
                   <SelectContent>
                     {typeOptions.map((e) => (
-                      <SelectItem value={e.value}>{e.title}</SelectItem>
+                      <SelectItem key={e.value} value={e.value}>
+                        {e.title}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -646,23 +682,40 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
           />
           <FormField
             control={form.control}
-            name="genres"
+            name="status"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Genres</FormLabel>
+                <FormLabel>Status</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  value={field.value || ""}
+                >
+                  <FormControl>
+                    <SelectTrigger className="hover:bg-muted">
+                      <SelectValue placeholder="Select a status" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {statusOptions.map((e) => (
+                      <SelectItem key={e.value} value={e.value}>
+                        {e.title}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            name="storyLine"
+            control={form.control}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Story Line</FormLabel>
                 <FormControl>
-                  <MultiSelect
-                    selected={selected}
-                    setSelected={setSelected}
-                    onSelect={(values) => {
-                      // setSelected(values);
-                      const vl = values
-                        .filter((e) => e.value !== "-")
-                        .map((e) => e.value);
-                      field.value = vl;
-                      field.onChange(vl);
-                    }}
-                  />
+                  <Textarea {...field} placeholder="Enter movie story line" />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -687,7 +740,7 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
                       handleChange(e);
                     }}
                     accept="image/*"
-                    ref={field.ref}
+                    // ref={field.ref}
                   />
                 </FormControl>
                 <FormMessage />
@@ -739,8 +792,8 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
             </Card>
           )}
           <div className="flex flex-col gap-2 w-60">
-            <Button onClick={handleSubmit} type="submit" variant="default">
-              Submit
+            <Button type="submit" variant="default" disabled={busy}>
+              {busy ? <Loader className="animate-spin" /> : "Submit"}
             </Button>
             <AlertDialog>
               <AlertDialogTrigger asChild>
@@ -761,6 +814,7 @@ export default function MovieForm({ onSubmit, busy, initialState, btnTitle }) {
                   <AlertDialogAction
                     className={buttonVariants({ variant: "destructive" })}
                     type="reset"
+                    onClick={resetForm}
                   >
                     Reset
                   </AlertDialogAction>

@@ -1,7 +1,9 @@
-function FormContainer({ children }) {
+function FormContainer({ children, className }) {
   return (
     <div
-      className={`fixed inset-0 dark:bg-primary -z-10 flex justify-center items-center`}
+      className={
+        `fixed inset-0 -z-10 flex justify-center items-center ` + className
+      }
     >
       {children}
     </div>

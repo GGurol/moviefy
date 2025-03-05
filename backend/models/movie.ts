@@ -17,7 +17,7 @@ const movieSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Actor",
     },
-    releseDate: {
+    releaseDate: {
       type: Date,
       require: true,
     },
@@ -41,17 +41,18 @@ const movieSchema = new mongoose.Schema(
     },
     cast: [
       {
-        actor: { type: mongoose.Schema.Types.ObjectId, ref: "Actor" },
-        roleAs: String,
-        leadActor: Boolean,
-      },
-    ],
-    writers: [
-      {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Actor",
+        // actor: { type: mongoose.Schema.Types.ObjectId, ref: "Actor" },
+        // roleAs: String,
+        // leadActor: Boolean,
       },
     ],
+    writer: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Actor",
+    },
+
     poster: {
       type: Object,
       url: { type: String, required: true },
@@ -59,7 +60,7 @@ const movieSchema = new mongoose.Schema(
       responsive: [URL],
       required: true,
     },
-    trailer: {
+    video: {
       type: Object,
       url: { type: String, required: true },
       public_id: { type: String, required: true },

@@ -84,14 +84,19 @@ export const searchActor = async (req, res) => {
   // const result = await Actor.find({ $text: { $search: `"${query.name}"` } });
   // const { name } = req.query;
   // if (!name.trim()) return sendError(res, 'Invalid request!');
-  const { query } = req;
+  const { query, body } = req;
+  const { selectedId } = body;
+  // console.log(selectedId);
   const result = await Actor.find({
     name: { $regex: query.name, $options: "i" },
   });
 
   const actors = result.map((actor) => formateActor(actor));
+  const results = actors.filter((e) => {
+    return !selectedId.includes(e.id.toString());
+  });
 
-  res.json({ results: actors });
+  res.json({ results: results });
 };
 
 export const getLatestActors = async (req, res) => {
@@ -114,6 +119,7 @@ export const getSingleActor = async (req, res) => {
 
 export const getActors = async (req, res) => {
   const { pageNo, limit } = req.query;
+  const actorCount = await Actor.countDocuments();
 
   const actors = await Actor.find({})
     .sort({ createdAt: -1 })
@@ -123,5 +129,6 @@ export const getActors = async (req, res) => {
   const profiles = actors.map((actor) => formateActor(actor));
   res.json({
     profiles,
+    totalActorCount: actorCount,
   });
 };

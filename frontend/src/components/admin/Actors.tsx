@@ -1,64 +1,97 @@
+import { Loader, Pencil, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { BsPencilSquare, BsTrash } from "react-icons/bs";
+import { toast } from "sonner";
 import { deleteActor, getActors, searchActor } from "../../api/actor";
-import { useNotification, useSearch } from "../../hooks";
+import { useSearch } from "../../hooks";
 import NextAndPrevButton from "../NextAndPrevButton";
-import UpdateActor from "../modals/UpdateActor";
-import AppSearchForm from "../form/AppSearchForm";
 import NotFoundText from "../NotFoundText";
-import ConfirmModal from "../modals/ConfirmModal";
+import AppSearchForm from "../form/AppSearchForm";
+import UpdateActor from "../modals/UpdateActor";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "../ui/alert-dialog";
+import { Button, buttonVariants } from "../ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../ui/dialog";
 
 let currentPageNo = 0;
-const limit = 4;
+const limit = 9;
+let totalPage;
 
-function Actors() {
+export default function Actors() {
   const [actors, setActors] = useState([]);
   const [results, setResults] = useState([]);
-  const [reachedToEnd, setReachedToEnd] = useState(false);
   const [busy, setBusy] = useState(false);
-  const [showUpdateModal, setShowUpdateModal] = useState(false);
-  const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [selectedProfile, setSelectedProfile] = useState(null);
-
-  const { updateNotification } = useNotification();
   const { handleSearch, resetSearch, resultNotFound } = useSearch();
+  const [noNext, setNoNext] = useState(false);
+  const [noPrev, setNoPrev] = useState(false);
 
   const fetchActors = async (pageNo) => {
-    const { profiles, error } = await getActors(pageNo, limit);
-    if (error) return updateNotification("error", error);
+    const { profiles, error, totalActorCount } = await getActors(pageNo, limit);
+    if (error) return toast.error(error);
+    if (currentPageNo === 0) {
+      setNoPrev(true);
+    }
+    totalPage = Math.ceil(totalActorCount / limit);
+    if (currentPageNo === totalPage - 1) setNoNext(true);
 
     if (!profiles.length) {
       currentPageNo = pageNo - 1;
-      return setReachedToEnd(true);
+      return setNoNext(true);
     }
     setActors([...profiles]);
   };
 
   const handleOnNextClick = () => {
-    if (reachedToEnd) return;
+    if (noNext) return;
+    if (noPrev) setNoPrev(false);
     currentPageNo += 1;
     fetchActors(currentPageNo);
   };
 
   const handleOnPrevClick = () => {
-    if (currentPageNo <= 0) return;
-    if (reachedToEnd) setReachedToEnd(false);
+    if (currentPageNo <= 0) {
+      setNoPrev(true);
+      return;
+    }
+    if (noNext) setNoNext(false);
 
     currentPageNo -= 1;
     fetchActors(currentPageNo);
   };
 
   const handleOnEditClick = (profile) => {
-    setShowUpdateModal(true);
     setSelectedProfile(profile);
   };
 
-  const hideUpdateModal = () => {
-    setShowUpdateModal(false);
+  const handleOnDeleteClick = (profile) => {
+    setSelectedProfile(profile);
   };
 
   const handleOnSearchSubmit = (value) => {
-    handleSearch(searchActor, value, setResults);
+    handleSearch(searchActor, value, [], setResults);
   };
 
   const handleSearchFormReset = () => {
@@ -77,24 +110,19 @@ function Actors() {
     setActors([...updatedActors]);
   };
 
-  const handleOnDeleteClick = (profile) => {
-    setSelectedProfile(profile);
-    setShowConfirmModal(true);
-  };
-
-  const handleOnDeleteConfirm = async () => {
+  const handleOnDeleteConfirm = async (setOpenAlertModal) => {
     setBusy(true);
     const { error, message } = await deleteActor(selectedProfile.id);
     setBusy(false);
 
-    if (error) return updateNotification("error", error);
+    if (error) {
+      return toast.error("Failed to delete an actor.");
+    }
 
-    updateNotification("success", message);
-    hideConfirmModal();
+    toast.success(message);
+    setOpenAlertModal(false);
     fetchActors(currentPageNo);
   };
-
-  const hideConfirmModal = () => setShowConfirmModal(false);
 
   useEffect(() => {
     fetchActors(currentPageNo);
@@ -113,7 +141,7 @@ function Actors() {
         </div>
         <NotFoundText text="No Actors Found" visible={resultNotFound} />
 
-        <div className="grid grid-cols-4 gap-5">
+        <div className="grid grid-cols-3 gap-5">
           {results.length || resultNotFound
             ? results.map((actor) => (
                 <ActorProfile
@@ -121,6 +149,10 @@ function Actors() {
                   key={actor.id}
                   onEditClick={() => handleOnEditClick(actor)}
                   onDeleteClick={() => handleOnDeleteClick(actor)}
+                  selectedProfile={selectedProfile}
+                  handleOnActorUpdateSuccess={handleOnActorUpdateSuccess}
+                  handleOnDeleteConfirm={handleOnDeleteConfirm}
+                  busy={busy}
                 />
               ))
             : actors.map((actor) => (
@@ -129,6 +161,10 @@ function Actors() {
                   key={actor.id}
                   onEditClick={() => handleOnEditClick(actor)}
                   onDeleteClick={() => handleOnDeleteClick(actor)}
+                  selectedProfile={selectedProfile}
+                  handleOnActorUpdateSuccess={handleOnActorUpdateSuccess}
+                  handleOnDeleteConfirm={handleOnDeleteConfirm}
+                  busy={busy}
                 />
               ))}
         </div>
@@ -138,30 +174,24 @@ function Actors() {
             className="mt-5"
             onNextClick={handleOnNextClick}
             onPrevClick={handleOnPrevClick}
+            noNext={noNext}
+            noPrev={noPrev}
           />
         ) : null}
       </div>
-
-      <ConfirmModal
-        title="Are you sure?"
-        subtitle="This action will remove this profile permanently"
-        visible={showConfirmModal}
-        busy={busy}
-        onConfirm={handleOnDeleteConfirm}
-        onCancel={hideConfirmModal}
-      />
-
-      <UpdateActor
-        visible={showUpdateModal}
-        onClose={hideUpdateModal}
-        initialState={selectedProfile}
-        onSuccess={handleOnActorUpdateSuccess}
-      />
     </>
   );
 }
 
-const ActorProfile = ({ profile, onEditClick, onDeleteClick }) => {
+const ActorProfile = ({
+  profile,
+  onEditClick,
+  onDeleteClick,
+  selectedProfile,
+  handleOnActorUpdateSuccess,
+  handleOnDeleteConfirm,
+  busy,
+}) => {
   const [showOptions, setShowOptions] = useState(false);
   const acceptedNameLength = 15;
 
@@ -169,7 +199,9 @@ const ActorProfile = ({ profile, onEditClick, onDeleteClick }) => {
     setShowOptions(true);
   };
   const handleOnMouseLeave = () => {
-    setShowOptions(false);
+    if (!open && !alertOpen) {
+      setShowOptions(false);
+    }
   };
 
   if (!profile) return null;
@@ -180,59 +212,120 @@ const ActorProfile = ({ profile, onEditClick, onDeleteClick }) => {
   };
   const { name, avatar, about = "" } = profile;
 
+  const [open, setOpen] = useState(false);
+  const [alertOpen, setAlertOpen] = useState(false);
+  const setOpenModal = (val) => {
+    setOpen(val);
+    if (val === false) {
+      setShowOptions(false);
+    }
+  };
+  const setOpenAlertModal = (val) => {
+    setAlertOpen(val);
+    if (val === false) {
+      setShowOptions(false);
+    }
+  };
+
   return (
-    <div className=" shadow dark:bg-secondary h-20 overflow-hidden rounded">
-      <div
+    <>
+      <Card
+        className="flex rounded-md gap-2  hover:bg-muted relative h-32 overflow-hidden"
         onMouseEnter={handleOnMouseEnter}
         onMouseLeave={handleOnMouseLeave}
-        className="flex cursor-pointer relative"
       >
-        <img
-          src={avatar}
-          alt={name}
-          className="w-20 aspect-square object-cover"
-        />
+        <CardHeader className="p-0">
+          <CardTitle className="w-32 h-32">
+            <img
+              src={avatar}
+              alt={name}
+              // className="w-full aspect-square object-cover rounded-l-md"
+              className="w-full h-full aspect-square object-cover rounded-l-md"
+            />
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="px-1 py-1 flex flex-col gap-1">
+          <div className="capitalize">{getName(name)}</div>
+          <CardDescription> {about.substring(0, 120)}</CardDescription>
+        </CardContent>
+        {showOptions && (
+          <div className="absolute inset-0 backdrop-blur-md flex justify-center items-center space-x-5">
+            <Dialog open={open} onOpenChange={setOpenModal}>
+              <DialogTrigger className="gap-4" asChild>
+                <Button
+                  onClick={onEditClick}
+                  className="px-3 py-1 hover:opacity-60 transition-all duration-200"
+                  type="button"
+                  variant="default"
+                >
+                  <Pencil />
+                </Button>
+              </DialogTrigger>
+              <DialogContent
+                className="w-[500px]"
+                onInteractOutside={(e) => {
+                  e.preventDefault();
+                }}
+              >
+                <DialogHeader>
+                  <DialogTitle>Update Actor</DialogTitle>
+                  <DialogDescription>
+                    Submit to update an actor.
+                  </DialogDescription>
+                </DialogHeader>
+                <UpdateActor
+                  setOpen={setOpenModal}
+                  initialState={selectedProfile}
+                  onSuccess={handleOnActorUpdateSuccess}
+                />
+              </DialogContent>
+            </Dialog>
 
-        <div className="px-2">
-          <h1 className="text-xl text-primary dark:text-white font-semibold whitespace-nowrap">
-            {getName(name)}
-          </h1>
-          <p className="text-primary dark:text-white opacity-70">
-            {about.substring(0, 50)}
-          </p>
-        </div>
-
-        <Options
-          onEditClick={onEditClick}
-          visible={showOptions}
-          onDeleteClick={onDeleteClick}
-        />
-      </div>
-    </div>
+            <AlertDialog open={alertOpen}>
+              <AlertDialogTrigger asChild>
+                <Button
+                  onClick={() => {
+                    onDeleteClick();
+                    setOpenAlertModal(true);
+                  }}
+                  className="px-3 py-1 hover:opacity-60 transition-all duration-200"
+                  type="button"
+                  variant="destructive"
+                >
+                  <Trash2 />
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This action will remove this actor permanently!
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel
+                    disabled={busy}
+                    onClick={() => setOpenAlertModal(false)}
+                  >
+                    Cancel
+                  </AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={() => {
+                      handleOnDeleteConfirm(setOpenAlertModal);
+                    }}
+                    disabled={busy}
+                    className={buttonVariants({ variant: "destructive" })}
+                  >
+                    <span className="w-12 flex items-center justify-center">
+                      {busy ? <Loader className="animate-spin" /> : "Delete"}
+                    </span>
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
+        )}
+      </Card>
+    </>
   );
 };
-
-const Options = ({ visible, onDeleteClick, onEditClick }) => {
-  if (!visible) return null;
-
-  return (
-    <div className="absolute inset-0 bg-primary bg-opacity-25 backdrop-blur-sm flex justify-center items-center space-x-5">
-      <button
-        onClick={onDeleteClick}
-        className="p-2 rounded-full  text-primary hover:opacity-80 transition"
-        type="button"
-      >
-        <BsTrash />
-      </button>
-      <button
-        onClick={onEditClick}
-        className="p-2 rounded-full  text-primary hover:opacity-80 transition"
-        type="button"
-      >
-        <BsPencilSquare />
-      </button>
-    </div>
-  );
-};
-
-export default Actors;

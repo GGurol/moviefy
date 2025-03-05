@@ -1,6 +1,7 @@
-import { AiOutlineStar, AiFillStar } from "react-icons/ai";
+import { Loader, Star } from "lucide-react";
 import { useEffect, useState } from "react";
-import Submit from "./Submit";
+import { Button } from "../ui/button";
+import { DialogContent } from "../ui/dialog";
 
 const createArray = (count) => {
   return new Array(count).fill("");
@@ -40,11 +41,11 @@ function RatingForm({ onSubmit, initialState, busy }) {
   }, [initialState]);
 
   return (
-    <div>
-      <div className="p-5 dark:bg-primary rounded space-y-3">
-        <div className=" flex items-center relative">
+    <DialogContent className="max-w-xs [&>button]:hidden">
+      <div className="">
+        <div className=" flex items-center relative pl-3 ">
           <StarsOutlined ratings={ratings} onMouseEnter={handleMouseEnter} />
-          <div className="flex items-center absolute top-1/2 -translate-y-1/2">
+          <div className="flex items-center  absolute top-1/2 -translate-y-1/2  ">
             <StarsFill
               ratings={selectedRatings}
               onMouseEnter={handleMouseEnter}
@@ -55,19 +56,25 @@ function RatingForm({ onSubmit, initialState, busy }) {
         <textarea
           value={content}
           onChange={handleOnChange}
-          className="w-full h-24 border-2 p-2 dark:text-white text-primary rounded outline-none bg-transparent resize-none"
-        ></textarea>
+          className="w-full h-36 mt-4 mb-4 border-2 p-2 text-primary rounded outline-none bg-transparent "
+        />
 
-        <Submit busy={busy} onClick={handleSubmit} value="Rate This Movie" />
+        <Button onClick={handleSubmit} className="w-full">
+          <span className="w-10 flex items-center justify-center">
+            {busy ? <Loader className="animate-spin" /> : "Submit"}
+          </span>
+        </Button>
       </div>
-    </div>
+    </DialogContent>
   );
 }
 
 const StarsOutlined = ({ ratings, onMouseEnter }) => {
   return ratings.map((_, index) => {
     return (
-      <AiOutlineStar
+      <Star
+        stroke="var(--rating-color)"
+        strokeWidth={0.5}
         onMouseEnter={() => onMouseEnter(index)}
         className="cursor-pointer"
         key={index}
@@ -80,7 +87,9 @@ const StarsOutlined = ({ ratings, onMouseEnter }) => {
 const StarsFill = ({ ratings, onMouseEnter }) => {
   return ratings.map((_, index) => {
     return (
-      <AiFillStar
+      <Star
+        fill="var(--rating-color)"
+        strokeWidth={0}
         onMouseEnter={() => onMouseEnter(index)}
         className="cursor-pointer"
         key={index}

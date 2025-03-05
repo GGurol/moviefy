@@ -1,15 +1,15 @@
-import { catchError, getToken } from '../utils/helper';
-import client from './client';
+import { catchError, getToken } from "../utils/helper";
+import client from "./client";
 
 export const createActor = async (formData) => {
   const token = getToken();
   try {
     // POST Requests
     // https://axios-http.com/docs/post_example
-    const { data } = await client.post('/actor/create', formData, {
+    const { data } = await client.post("/actor/create", formData, {
       headers: {
         authorization: `Bearer ${token}`,
-        'content-type': 'multipart/form-data',
+        "content-type": "multipart/form-data",
       },
     });
     return data;
@@ -21,10 +21,10 @@ export const createActor = async (formData) => {
 export const updateActor = async (id, formData) => {
   const token = getToken();
   try {
-    const { data } = await client.post('/actor/update/' + id, formData, {
+    const { data } = await client.post("/actor/update/" + id, formData, {
       headers: {
         authorization: `Bearer ${token}`,
-        'content-type': 'multipart/form-data',
+        "content-type": "multipart/form-data",
       },
     });
     return data;
@@ -36,7 +36,7 @@ export const updateActor = async (id, formData) => {
 export const deleteActor = async (id) => {
   const token = getToken();
   try {
-    const { data } = await client.delete('/actor/' + id, {
+    const { data } = await client.delete("/actor/" + id, {
       headers: {
         authorization: `Bearer ${token}`,
       },
@@ -47,14 +47,18 @@ export const deleteActor = async (id) => {
   }
 };
 
-export const searchActor = async (query) => {
+export const searchActor = async (query, body) => {
   const token = getToken();
   try {
-    const { data } = await client.get(`/actor/search?name=${query}`, {
-      headers: {
-        authorization: `Bearer ${token}`,
-      },
-    });
+    const { data } = await client.post(
+      `/actor/search?name=${query}`,
+      { selectedId: body },
+      {
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+      }
+    );
     return data;
   } catch (error) {
     return catchError(error);
@@ -69,7 +73,7 @@ export const getActors = async (pageNo, limit) => {
       {
         headers: {
           authorization: `Bearer ${token}`,
-          'content-type': 'multipart/form-data',
+          "content-type": "multipart/form-data",
         },
       }
     );

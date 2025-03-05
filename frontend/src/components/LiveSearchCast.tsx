@@ -26,11 +26,13 @@ export default function LiveSearchCast({
   sendDataToParent,
   uniqValues,
   setUniqValues,
+  selectedActors,
+  setSelectedActors,
   ...props
 }) {
   const [displaySearch, setDisplaySearch] = useState(false);
   const [focusedIndex, setFocusedIndex] = useState(-1);
-  const [selectRes, setSelectRes] = useState([]);
+  // const [selectRes, setSelectRes] = useState([]);
   const [actors, setActors] = useState([]);
 
   const handleOnFocus = () => {
@@ -50,9 +52,10 @@ export default function LiveSearchCast({
 
   const handleSelection = (selectedItem) => {
     if (selectedItem) {
-      setSelectRes([...selectRes, selectedItem]);
+      // setSelectRes([...selectRes, selectedItem]);
+      setSelectedActors([...selectedActors, selectedItem]);
       inputRef.current.value = "";
-      setDupValues([...dupValues, selectedItem]);
+      // setDupValues([...dupValues, selectedItem]);
       onSelect(selectedItem);
       closeSearch();
     }
@@ -144,8 +147,8 @@ export default function LiveSearchCast({
             </Badge>
           ));
         })} */}
-        {uniqValues &&
-          uniqValues.map((item) => (
+        {selectedActors &&
+          selectedActors.map((item) => (
             <Badge key={item.id} variant="secondary">
               {item.name}
               <Button
@@ -154,11 +157,12 @@ export default function LiveSearchCast({
                 type="button"
                 className="ml-2 h-3 w-3"
                 onClick={() => {
-                  setUniqValues(uniqValues.filter((i) => i !== item));
-                  setDupValues(dupValues.filter((i) => i !== item));
+                  // setUniqValues(uniqValues.filter((i) => i !== item));
+                  // setDupValues(dupValues.filter((i) => i !== item));
                   // onUpdate("");
                   setValue("");
-                  setSelectRes("");
+                  // setSelectRes("");
+                  setSelectedActors(selectedActors.filter((i) => i !== item));
                 }}
               >
                 <XIcon className="w-3" />
@@ -191,7 +195,6 @@ export default function LiveSearchCast({
         renderItem={renderItem}
         // resultContainerStyle={resultContainerStyle}
         selectedResultStyle={selectedResultStyle}
-        setSelectRes={setSelectRes}
       />
     </div>
   );
@@ -205,7 +208,6 @@ const SearchResults = ({
   renderItem,
   resultContainerStyle,
   selectedResultStyle,
-  setSelectRes,
 }) => {
   const resultContainer = useRef();
 

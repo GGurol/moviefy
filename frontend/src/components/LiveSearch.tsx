@@ -18,11 +18,13 @@ function LiveSearch({
   onUpdate,
   setValue,
   form,
+  selectRes,
+  setSelectRes,
   ...props
 }) {
   const [displaySearch, setDisplaySearch] = useState(false);
   const [focusedIndex, setFocusedIndex] = useState(-1);
-  const [selectRes, setSelectRes] = useState("");
+  // const [selectRes, setSelectRes] = useState("");
 
   const handleOnFocus = () => {
     if (results.length) setDisplaySearch(true);
@@ -95,6 +97,7 @@ function LiveSearch({
                 onUpdate("");
                 setValue("");
                 setSelectRes("");
+                onSelect("");
               }}
             >
               <XIcon className="w-3" />

@@ -8,7 +8,7 @@ export default function PosterSelector({
   onChange,
   className,
   label,
-  ref,
+  // ref,
 }) {
   return (
     <div>
@@ -19,7 +19,7 @@ export default function PosterSelector({
         id={name}
         type="file"
         hidden
-        ref={ref}
+        // ref={ref}
       />
       <label htmlFor={name} tabIndex={0}>
         {selectedPoster ? (

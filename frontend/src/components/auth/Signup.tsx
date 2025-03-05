@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth, useNotification } from "../../hooks";
 import { isValidEmail } from "../../utils/helper";
 import { SignUpForm } from "../ui/SignupForm";
+import { toast } from "sonner";
 
 const validateUserInfo = ({ name, email, password }) => {
   // const isValidEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
@@ -41,8 +42,6 @@ function Signup() {
   const { authInfo } = useAuth();
   const { isLoggedIn } = authInfo;
 
-  const { updateNotification } = useNotification();
-
   const handleChange = ({ target }) => {
     // console.log(target);
     const { value, name } = target;
@@ -53,12 +52,12 @@ function Signup() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { ok, error } = validateUserInfo(userInfo);
-    if (!ok) return updateNotification("error", error);
+    if (!ok) return toast.error(error);
 
     const response = await createUser(userInfo);
     // already defined 'error', so don't use desctructuring
     console.log(response);
-    if (response.error) return updateNotification("error", response.error);
+    if (response.error) return toast.error(response.error);
     navigate("/auth/verification", {
       state: { user: response.user },
       replace: true,
@@ -73,43 +72,8 @@ function Signup() {
   }, [isLoggedIn]);
 
   return (
-    // <FormContainer>
-    //   <Container>
-    //     <form onSubmit={handleSubmit} className={commonModalClasses + ' w-72'}>
-    //       <Title>Sign up</Title>
-    //       <FormInput
-    //         value={name}
-    //         onChange={handleChange}
-    //         label='Name'
-    //         placeholder='John Doe'
-    //         name='name'
-    //       />
-    //       <FormInput
-    //         value={email}
-    //         onChange={handleChange}
-    //         label='Email'
-    //         placeholder='john@email.com'
-    //         name='email'
-    //       />
-    //       <FormInput
-    //         value={password}
-    //         onChange={handleChange}
-    //         label='Password'
-    //         placeholder='********'
-    //         name='password'
-    //         type='password'
-    //       />
-    //       <Submit value='Sign up' />
-    //       <div className='flex justify-between'>
-    //         <CustomLink to='/auth/forget-password'>Forget password</CustomLink>
-    //         <CustomLink to='/auth/signin'>Sign in</CustomLink>
-    //       </div>
-    //     </form>
-    //   </Container>
-    // </FormContainer>
-
     <FormContainer>
-      <SignUpForm />
+      <SignUpForm className="w-96" />
     </FormContainer>
   );
 }

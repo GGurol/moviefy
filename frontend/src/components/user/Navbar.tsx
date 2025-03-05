@@ -1,11 +1,12 @@
 import { BsFillSunFill } from "react-icons/bs";
 import Container from "../Container";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks";
 import AppSearchForm from "../form/AppSearchForm";
 import ThemeButton from "../ui/ThemeButton";
+import { Button } from "../ui/button";
 
-function Navbar() {
+export default function Navbar() {
   const { authInfo, handleLogout } = useAuth();
   const { isLoggedIn } = authInfo;
 
@@ -16,51 +17,29 @@ function Navbar() {
   };
 
   return (
-    <div className="bg-secondary shadow-sm shadow-gray-500">
-      <Container className="p-2">
-        <div className="flex justify-between items-center">
+    <Container>
+      <div className="flex items-center justify-between relative p-5">
+        <div>
           <Link to="/">
             <img src="./logo.png" alt="" className="sm:h-10 h-8" />
           </Link>
-          <ul className="flex items-center sm:space-x-4 space-x-2">
-            <li>
-              {/* <button
-                onClick={toggleTheme}
-                className='dark:bg-white bg-dark-subtle p-1 rounded sm:text-2xl text-lg'
-              >
-                <BsFillSunFill className='text-secondary' />
-              </button> */}
-              <ThemeButton />
-            </li>
-            <li>
-              <AppSearchForm
-                placeholder="Search"
-                inputClassName="border-dark-subtle text-white focus:border-white sm:w-auto w-40 sm:text-lg"
-                onSubmit={handleSearchSubmit}
-              />
-            </li>
-            <li>
-              {isLoggedIn ? (
-                <button
-                  onClick={handleLogout}
-                  className="font-semibold text-lg text-white"
-                >
-                  Log out
-                </button>
-              ) : (
-                <Link
-                  to="/auth/signin"
-                  className="font-semibold text-lg text-white"
-                >
-                  Login
-                </Link>
-              )}
-            </li>
-          </ul>
         </div>
-      </Container>
-    </div>
+        <div className="flex items-center gap-5">
+          <AppSearchForm
+            placeholder="Search"
+            // inputClassName="border-dark-subtle text-white focus:border-white sm:w-auto w-40 sm:text-lg"
+            onSubmit={handleSearchSubmit}
+          />
+          <ThemeButton />
+          {isLoggedIn ? (
+            <Button onClick={handleLogout}>Log out</Button>
+          ) : (
+            <NavLink to="/auth/signin">
+              <Button variant="link">Login</Button>
+            </NavLink>
+          )}
+        </div>
+      </div>
+    </Container>
   );
 }
-
-export default Navbar;

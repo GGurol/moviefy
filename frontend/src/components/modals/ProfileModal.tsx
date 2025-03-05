@@ -1,15 +1,14 @@
 import { useEffect, useState } from "react";
-import ModalContainer from "./ModalContainer";
+import { toast } from "sonner";
 import { getActorProfile } from "../../api/actor";
-import { useNotification } from "../../hooks";
+import { Dialog, DialogContent } from "../ui/dialog";
 
 function ProfileModal({ visible, profileId, onClose }) {
   const [profile, setProfile] = useState({});
-  const { updateNotification } = useNotification();
 
   const fetchActorProfile = async () => {
     const { error, actor } = await getActorProfile(profileId);
-    if (error) return updateNotification("error", error);
+    if (error) return toast.error(error);
 
     setProfile(actor);
   };
@@ -18,16 +17,25 @@ function ProfileModal({ visible, profileId, onClose }) {
     if (profileId) fetchActorProfile();
   }, [profileId]);
 
-  const { avatar, name, about } = profile;
+  const { avatar, name, about, gender } = profile;
 
   return (
-    <ModalContainer visible={visible} onClose={onClose} ignoreContainer>
-      <div className="w-72  flex flex-col items-center p-5 rounded  space-y-3">
-        <img className="w-28 h-28" src={avatar} alt="" />
-        <h1 className=" font-semibold">{name}</h1>
-        <p className=" ">{about}</p>
-      </div>
-    </ModalContainer>
+    <Dialog open={visible} onOpenChange={onClose}>
+      <DialogContent className="flex gap-2 [&>button]:hidden max-w-[600px]">
+        <div className="w-36 h-36 aspect-square flex items-center justify-center ">
+          <img className="" src={avatar} alt="" />
+        </div>
+        <div className="overflow-auto">
+          <div className="mb-1">
+            <p className="capitalize ">{name}</p>
+            <p className="capitalize text-muted-foreground  text-xs">
+              {gender}
+            </p>
+          </div>
+          <p className="text-xs">{about}</p>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }
 

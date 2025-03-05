@@ -11,55 +11,66 @@ import Movie from "../models/movie";
 import Review from "../models/review";
 import { isValidObjectId } from "mongoose";
 
-export const uploadTrailer = async (req, res) => {
-  const { file } = req;
-  if (!file) return sendError(res, "Video file is missing!");
+// export const uploadTrailer = async (req, res) => {
+//   const { file, files } = req;
+//   console.log(files);
+//   if (!file) return sendError(res, "Video file is missing!");
 
-  const { secure_url: url, public_id } = await cloudinary.uploader.upload(file.path, {
-    resource_type: "video",
-  });
+//   const { secure_url: url, public_id } = await cloudinary.uploader.upload(file.path, {
+//     resource_type: "video",
+//   });
 
-  res.status(201).json({ url, public_id });
-};
+//   res.status(201).json({ url, public_id });
+// };
 
 export const createMovie = async (req, res) => {
-  const { file, body } = req;
+  const { files, body } = req;
+  if (!files) {
+    return sendError(res, "File is missing!");
+  }
 
-  const { title, storyLine, director, releseDate, status, type, genres, tags, cast, writers, trailer, language } = body;
+  const { title, storyLine, director, releaseDate, status, type, genres, tags, cast, writer, language } = body;
 
   const newMovie = new Movie({
     title,
     storyLine,
-    releseDate,
+    releaseDate,
     status,
     type,
     genres,
     tags,
     cast,
-    trailer,
     language,
   });
 
   if (director) {
-    if (!isValidObjectId(director)) return sendError(res, "Invalid director id!");
+    if (!isValidObjectId(director)) {
+      return sendError(res, "Invalid director id!");
+    }
     newMovie.director = director;
   }
 
-  if (writers) {
-    for (let writerId of writers) {
-      if (!isValidObjectId(writerId)) return sendError(res, "Invalid writer id!");
+  if (writer) {
+    if (!isValidObjectId(writer)) {
+      return sendError(res, "Invalid writer id!");
     }
+    newMovie.writer = writer;
+  }
 
-    newMovie.writers = writers;
+  if (files.video[0]) {
+    const { secure_url: url, public_id } = await cloudinary.uploader.upload(files.video[0].path, {
+      resource_type: "video",
+    });
+    newMovie.video = { url, public_id };
   }
 
   // uploading poster
-  if (file) {
+  if (files.poster[0]) {
     const {
       secure_url: url,
       public_id,
       responsive_breakpoints,
-    } = await cloudinary.uploader.upload(file.path, {
+    } = await cloudinary.uploader.upload(files.poster[0].path, {
       transformation: {
         width: 1280,
         height: 720,
@@ -92,49 +103,49 @@ export const createMovie = async (req, res) => {
   res.status(201).json({ movie: { id: newMovie._id, title } });
 };
 
-export const updateMovieWithoutPoster = async (req, res) => {
-  const { movieId } = req.params;
+// export const updateMovieWithoutPoster = async (req, res) => {
+//   const { movieId } = req.params;
 
-  if (!isValidObjectId(movieId)) return sendError(res, "Invalid movie id!");
+//   if (!isValidObjectId(movieId)) return sendError(res, "Invalid movie id!");
 
-  const movie = await Movie.findById(movieId);
-  if (!movie) return sendError(res, "Movie not found!", 404);
+//   const movie = await Movie.findById(movieId);
+//   if (!movie) return sendError(res, "Movie not found!", 404);
 
-  const { title, storyLine, director, releseDate, status, type, genres, tags, cast, writers, trailer, language } =
-    req.body;
+//   const { title, storyLine, director, releseDate, status, type, genres, tags, cast, writers, trailer, language } =
+//     req.body;
 
-  movie.title = title;
-  movie.storyLine = storyLine;
-  movie.releseDate = releseDate;
-  movie.status = status;
-  movie.type = type;
-  movie.genres = genres;
-  movie.tags = tags;
-  movie.cast = cast;
-  movie.trailer = trailer;
-  movie.language = language;
+//   movie.title = title;
+//   movie.storyLine = storyLine;
+//   movie.releseDate = releseDate;
+//   movie.status = status;
+//   movie.type = type;
+//   movie.genres = genres;
+//   movie.tags = tags;
+//   movie.cast = cast;
+//   movie.trailer = trailer;
+//   movie.language = language;
 
-  if (director) {
-    if (!isValidObjectId(director)) return sendError(res, "Invalid director id!");
-    movie.director = director;
-  }
+//   if (director) {
+//     if (!isValidObjectId(director)) return sendError(res, "Invalid director id!");
+//     movie.director = director;
+//   }
 
-  if (writers) {
-    for (let writerId of writers) {
-      if (!isValidObjectId(writerId)) return sendError(res, "Invalid writer id!");
-    }
+//   if (writers) {
+//     for (let writerId of writers) {
+//       if (!isValidObjectId(writerId)) return sendError(res, "Invalid writer id!");
+//     }
 
-    movie.writers = writers;
-  }
+//     movie.writers = writers;
+//   }
 
-  await movie.save();
+//   await movie.save();
 
-  res.json({ message: "Movie is updated", movie });
-};
+//   res.json({ message: "Movie is updated", movie });
+// };
 
 export const updateMovie = async (req, res) => {
   const { movieId } = req.params;
-  const { file } = req;
+  const { files } = req;
 
   if (!isValidObjectId(movieId)) return sendError(res, "Invalid movie id!");
 
@@ -143,12 +154,11 @@ export const updateMovie = async (req, res) => {
   const movie = await Movie.findById(movieId);
   if (!movie) return sendError(res, "Movie not found!", 404);
 
-  const { title, storyLine, director, releseDate, status, type, genres, tags, cast, writers, trailer, language } =
-    req.body;
+  const { title, storyLine, director, releaseDate, status, type, genres, tags, cast, writer, language } = req.body;
 
   movie.title = title;
   movie.storyLine = storyLine;
-  movie.releseDate = releseDate;
+  movie.releaseDate = releaseDate;
   movie.status = status;
   movie.type = type;
   movie.genres = genres;
@@ -161,17 +171,26 @@ export const updateMovie = async (req, res) => {
     movie.director = director;
   }
 
-  if (writers) {
-    for (let writerId of writers) {
-      if (!isValidObjectId(writerId)) return sendError(res, "Invalid writer id!");
+  if (writer) {
+    if (!isValidObjectId(writer)) return sendError(res, "Invalid writer id!");
+    movie.writer = writer;
+  }
+
+  if (files.video[0]) {
+    const videoID = movie.video?.public_id;
+    if (videoID) {
+      const { result } = await cloudinary.uploader.destroy(videoID);
+      if (result !== "ok") return sendError(res, "Could not update video at the moment!");
     }
 
-    movie.writers = writers;
+    const { secure_url: url, public_id } = await cloudinary.uploader.upload(files.video[0].path, {
+      resource_type: "video",
+    });
+    movie.video = { url, public_id };
   }
 
   // update poster
-
-  if (file) {
+  if (files.poster[0]) {
     // removing poster from cloud if there is any
     const posterID = movie.poster?.public_id;
     if (posterID) {
@@ -184,7 +203,7 @@ export const updateMovie = async (req, res) => {
       secure_url: url,
       public_id,
       responsive_breakpoints,
-    } = await cloudinary.uploader.upload(req.file.path, {
+    } = await cloudinary.uploader.upload(files.poster[0].path, {
       transformation: {
         width: 1280,
         height: 720,
@@ -239,19 +258,19 @@ export const removeMovie = async (req, res) => {
 
   if (posterId) {
     const { result } = await cloudinary.uploader.destroy(posterId);
-    if (result !== "ok") return sendError(res, "Could not remove poster at the moment!!!");
+    if (result !== "ok") return sendError(res, "Could not remove poster at the moment!");
   }
 
   // removing trailer
-  const trailerId = movie.trailer?.public_id;
-  if (!trailerId) return sendError(res, "Could not find trailer in the cloud!");
+  const videoId = movie.video?.public_id;
+  if (!videoId) return sendError(res, "Could not find video in the cloud!");
 
-  const { result } = await cloudinary.uploader.destroy(trailerId, {
+  const { result } = await cloudinary.uploader.destroy(videoId, {
     resource_type: "video",
     //  Default: image.
   });
 
-  if (result !== "ok") return sendError(res, "Could not remove poster at the moment!");
+  if (result !== "ok") return sendError(res, "Could not remove video at the moment!");
 
   await Movie.findByIdAndDelete(movieId);
 
@@ -260,6 +279,7 @@ export const removeMovie = async (req, res) => {
 
 export const getMovies = async (req, res) => {
   const { pageNo = 0, limit = 10 } = req.query;
+  const movieCount = await Movie.countDocuments();
   const movies = await Movie.find({})
     .sort({ createdAt: -1 })
     .skip(parseInt(pageNo) * parseInt(limit))
@@ -274,7 +294,7 @@ export const getMovies = async (req, res) => {
     status: movie.status,
   }));
 
-  res.json({ movies: results });
+  res.json({ movies: results, totalMovieCount: movieCount });
 };
 
 export const getMovieForUpdate = async (req, res) => {
@@ -283,7 +303,8 @@ export const getMovieForUpdate = async (req, res) => {
   if (!isValidObjectId(movieId)) return sendError(res, "Invalid movie id!");
 
   // Populating Multiple Paths in Middleware
-  const movie = await Movie.findById(movieId).populate("director writers cast.actor");
+  const movie = await Movie.findById(movieId).populate("director writer cast");
+  // console.log(movie);
 
   res.json({
     movie: {
@@ -291,19 +312,18 @@ export const getMovieForUpdate = async (req, res) => {
       title: movie.title,
       storyLine: movie.storyLine,
       poster: movie.poster?.url,
-      releseDate: movie.releseDate,
+      releaseDate: movie.releaseDate,
       status: movie.status,
       type: movie.type,
       genres: movie.genres,
       tags: movie.tags,
       language: movie.language,
       director: formateActor(movie.director),
-      writers: movie.writers.map((w) => formateActor(w)),
+      writer: formateActor(movie?.writer),
       cast: movie.cast.map((c) => ({
-        id: c.id,
-        profile: formateActor(c.actor),
-        roleAs: c.roleAs,
-        leadActor: c.leadActor,
+        profile: formateActor(c),
+        // roleAs: c.roleAs,
+        // leadActor: c.leadActor,
       })),
     },
   });
@@ -337,7 +357,7 @@ export const getLatestUploads = async (req, res) => {
     storyLine: m.storyLine,
     poster: m.poster?.url,
     responsivePosters: m.poster.responsive,
-    trailer: m.trailer?.url,
+    video: m.video?.url,
   }));
 
   res.json({ movies });
@@ -351,7 +371,7 @@ export const getSingleMovie = async (req, res) => {
 
   if (!isValidObjectId(movieId)) return sendError(res, "Invalid movie id!");
 
-  const movie = await Movie.findById(movieId).populate("director writers cast.actor");
+  const movie = await Movie.findById(movieId).populate("director writer cast");
 
   // const [aggregatedResponse] = await Review.aggregate(
   //   averageRatingPipeline(movie._id)
@@ -372,14 +392,14 @@ export const getSingleMovie = async (req, res) => {
     title,
     storyLine,
     cast,
-    writers,
+    writer,
     director,
-    releseDate,
+    releaseDate,
     genres,
     tags,
     language,
     poster,
-    trailer,
+    video,
     type,
   } = movie;
 
@@ -388,27 +408,27 @@ export const getSingleMovie = async (req, res) => {
       id,
       title,
       storyLine,
-      releseDate,
+      releaseDate,
       genres,
       tags,
       language,
       type,
       poster: poster?.url,
-      trailer: trailer?.url,
+      video: video?.url,
       cast: cast.map((c) => ({
         id: c._id,
-        profile: {
-          id: c.actor._id,
-          name: c.actor.name,
-          avatar: c.actor?.avatar?.url,
-        },
-        leadActor: c.leadActor,
-        roleAs: c.roleAs,
+        // profile: {
+        // id: c.actor._id,
+        name: c.name,
+        avatar: c.avatar?.url,
+        // },
+        // leadActor: c.leadActor,
+        // roleAs: c.roleAs,
       })),
-      writers: writers.map((w) => ({
-        id: w._id,
-        name: w.name,
-      })),
+      writer: {
+        id: writer._id,
+        name: writer.name,
+      },
       director: {
         id: director._id,
         name: director.name,
@@ -445,9 +465,9 @@ export const getRelatedMovies = async (req, res) => {
 };
 
 export const getTopRatedMovies = async (req, res) => {
-  const { type = "Film" } = req.query;
+  const { genre } = req.query;
 
-  const movies = await Movie.aggregate(topRatedMoviesPipeline(type));
+  const movies = await Movie.aggregate(topRatedMoviesPipeline(genre));
 
   const mapMovies = async (m) => {
     const reviews = await getAverageRatings(m._id);

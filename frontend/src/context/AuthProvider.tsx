@@ -1,7 +1,7 @@
-import { createContext, useEffect, useState } from 'react';
-import { getIsAuth, signInUser } from '../api/auth';
-import { useNotification } from '../hooks';
-import { useNavigate } from 'react-router-dom';
+import { createContext, useEffect, useState } from "react";
+import { getIsAuth, signInUser } from "../api/auth";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 export const AuthContext = createContext();
 
@@ -9,11 +9,10 @@ const defaultAuthInfo = {
   profile: null,
   isLoggedIn: false,
   isPending: false,
-  error: '',
+  error: "",
 };
 
 function AuthProvider({ children }) {
-  const { updateNotification } = useNotification();
   const [authInfo, setAuthInfo] = useState({
     ...defaultAuthInfo,
   });
@@ -24,28 +23,28 @@ function AuthProvider({ children }) {
     setAuthInfo({ ...authInfo, isPending: true });
     const { error, user } = await signInUser({ email, password });
     if (error) {
-      updateNotification('error', error);
+      toast.error(error);
       return setAuthInfo({ ...authInfo, isPending: false, error });
     }
 
-    navigate('/', { replace: true });
+    navigate("/", { replace: true });
     setAuthInfo({
       profile: { ...user },
       isLoggedIn: true,
       isPending: false,
-      error: '',
+      error: "",
     });
-    localStorage.setItem('auth-token', user.token);
+    localStorage.setItem("auth-token", user.token);
   };
 
   const isAuth = async () => {
-    const token = localStorage.getItem('auth-token');
+    const token = localStorage.getItem("auth-token");
     if (!token) return;
 
     setAuthInfo({ ...authInfo, isPending: true });
     const { error, user } = await getIsAuth(token);
     if (error) {
-      updateNotification('error', error);
+      toast.error(error);
       return setAuthInfo({ ...authInfo, isPending: false, error });
     }
 
@@ -53,13 +52,14 @@ function AuthProvider({ children }) {
       profile: { ...user },
       isLoggedIn: true,
       isPending: false,
-      error: '',
+      error: "",
     });
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('auth-token');
+    localStorage.removeItem("auth-token");
     setAuthInfo({ ...defaultAuthInfo });
+    navigate("/auth/signin", { replace: true });
   };
 
   useEffect(() => {

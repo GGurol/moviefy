@@ -5,6 +5,7 @@ import { getAppInfo } from "../../api/admin";
 import { useNotification } from "../../hooks";
 import MostRatedMovies from "../MostRatedMovies";
 import { Card, CardContent, CardHeader } from "../ui/card";
+import { toast } from "sonner";
 
 function Dashboard() {
   const [appInfo, setAppInfo] = useState({
@@ -13,11 +14,9 @@ function Dashboard() {
     userCount: 0,
   });
 
-  const { updateNotification } = useNotification();
-
   const fetchAppInfo = async () => {
     const { appInfo, error } = await getAppInfo();
-    if (error) return updateNotification("error", error);
+    if (error) return toast.error(error);
     setAppInfo({ ...appInfo });
   };
 

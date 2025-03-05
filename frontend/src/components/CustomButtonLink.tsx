@@ -1,7 +1,8 @@
+import { ReactNode } from "react";
 import { Button } from "./ui/button";
 
 type Props = {
-  label: string;
+  label: string | ReactNode;
   clickable: boolean;
   onClick?: () => void;
 };
@@ -13,13 +14,21 @@ function CustomButtonLink({ label, clickable = true, onClick }: Props) {
 
   if (clickable) {
     return (
-      <button onClick={onClick} className="text-blue-500 hover:underline block">
+      <Button
+        onClick={onClick}
+        variant="link"
+        className={`underline hover:no-underline text-sm p-0 capitalize`}
+      >
         {label}
-      </button>
+      </Button>
     );
   }
 
-  return <p className="">{label}</p>;
+  return (
+    <p className={`h-9 flex items-center text-sm font-medium text-primary`}>
+      {label}
+    </p>
+  );
 }
 
 export default CustomButtonLink;

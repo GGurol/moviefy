@@ -1,15 +1,17 @@
 import { useState } from "react";
-import { AiOutlineClose } from "react-icons/ai";
+import { Input } from "../ui/input";
+import { Button } from "../ui/button";
+import { X } from "lucide-react";
 
-const defaultInputStyle =
-  "dark:border-dark-subtle border-light-subtle dark:focus:border-white focus:border-primary dark:text-white text-lg";
+// const defaultInputStyle =
+//   "dark:border-dark-subtle border-light-subtle dark:focus:border-white focus:border-primary dark:text-white text-lg";
 
-function AppSearchForm({
+export default function AppSearchForm({
   showResetIcon,
   placeholder,
   onSubmit,
   onReset,
-  inputClassName = defaultInputStyle,
+  // inputClassName = defaultInputStyle,
   // inputClassName = "",
 }) {
   const [value, setValue] = useState("");
@@ -26,28 +28,24 @@ function AppSearchForm({
 
   return (
     <form className="relative" onSubmit={handleOnSubmit}>
-      <input
+      <Input
         type="text"
-        className={
-          "border-2  transition bg-transparent rounded  p-1 outline-none " +
-          inputClassName
-        }
+        className="pr-9"
         placeholder={placeholder}
         value={value}
         onChange={({ target }) => setValue(target.value)}
       />
 
-      {showResetIcon ? (
-        <button
+      {showResetIcon || value ? (
+        <Button
           onClick={handleReset}
           type="button"
-          className="absolute top-1/2 -translate-y-1/2 right-2 dark:text-white text-secondary"
+          className="absolute top-1/2 -translate-y-1/2 right-0  px-2"
+          variant="ghost"
         >
-          <AiOutlineClose />
-        </button>
+          <X />
+        </Button>
       ) : null}
     </form>
   );
 }
-
-export default AppSearchForm;
