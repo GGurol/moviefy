@@ -1,24 +1,27 @@
-function NextAndPrevButton({ onNextClick, onPrevClick, className = '' }) {
+import { Button } from "./ui/button";
+
+function NextAndPrevButton({ onNextClick, onPrevClick, className = "" }) {
   const getClasses = () => {
-    return 'flex justify-end items-center space-x-3 ';
+    return "flex justify-end items-center space-x-3 ";
   };
   return (
     <div className={getClasses() + className}>
-      <Button onClick={onPrevClick} title='Prev' />
-      <Button onClick={onNextClick} title='Next' />
+      <Btn onClick={onPrevClick} title="Prev" />
+      <Btn onClick={onNextClick} title="Next" />
     </div>
   );
 }
 
-const Button = ({ title, onClick }) => {
+const Btn = ({ title, onClick }) => {
   return (
-    <button
-      type='button'
-      className='text-primary dark:text-white hover:underline'
+    <Button
+      type="button"
+      className="hover:underline"
+      variant="secondary"
       onClick={onClick}
     >
       {title}
-    </button>
+    </Button>
   );
 };
 

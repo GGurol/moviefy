@@ -36,7 +36,7 @@ import {
 } from "../ui/dialog";
 
 let currentPageNo = 0;
-const limit = 10;
+const limit = 12;
 
 export default function Actors() {
   const [actors, setActors] = useState([]);
@@ -130,7 +130,7 @@ export default function Actors() {
         </div>
         <NotFoundText text="No Actors Found" visible={resultNotFound} />
 
-        <div className="grid grid-cols-4 gap-5">
+        <div className="grid grid-cols-3 gap-5">
           {results.length || resultNotFound
             ? results.map((actor) => (
                 <ActorProfile
@@ -217,22 +217,23 @@ const ActorProfile = ({
   return (
     <>
       <Card
-        className="flex rounded-md gap-2  hover:bg-muted relative h-20 overflow-hidden"
+        className="flex rounded-md gap-2  hover:bg-muted relative h-32 overflow-hidden"
         onMouseEnter={handleOnMouseEnter}
         onMouseLeave={handleOnMouseLeave}
       >
         <CardHeader className="p-0">
-          <CardTitle className="w-20">
+          <CardTitle className="w-32 h-32">
             <img
               src={avatar}
               alt={name}
-              className="w-full aspect-square object-cover rounded-l-md"
+              // className="w-full aspect-square object-cover rounded-l-md"
+              className="w-full h-full aspect-square object-cover rounded-l-md"
             />
           </CardTitle>
         </CardHeader>
-        <CardContent className="p-0 py-1">
+        <CardContent className="px-1 py-1 flex flex-col gap-1">
           <div className="capitalize">{getName(name)}</div>
-          <CardDescription> {about.substring(0, 50)}</CardDescription>
+          <CardDescription> {about.substring(0, 120)}</CardDescription>
         </CardContent>
         {showOptions && (
           <div className="absolute inset-0 backdrop-blur-md flex justify-center items-center space-x-5">
