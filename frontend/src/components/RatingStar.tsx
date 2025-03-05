@@ -21,7 +21,7 @@ export default function RatingStar({ rating, className = "" }) {
       }
     >
       <span>{rating}</span>
-      <Star fill="var(--rating-color)" strokeWidth={0} size={20} />
+      <Star fill="var(--rating-color)" strokeWidth={0} size={15} />
     </p>
   );
 }

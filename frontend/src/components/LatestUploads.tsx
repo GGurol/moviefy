@@ -7,7 +7,7 @@ import UpdateMovie from "./modals/UpdateMovie";
 import { Card, CardContent, CardHeader } from "./ui/card";
 
 const pageNo = 0;
-const limit = 5;
+const limit = 3;
 
 function LatestUploads() {
   const [movies, setMovies] = useState([]);
@@ -19,10 +19,10 @@ function LatestUploads() {
   const { fetchLatestUploads, latestUploads } = useMovies();
 
   useEffect(() => {
-    fetchLatestUploads();
+    fetchLatestUploads(limit);
   }, []);
 
-  const handleUIUpdate = () => fetchLatestUploads();
+  const handleUIUpdate = () => fetchLatestUploads(limit);
 
   return (
     <Card className="">

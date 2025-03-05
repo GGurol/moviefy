@@ -29,14 +29,14 @@ function MostRatedMovies() {
         Most Rated Movies
       </CardHeader>
       <CardContent>
-        <ul className="space-y-3">
+        <ul className="space-y-7">
           {movies.map((movie) => {
             return (
               <li key={movie.id}>
                 <h1 className="font-semibold">{movie.title}</h1>
-                <div className="flex gap-6 text-sm items-center">
+                <div className="flex gap-6 text-sm items-center justify-between">
                   <RatingStar rating={movie.reviews?.ratingAvg} />
-                  <p className="">
+                  <p className="text-muted-foreground ">
                     {convertReviewCount(movie.reviews?.reviewCount)} reviews
                   </p>
                 </div>

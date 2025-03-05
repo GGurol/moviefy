@@ -86,7 +86,7 @@ export default function Header() {
               <DialogTrigger className="gap-4" asChild>
                 <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
                   <Users size="20" />
-                  <span>Create actors</span>
+                  <span>Create Actor</span>
                 </DropdownMenuItem>
               </DialogTrigger>
               <DialogContent
@@ -112,7 +112,7 @@ export default function Header() {
                   onSelect={(e) => e.preventDefault()}
                 >
                   <Clapperboard size="20" />
-                  <span>Create movies</span>
+                  <span>Create Movie</span>
                 </DropdownMenuItem>
               </DialogTrigger>
               <DialogContent

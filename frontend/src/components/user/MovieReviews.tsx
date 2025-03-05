@@ -118,7 +118,7 @@ export default function MovieReviews() {
 
           <div className="flex gap-4">
             <CustomButtonLink
-              label={"Back to movie"}
+              label={"Back"}
               onClick={() => navigate(`/movie/${movieId}`)}
             />
             {profileId ? (

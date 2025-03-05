@@ -149,9 +149,10 @@ export default function SingleMovie() {
 
         <div className="mt-10 bg-muted p-4 rounded-md">
           <div className="space-y-3">
-            <ListWithLabel label="Description:">
+            {/* <ListWithLabel label="Description:">
               <CustomButtonLink label={storyLine} clickable={false} />
-            </ListWithLabel>
+            </ListWithLabel> */}
+            <p className="text-muted-foreground">{storyLine}</p>
 
             <ListWithLabel label="Director:">
               <CustomButtonLink
