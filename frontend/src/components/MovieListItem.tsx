@@ -56,16 +56,17 @@ const MovieListItem = ({ movie, afterDelete, afterUpdate }) => {
   const [busy, setBusy] = useState(false);
   const [selectedMovieId, setSelectedMovieId] = useState(null);
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const handleOnDeleteConfirm = async () => {
     setBusy(true);
     const { error, message } = await deleteMovie(movie.id);
     setBusy(false);
 
-    if (error) return toast.error(error);
+    if (error) return toast.error(t(error));
 
     hideConfirmModal();
-    toast.success(message);
+    toast.success(t(message));
     afterDelete(movie);
   };
 
@@ -93,8 +94,8 @@ const MovieListItem = ({ movie, afterDelete, afterUpdate }) => {
     const { error, message } = await deleteMovie(movie.id);
     setBusy(false);
 
-    if (error) return toast.error(error);
-    toast.success(message);
+    if (error) return toast.error(t(error));
+    toast.success(t(message));
     setOpenDialog(false);
     afterDelete(movie);
   };

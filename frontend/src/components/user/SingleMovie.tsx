@@ -69,7 +69,7 @@ export default function SingleMovie() {
     const { error, movie }: { error: string; movie: SingleMovieObj } =
       await getSingleMovie(movieId);
     if (error) {
-      return toast.error(error);
+      return toast.error(t(error));
     }
 
     setReady(true);

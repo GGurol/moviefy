@@ -76,8 +76,8 @@ export default function MovieListColumnAction({ movieId }) {
     // await new Promise((resolve) => setTimeout(resolve, 3000));
     setBusy(false);
 
-    if (error) return toast.error(error);
-    toast.success(message);
+    if (error) return toast.error(t(error));
+    toast.success(t(message));
     setOpenDialog(false);
     handleUIUpdate();
   };

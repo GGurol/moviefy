@@ -4,25 +4,27 @@ import MovieForm from "../admin/MovieForm";
 import ModalContainer from "./ModalContainer";
 import { useEffect } from "react";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 function UpdateMovie({ visible, onSuccess, movieId }) {
   const [busy, setBusy] = useState(false);
   const [ready, setReady] = useState(false);
   const [selectedMovie, setSelectedMovie] = useState(null);
+  const { t } = useTranslation();
 
   const handleSubmit = async (data) => {
     setBusy(true);
     const { error, movie, message } = await updateMovie(movieId, data);
     setBusy(false);
-    if (error) return toast.error(error);
+    if (error) return toast.error(t(error));
 
-    toast.success(message);
+    toast.success(t(message));
     onSuccess(movie);
   };
 
   const fetchMovieToUpdate = async () => {
     const { movie, error } = await getMovieForUpdate(movieId);
-    if (error) return toast.error(error);
+    if (error) return toast.error(t(error));
     setSelectedMovie(movie);
     setReady(true);
   };

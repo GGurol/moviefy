@@ -34,7 +34,7 @@ function ConfirmPassword() {
     if (error) {
       navigate("/auth/reset-password", { replace: true });
 
-      return toast.error(error);
+      return toast.error(t(error));
     }
 
     if (!valid) {
@@ -65,9 +65,9 @@ function ConfirmPassword() {
       token,
     });
 
-    if (error) return toast.error(error);
+    if (error) return toast.error(t(error));
 
-    toast.success(message);
+    toast.success(t(message));
     navigate("/auth/signin", { replace: true });
 
     // console.log(password);

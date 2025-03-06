@@ -52,7 +52,7 @@ export default function Actors() {
 
   const fetchActors = async (pageNo) => {
     const { profiles, error, totalActorCount } = await getActors(pageNo, limit);
-    if (error) return toast.error(error);
+    if (error) return toast.error(t(error));
     if (currentPageNo === 0) {
       setNoPrev(true);
     }
@@ -121,7 +121,7 @@ export default function Actors() {
       return toast.error(t("Failed to delete an actor"));
     }
 
-    toast.success(message);
+    toast.success(t(message));
     setOpenAlertModal(false);
     fetchActors(currentPageNo);
   };

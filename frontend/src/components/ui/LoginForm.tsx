@@ -62,7 +62,7 @@ export function LoginForm({
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { ok, error } = validateUserInfo(userInfo);
-    if (!ok) return toast.error(error);
+    if (!ok) return toast.error(t(error as string));
     handleLogin(userInfo.email, userInfo.password);
   };
   return (

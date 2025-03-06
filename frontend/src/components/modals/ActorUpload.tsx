@@ -13,7 +13,7 @@ function ActorUpload({ visible, onClose, setOpen }) {
     const { error, actor } = await createActor(data);
     setBusy(false);
     if (error) {
-      return toast.error(error);
+      return toast.error(t(error));
     }
     setOpen(false);
 

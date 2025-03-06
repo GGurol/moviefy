@@ -12,7 +12,7 @@ export default function MostRatedMovies() {
 
   const fetchMostRatedMovies = async () => {
     const { error, movies } = await getMostRatedMovies();
-    if (error) toast.error(error);
+    if (error) toast.error(t(error));
 
     const sorted = movies.sort(
       (a, b) => Number(b.reviews.ratingAvg) - Number(a.reviews.ratingAvg)

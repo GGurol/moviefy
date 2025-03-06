@@ -1,6 +1,7 @@
 import { createContext, useState } from "react";
 import { useNotification } from "../hooks";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 export const SearchContext = createContext();
 
@@ -18,10 +19,11 @@ function SearchProvider({ children }) {
   const [searching, setSearching] = useState(false);
   const [results, setResults] = useState([]);
   const [resultNotFound, setResultNotFound] = useState(false);
+  const { t } = useTranslation();
 
   const search = async (method, query, body, updaterFun) => {
     const { error, results } = await method(query, body);
-    if (error) return toast.error(error);
+    if (error) return toast.error(t(error));
 
     if (!results.length) {
       setResults([]);

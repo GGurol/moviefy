@@ -78,16 +78,16 @@ function CastForm({
     onSelect(selectedActors.map((e) => e.id));
   }, [JSON.stringify(selectedActors)]);
 
-  const handleSubmit = () => {
-    const { profile, roleAs } = castInfo;
-    if (!profile.name) return toast.error("Cast profile is missing!");
-    if (!roleAs.trim()) return toast.error("Cast role is missing!");
+  // const handleSubmit = () => {
+  //   const { profile, roleAs } = castInfo;
+  //   if (!profile.name) return toast.error("Cast profile is missing!");
+  //   if (!roleAs.trim()) return toast.error("Cast role is missing!");
 
-    onSubmit(castInfo);
-    setCastInfo({ ...defaultCastInfo, profile: { name: "" } });
-    resetSearch();
-    setProfiles([]);
-  };
+  //   onSubmit(castInfo);
+  //   setCastInfo({ ...defaultCastInfo, profile: { name: "" } });
+  //   resetSearch();
+  //   setProfiles([]);
+  // };
 
   const handleProfileChange = ({ target }) => {
     const { value } = target;
@@ -96,7 +96,7 @@ function CastForm({
     profile.name = value;
     setCastInfo({ ...castInfo, ...profile });
     handleSearch(searchActor, value, values, setProfiles);
-    console.log("handleProfileChange", value);
+    // console.log("handleProfileChange", value);
   };
 
   const { leadActor, profile, roleAs } = castInfo;

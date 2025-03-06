@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import { Card, CardContent, CardHeader } from "../ui/card";
 import { Button } from "../ui/button";
 import { Pencil, Trash2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const getNameInitial = (name = "") => {
   return name[0].toUpperCase();
@@ -26,6 +27,7 @@ export default function MovieReviews() {
   const [busy, setBusy] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedReview, setSelectedReview] = useState(null);
+  const { t } = useTranslation();
 
   const { movieId } = useParams();
   const navigate = useNavigate();
@@ -35,7 +37,7 @@ export default function MovieReviews() {
   const fetchReviews = async () => {
     const { error, movie } = await getReviewByMovie(movieId);
 
-    if (error) return toast.error(error);
+    if (error) return toast.error(t(error));
 
     setReviews([...movie.reviews]);
     setMovieTitle(movie.title);
@@ -45,7 +47,7 @@ export default function MovieReviews() {
     if (profileOwnersReview) return setProfileOwnersReview(null);
 
     const matched = reviews.find((review) => review.owner.id === profileId);
-    if (!matched) return toast.error("You don't have any review!");
+    if (!matched) return toast.error(t("You don't have any review"));
 
     setProfileOwnersReview(matched);
   };
@@ -65,9 +67,9 @@ export default function MovieReviews() {
     setBusy(true);
     const { error, message } = await deleteReview(profileOwnersReview.id);
     setBusy(false);
-    if (error) return toast.error(error);
+    if (error) return toast.error(t(error));
 
-    toast.success(message);
+    toast.success(t(message));
 
     const updatedReviews = reviews.filter(
       (r) => r.id !== profileOwnersReview.id

@@ -20,13 +20,13 @@ import { isValidEmail } from "@/utils/helper";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 
-const validateUserInfo = ({ username, email, password }) => {
+const validateUserInfo = ({ name, email, password }) => {
   const isValidName = /^[a-z A-Z]+$/;
 
-  if (!username.trim()) {
+  if (!name.trim()) {
     return { ok: false, error: "Name is missing!" };
   }
-  if (!isValidName.test(username)) {
+  if (!isValidName.test(name)) {
     return { ok: false, error: "Name is invalid!" };
   }
 
@@ -52,7 +52,7 @@ export function SignUpForm({
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
   const [userInfo, setUserInfo] = useState({
-    username: "",
+    name: "",
     email: "",
     password: "",
   });
@@ -70,13 +70,14 @@ export function SignUpForm({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log(userInfo);
     const { ok, error } = validateUserInfo(userInfo);
-    if (!ok) return toast.error(error);
+    if (!ok) return toast.error(t(error as string));
 
     const response = await createUser(userInfo);
     // already defined 'error', so don't use desctructuring
     console.log(response);
-    if (response.error) return toast.error(response.error);
+    if (response.error) return toast.error(t(response.error));
     navigate("/auth/verification", {
       state: { user: response.user },
       replace: true,
@@ -113,13 +114,13 @@ export function SignUpForm({
               </div>
               <div className="grid gap-6">
                 <div className="grid gap-2">
-                  <Label htmlFor="username">{t("Username")}</Label>
+                  <Label htmlFor="name">{t("Username")}</Label>
                   <Input
-                    id="username"
+                    id="name"
                     type="text"
                     placeholder={t("John Doe")}
                     required
-                    name="username"
+                    name="name"
                     onChange={handleChange}
                     value={userInfo.username}
                   />

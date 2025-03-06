@@ -2,6 +2,7 @@ import { createContext, useState } from "react";
 import { useNotification } from "../hooks";
 import { getMovies } from "../api/movie";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 export const MovieContext = createContext();
 
@@ -12,17 +13,18 @@ const MoviesProvider = ({ children }) => {
   const [movies, setMovies] = useState([]);
   const [latestUploads, setLatestUploads] = useState([]);
   const [reachedToEnd, setReachedToEnd] = useState(false);
+  const { t } = useTranslation();
 
   const fetchLatestUploads = async (qty = 5) => {
     const { error, movies } = await getMovies(0, qty);
-    if (error) return toast.error(error);
+    if (error) return toast.error(t(error));
 
     setLatestUploads([...movies]);
   };
 
   const fetchMovies = async (pageNo) => {
     const { error, movies } = await getMovies(pageNo, limit);
-    if (error) return toast.error(error);
+    if (error) return toast.error(t(error));
 
     if (!movies.length) {
       currentPageNo = pageNo - 1;

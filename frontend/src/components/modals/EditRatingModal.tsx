@@ -3,6 +3,7 @@ import { toast } from "sonner";
 import { updateReview } from "../../api/review";
 import RatingForm from "../form/RatingForm";
 import { Dialog } from "../ui/dialog";
+import { useTranslation } from "react-i18next";
 
 export default function EditRatingModal({
   visible,
@@ -11,16 +12,17 @@ export default function EditRatingModal({
   initialState,
 }) {
   const [busy, setBusy] = useState(false);
+  const { t } = useTranslation();
 
   const handleSubmit = async (data) => {
     setBusy(true);
     const { error, message } = await updateReview(initialState.id, data);
     setBusy(false);
 
-    if (error) return toast.error(error);
+    if (error) return toast.error(t(error));
 
     onSuccess({ ...data });
-    toast.success(message);
+    toast.success(t(message));
     onClose();
   };
 

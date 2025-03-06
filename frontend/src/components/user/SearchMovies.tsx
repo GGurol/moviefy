@@ -21,7 +21,7 @@ function SearchMovies() {
 
   const searchMovies = async (val) => {
     const { error, results } = await searchPublicMovies(val);
-    if (error) return toast.error(error);
+    if (error) return toast.error(t(error));
 
     if (!results.length) {
       setResultNotFound(true);

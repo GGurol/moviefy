@@ -10,18 +10,18 @@ export const addReview = async (req, res) => {
 
   // if (!req.user.isVerified) return sendError(res, "Please verify your email first!");
 
-  if (!isValidObjectId(movieId)) return sendError(res, "Invalid movie!");
+  if (!isValidObjectId(movieId)) return sendError(res, "Invalid movie ID"); // Trans
 
   const movie = await Movie.findOne({ _id: movieId, status: "public" });
 
-  if (!movie) return sendError(res, "Movie not found!", 404);
+  if (!movie) return sendError(res, "Movie not found", 404); // Trans
 
   const isAlreadyReviewed = await Review.findOne({
     owner: userId,
     parentMovie: movie._id,
   });
 
-  if (isAlreadyReviewed) return sendError(res, "You have already reviewed this movie!");
+  if (isAlreadyReviewed) return sendError(res, "You have already reviewed this movie"); // Trans
 
   // create and update review
   const newReview = new Review({
@@ -40,7 +40,7 @@ export const addReview = async (req, res) => {
 
   const reviews = await getAverageRatings(movie._id);
 
-  res.json({ message: "Your review has been added.", reviews });
+  res.json({ message: "Your review has been added", reviews }); // Trans
 };
 
 export const updateReview = async (req, res) => {
@@ -48,27 +48,27 @@ export const updateReview = async (req, res) => {
   const { content, rating } = req.body;
   const userId = req.user._id;
 
-  if (!isValidObjectId(reviewId)) return sendError(res, "Invalid Review ID!");
+  if (!isValidObjectId(reviewId)) return sendError(res, "Invalid Review ID"); // Trans
 
   const review = await Review.findOne({ owner: userId, _id: reviewId });
-  if (!review) return sendError(res, "Review not found!", 404);
+  if (!review) return sendError(res, "Review not found", 404); // Trans
 
   review.content = content;
   review.rating = rating;
 
   await review.save();
 
-  res.json({ message: "Your review has been updated." });
+  res.json({ message: "Your review has been updated" }); // Trans
 };
 
 export const removeReview = async (req, res) => {
   const { reviewId } = req.params;
   const userId = req.user._id;
 
-  if (!isValidObjectId(reviewId)) return sendError(res, "Invalid Review ID!");
+  if (!isValidObjectId(reviewId)) return sendError(res, "Invalid Review ID");
 
   const review = await Review.findOne({ owner: userId, _id: reviewId });
-  if (!review) return sendError(res, "Invalid request, review not found!");
+  if (!review) return sendError(res, "Invalid request, review not found"); // Trans
 
   const movie = await Movie.findById(review.parentMovie).select("reviews");
   movie.reviews = movie.reviews.filter((rId) => rId.toString() !== reviewId);
@@ -77,13 +77,13 @@ export const removeReview = async (req, res) => {
 
   await movie.save();
 
-  res.json({ message: "Review removed successfully" });
+  res.json({ message: "Review removed successfully" }); // Trans
 };
 
 export const getReviewsByMovie = async (req, res) => {
   const { movieId } = req.params;
 
-  if (!isValidObjectId(movieId)) return sendError(res, "Invalid movie ID!");
+  if (!isValidObjectId(movieId)) return sendError(res, "Invalid movie ID"); // Trans
 
   const movie = await Movie.findById(movieId)
     .populate({

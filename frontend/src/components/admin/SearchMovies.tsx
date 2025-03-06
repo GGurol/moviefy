@@ -18,7 +18,7 @@ function SearchMovies() {
 
   const searchMovies = async (val) => {
     const { error, results } = await searchMovieForAdmin(val);
-    if (error) return toast.error(error);
+    if (error) return toast.error(t(error));
 
     if (!results.length) {
       setResultNotFound(true);

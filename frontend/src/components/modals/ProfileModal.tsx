@@ -2,13 +2,15 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { getActorProfile } from "../../api/actor";
 import { Dialog, DialogContent } from "../ui/dialog";
+import { useTranslation } from "react-i18next";
 
 function ProfileModal({ visible, profileId, onClose }) {
   const [profile, setProfile] = useState({});
+  const { t } = useTranslation();
 
   const fetchActorProfile = async () => {
     const { error, actor } = await getActorProfile(profileId);
-    if (error) return toast.error(error);
+    if (error) return toast.error(t(error));
 
     setProfile(actor);
   };

@@ -16,7 +16,7 @@ export default function Dashboard() {
 
   const fetchAppInfo = async () => {
     const { appInfo, error } = await getAppInfo();
-    if (error) return toast.error(error);
+    if (error) return toast.error(t(error));
     setAppInfo({ ...appInfo });
   };
 

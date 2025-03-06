@@ -43,12 +43,12 @@ export default function ForgetPassword() {
     // e.preventDefault();
     // if (!isValidEmail(value)) return toast.error(t("Invalid email address"));
     const { error, message } = await forgetPassword(value.email);
-    if (error) return toast.error(error);
-    toast.success(message);
+    if (error) return toast.error(t(error));
+    toast.success(t(message));
   };
 
   return (
-    <Card className="w-80 mx-auto mt-48">
+    <Card className="w-80 mx-auto mt-24">
       <CardHeader>
         <CardTitle className="text-xl">
           {t("Please Enter Your Email")}

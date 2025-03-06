@@ -10,14 +10,16 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../ui/dialog";
+import { useTranslation } from "react-i18next";
 
-function AddRatingModal({ visible, onClose, onSuccess }) {
+export default function AddRatingModal({ visible, onClose, onSuccess }) {
   const { movieId } = useParams();
+  const { t } = useTranslation();
 
   const handleSubmit = async (data) => {
     const { error, message, reviews } = await addReview(movieId, data);
-    if (error) return toast.error(error);
-    toast.success(message);
+    if (error) return toast.error(t(error));
+    toast.success(t(message));
     onSuccess(reviews);
     onClose();
   };
@@ -36,5 +38,3 @@ function AddRatingModal({ visible, onClose, onSuccess }) {
   //   </ModalContainer>
   // );
 }
-
-export default AddRatingModal;

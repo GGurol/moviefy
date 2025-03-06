@@ -73,9 +73,9 @@ export default function EmailVerification() {
   const handleOTPResend = async () => {
     const { error, message } = await resendEmailVerificationToken(user.id);
 
-    if (error) return toast.error(error);
+    if (error) return toast.error(t(error));
 
-    toast.success(message);
+    toast.success(t(message));
   };
 
   const handleKeyDown = ({ key }, index) => {
@@ -100,9 +100,9 @@ export default function EmailVerification() {
       OTP: otp.join(""),
       userId: user.id,
     });
-    if (error) return toast.error(error);
+    if (error) return toast.error(t(error));
 
-    toast.success(message);
+    toast.success(t(message));
     localStorage.setItem("auth-token", userResponse.token);
     isAuth();
   };
@@ -134,9 +134,9 @@ export default function EmailVerification() {
       userId: user.id,
     });
     if (error) {
-      return toast.error(error);
+      return toast.error(t(error));
     }
-    toast.success(message);
+    toast.success(t(message));
     localStorage.setItem("auth-token", userRep.token);
     isAuth();
   }

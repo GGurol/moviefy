@@ -17,9 +17,11 @@ import {
   CarouselPrevious,
 } from "../ui/carousel";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 export default function HeroSlidShow() {
   const [slides, setSlides] = useState<LatestMovie[]>([]);
+  const { t } = useTranslation();
 
   interface LatestMovie {
     id: string;
@@ -33,7 +35,7 @@ export default function HeroSlidShow() {
     const { error, movies }: { error: string; movies: LatestMovie[] } =
       await getLatestUploads();
     if (error) {
-      return toast.error(error);
+      return toast.error(t(error));
     }
     setSlides([...movies]);
   };
