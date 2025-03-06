@@ -13,6 +13,7 @@ import { Button } from "../ui/button";
 import { toast } from "sonner";
 import { Badge } from "../ui/badge";
 import { Card, CardContent, CardHeader } from "../ui/card";
+import { useTranslation } from "react-i18next";
 
 const convertDate = (date = "") => {
   return date.split("T")[0];
@@ -56,6 +57,7 @@ export default function SingleMovie() {
     type: "",
     reviews: {},
   });
+  const { t } = useTranslation();
 
   const { authInfo } = useAuth();
   const { isLoggedIn } = authInfo;
@@ -154,32 +156,32 @@ export default function SingleMovie() {
             </ListWithLabel> */}
             <p className="text-muted-foreground">{storyLine}</p>
 
-            <ListWithLabel label="Director:">
+            <ListWithLabel label={t("Director")}>
               <CustomButtonLink
                 label={director.name}
                 onClick={() => handleProfileClick(director)}
               />
             </ListWithLabel>
 
-            <ListWithLabel label="Writer:">
+            <ListWithLabel label={t("Writer")}>
               <CustomButtonLink
                 label={writer.name}
                 onClick={() => handleProfileClick(writer)}
               />
             </ListWithLabel>
 
-            <ListWithLabel label="Language:">
+            <ListWithLabel label={t("Language")}>
               <CustomButtonLink label={language} clickable={false} />
             </ListWithLabel>
 
-            <ListWithLabel label="Release Date:">
+            <ListWithLabel label={t("Release Date")}>
               <CustomButtonLink
                 label={convertDate(releaseDate)}
                 clickable={false}
               />
             </ListWithLabel>
 
-            <ListWithLabel label="Genres:">
+            <ListWithLabel label={t("Genres")}>
               {genres.map((g) => (
                 <CustomButtonLink
                   label={<Badge>{g}</Badge>}
@@ -189,7 +191,7 @@ export default function SingleMovie() {
               ))}
             </ListWithLabel>
 
-            <ListWithLabel label="Type:">
+            <ListWithLabel label={t("Type")}>
               <CustomButtonLink label={type} clickable={false} />
             </ListWithLabel>
           </div>
@@ -202,16 +204,16 @@ export default function SingleMovie() {
         <div className="mt-10 bg-muted p-4 rounded-md flex flex-col items-center">
           {/* <div className="flex flex-col items-end"> */}
           <div className="flex items-center gap-2 text-muted-foreground">
-            <p>Rating:</p>
+            <p>{t("Rating")}</p>
             <RatingStar rating={reviews.ratingAvg} />
           </div>
 
           <CustomButtonLink
-            label={convertReviewCount(reviews.reviewCount) + " Reviews"}
+            label={convertReviewCount(reviews.reviewCount) + t(" Reviews")}
             onClick={() => navigate("/movie/reviews/" + id)}
           />
           <CustomButtonLink
-            label="Rate The Movie"
+            label={t("Rate The Movie")}
             onClick={handleOnRateMovie}
           />
         </div>
@@ -246,9 +248,10 @@ const ListWithLabel = ({ label, children }) => {
 };
 
 const CastProfiles = ({ cast, handleProfileClick }) => {
+  const { t } = useTranslation();
   return (
     <div className="">
-      <p className="text-muted-foreground mb-3">Leader Actors:</p>
+      <p className="text-muted-foreground mb-3">{t("Leader Actors")}</p>
       <div className="flex flex-wrap gap-4 ">
         {cast.map((e) => {
           return (

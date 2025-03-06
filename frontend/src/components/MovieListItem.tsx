@@ -48,6 +48,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "./ui/dialog";
+import { useTranslation } from "react-i18next";
 
 const MovieListItem = ({ movie, afterDelete, afterUpdate }) => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
@@ -130,6 +131,7 @@ const MovieCard = ({
   const { poster, title, responsivePosters, genres = [], status } = movie;
   const [openDelete, setOpenDelete] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
+  const { t } = useTranslation();
 
   return (
     <Card className="rounded-sm flex items-center">
@@ -164,7 +166,7 @@ const MovieCard = ({
                   <FolderOpen strokeWidth={0.75} size={20} />
                 </TooltipTrigger>
                 <TooltipContent>
-                  <span>Public</span>
+                  <span>{t("Public")}</span>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
@@ -175,7 +177,7 @@ const MovieCard = ({
                   <FolderLock strokeWidth={0.75} size={20} />
                 </TooltipTrigger>
                 <TooltipContent>
-                  <span>Private</span>
+                  <span>{t("Private")}</span>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
@@ -194,15 +196,15 @@ const MovieCard = ({
                 </button>
               </TooltipTrigger>
               <TooltipContent>
-                <span>Delete</span>
+                <span>{t("Delete")}</span>
               </TooltipContent>
             </Tooltip>
             <AlertDialog open={openDelete}>
               <AlertDialogContent>
                 <AlertDialogHeader>
-                  <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                  <AlertDialogTitle>{t("Are you sure?")}</AlertDialogTitle>
                   <AlertDialogDescription>
-                    This action will remove this movie permanently!
+                    {t("This action will remove this movie permanently!")}
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
@@ -210,7 +212,7 @@ const MovieCard = ({
                     disabled={busy}
                     onClick={() => setOpenDelete(false)}
                   >
-                    Cancel
+                    {t("Cancel")}
                   </AlertDialogCancel>
                   <AlertDialogAction
                     onClick={() => {
@@ -220,7 +222,7 @@ const MovieCard = ({
                     disabled={busy}
                   >
                     <span className="w-12 flex items-center justify-center">
-                      {busy ? <Loader className="animate-spin" /> : "Delete"}
+                      {busy ? <Loader className="animate-spin" /> : t("Delete")}
                     </span>
                   </AlertDialogAction>
                 </AlertDialogFooter>
@@ -237,7 +239,7 @@ const MovieCard = ({
                 </button>
               </TooltipTrigger>
               <TooltipContent>
-                <span>Edit</span>
+                <span>{t("Edit")}</span>
               </TooltipContent>
             </Tooltip>
             <Dialog open={openEdit} onOpenChange={setOpenEdit}>
@@ -248,9 +250,9 @@ const MovieCard = ({
                 }}
               >
                 <DialogHeader>
-                  <DialogTitle>Update Actor</DialogTitle>
+                  <DialogTitle>{t("Update Movie")}</DialogTitle>
                   <DialogDescription>
-                    Submit to update an actor.
+                    {t("Submit to update a movie")}
                   </DialogDescription>
                 </DialogHeader>
                 <UpdateMovie movieId={movie.id} />
@@ -267,7 +269,7 @@ const MovieCard = ({
                 </button>
               </TooltipTrigger>
               <TooltipContent>
-                <span>Open</span>
+                <span>{t("Open")}</span>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>

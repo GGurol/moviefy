@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Button } from "./ui/button";
 
 function NextAndPrevButton({
@@ -19,6 +20,7 @@ function NextAndPrevButton({
 }
 
 const Btn = ({ title, onClick, disabled }) => {
+  const { t } = useTranslation();
   return (
     <Button
       type="button"
@@ -27,7 +29,7 @@ const Btn = ({ title, onClick, disabled }) => {
       onClick={onClick}
       disabled={disabled}
     >
-      {title}
+      {t(title)}
     </Button>
   );
 };

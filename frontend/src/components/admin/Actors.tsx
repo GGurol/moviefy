@@ -34,6 +34,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
+import { useTranslation } from "react-i18next";
 
 let currentPageNo = 0;
 const limit = 9;
@@ -47,6 +48,7 @@ export default function Actors() {
   const { handleSearch, resetSearch, resultNotFound } = useSearch();
   const [noNext, setNoNext] = useState(false);
   const [noPrev, setNoPrev] = useState(false);
+  const { t } = useTranslation();
 
   const fetchActors = async (pageNo) => {
     const { profiles, error, totalActorCount } = await getActors(pageNo, limit);
@@ -116,7 +118,7 @@ export default function Actors() {
     setBusy(false);
 
     if (error) {
-      return toast.error("Failed to delete an actor.");
+      return toast.error(t("Failed to delete an actor"));
     }
 
     toast.success(message);
@@ -135,11 +137,11 @@ export default function Actors() {
           <AppSearchForm
             onReset={handleSearchFormReset}
             onSubmit={handleOnSearchSubmit}
-            placeholder="Search Actors..."
+            placeholder={t("Search Actors...")}
             showResetIcon={results.length || resultNotFound}
           />
         </div>
-        <NotFoundText text="No Actors Found" visible={resultNotFound} />
+        <NotFoundText text={t("No Actors Found")} visible={resultNotFound} />
 
         <div className="grid grid-cols-3 gap-5">
           {results.length || resultNotFound
@@ -194,6 +196,7 @@ const ActorProfile = ({
 }) => {
   const [showOptions, setShowOptions] = useState(false);
   const acceptedNameLength = 15;
+  const { t } = useTranslation();
 
   const handleOnMouseEnter = () => {
     setShowOptions(true);
@@ -268,9 +271,9 @@ const ActorProfile = ({
                 }}
               >
                 <DialogHeader>
-                  <DialogTitle>Update Actor</DialogTitle>
+                  <DialogTitle>{t("Update Actor")}</DialogTitle>
                   <DialogDescription>
-                    Submit to update an actor.
+                    {t("Submit to update an actor.")}
                   </DialogDescription>
                 </DialogHeader>
                 <UpdateActor
@@ -297,9 +300,9 @@ const ActorProfile = ({
               </AlertDialogTrigger>
               <AlertDialogContent>
                 <AlertDialogHeader>
-                  <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                  <AlertDialogTitle>{t("Are you sure?")}</AlertDialogTitle>
                   <AlertDialogDescription>
-                    This action will remove this actor permanently!
+                    {t("This action will remove this actor permanently!")}
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
@@ -307,7 +310,7 @@ const ActorProfile = ({
                     disabled={busy}
                     onClick={() => setOpenAlertModal(false)}
                   >
-                    Cancel
+                    {t("Cancel")}
                   </AlertDialogCancel>
                   <AlertDialogAction
                     onClick={() => {
@@ -317,7 +320,7 @@ const ActorProfile = ({
                     className={buttonVariants({ variant: "destructive" })}
                   >
                     <span className="w-12 flex items-center justify-center">
-                      {busy ? <Loader className="animate-spin" /> : "Delete"}
+                      {busy ? <Loader className="animate-spin" /> : t("Delete")}
                     </span>
                   </AlertDialogAction>
                 </AlertDialogFooter>

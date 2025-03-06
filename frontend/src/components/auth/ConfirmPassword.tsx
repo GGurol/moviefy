@@ -10,6 +10,7 @@ import { FaSpinner } from "react-icons/fa";
 import { resetPassword, verifyPasswordResetToken } from "../../api/auth";
 import { useNotification } from "../../hooks";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 function ConfirmPassword() {
   const [password, setPassword] = useState({
@@ -22,6 +23,7 @@ function ConfirmPassword() {
   const token = searchParams.get("token");
   const id = searchParams.get("id");
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   useEffect(() => {
     isValidToken();
@@ -52,11 +54,11 @@ function ConfirmPassword() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!password.one.trim()) return toast.error("Password is missing!");
+    if (!password.one.trim()) return toast.error(t("Password is missing"));
     if (password.one.trim().length < 8)
-      return toast.error("Password must be 8 characters!");
+      return toast.error(t("Password must be at least 8 characters"));
     if (password.one !== password.two)
-      return toast.error("Password does not match!");
+      return toast.error(t("Password does not match"));
 
     const { error, message } = await resetPassword({
       newPassword: password.one,

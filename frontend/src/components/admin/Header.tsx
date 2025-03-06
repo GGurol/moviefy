@@ -24,8 +24,9 @@ import { Input } from "../ui/input";
 import { SidebarTrigger } from "../ui/sidebar";
 import ThemeButton from "../ui/ThemeButton";
 import MovieForm from "./MovieForm";
-import i18n from "i18next";
+// import i18n from "i18next";
 import { useTranslation } from "react-i18next";
+import i18n from "@/utils/i18n";
 
 export default function Header() {
   const [search, setSearch] = useState("");

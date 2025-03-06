@@ -30,6 +30,7 @@ import { forwardRef, useEffect, useRef, useState } from "react";
 import { deleteMovie } from "@/api/movie";
 import { toast } from "sonner";
 import { useMovies } from "@/hooks";
+import { useTranslation } from "react-i18next";
 
 export default function MovieListColumnAction({ movieId }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -39,6 +40,7 @@ export default function MovieListColumnAction({ movieId }) {
   const [openEditDialog, setOpenEditDialog] = useState(false);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [busy, setBusy] = useState(false);
+  const { t } = useTranslation();
 
   const { fetchLatestUploads, latestUploads } = useMovies();
 
@@ -107,7 +109,7 @@ export default function MovieListColumnAction({ movieId }) {
         <DropdownMenuItem>
           <div className="flex items-center gap-3 w-full">
             <ExternalLink strokeWidth={0.9} size={20} />
-            <span>Open</span>
+            <span>{t("Open")}</span>
           </div>
         </DropdownMenuItem>
         {/* <Dialog>
@@ -116,7 +118,7 @@ export default function MovieListColumnAction({ movieId }) {
           triggerChildren={
             <div className="flex items-center gap-3">
               <Pencil strokeWidth={0.9} size={20} />
-              <span>Edit</span>
+              <span>{t("Edit")}</span>
             </div>
           }
           // onSelect={handleDialogItemSelect}
@@ -125,7 +127,7 @@ export default function MovieListColumnAction({ movieId }) {
           className="w-[900px]"
         >
           {/* <DialogHeader> */}
-          <DialogTitle>Edit Movie</DialogTitle>
+          <DialogTitle>{t("Edit Movie")}</DialogTitle>
           {/* </DialogHeader> */}
           <UpdateMovie movieId={movieId} />
         </DialogItem>
@@ -146,7 +148,7 @@ export default function MovieListColumnAction({ movieId }) {
           triggerChildren={
             <div className="flex items-center gap-3">
               <Trash2 strokeWidth={0.9} size={20} />
-              <span>Delete</span>
+              <span>{t("Delete")}</span>
             </div>
           }
           // onSelect={handleDialogItemSelect}
@@ -156,9 +158,9 @@ export default function MovieListColumnAction({ movieId }) {
           className="w-[500px]"
         >
           <DialogHeader>
-            <DialogTitle>Are you sure?</DialogTitle>
+            <DialogTitle>{t("Are you sure?")}</DialogTitle>
             <DialogDescription>
-              This action will remove this movie permanently!
+              {t("This action will remove this movie permanently!")}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -167,7 +169,7 @@ export default function MovieListColumnAction({ movieId }) {
               onClick={() => setOpenDeleteDialog(false)}
               variant="secondary"
             >
-              Cancel
+              {t("Cancel")}
             </Button>
             <Button
               onClick={() => {
@@ -177,7 +179,7 @@ export default function MovieListColumnAction({ movieId }) {
               disabled={busy}
             >
               <span className="w-12 flex items-center justify-center">
-                {busy ? <Loader className="animate-spin" /> : "Delete"}
+                {busy ? <Loader className="animate-spin" /> : t("Delete")}
               </span>
             </Button>
           </DialogFooter>

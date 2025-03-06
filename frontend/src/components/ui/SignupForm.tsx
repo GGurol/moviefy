@@ -18,6 +18,7 @@ import { useAuth, useNotification } from "@/hooks";
 import { useNavigate } from "react-router-dom";
 import { isValidEmail } from "@/utils/helper";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 const validateUserInfo = ({ username, email, password }) => {
   const isValidName = /^[a-z A-Z]+$/;
@@ -81,6 +82,7 @@ export function SignUpForm({
       replace: true,
     });
   };
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (isLoggedIn) navigate("/");
@@ -90,8 +92,10 @@ export function SignUpForm({
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
         <CardHeader className="text-center">
-          <CardTitle className="text-xl">Welcome</CardTitle>
-          <CardDescription>Sign up with your Google account</CardDescription>
+          <CardTitle className="text-xl">{t("Welcome")}</CardTitle>
+          <CardDescription>
+            {t("Sign up with your Google account")}
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit}>
@@ -99,27 +103,27 @@ export function SignUpForm({
               <div className="flex flex-col gap-4">
                 <Button variant="outline" className="w-full">
                   <BsGoogle />
-                  Sign up with Google
+                  {t("Sign up with Google")}
                 </Button>
               </div>
               <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
                 <span className="relative z-10 bg-background px-2 text-muted-foreground">
-                  Or continue with
+                  {t("Or continue with email")}
                 </span>
               </div>
               <div className="grid gap-6">
                 <div className="grid gap-2">
-                  <Label htmlFor="username">Username</Label>
+                  <Label htmlFor="username">{t("Username")}</Label>
                   <Input
                     id="username"
                     type="text"
-                    placeholder="John Doe"
+                    placeholder={t("John Doe")}
                     required
                     name="username"
                     onChange={handleChange}
                     value={userInfo.username}
                   />
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="email">{t("Email")}</Label>
                   <Input
                     id="email"
                     type="email"
@@ -132,7 +136,7 @@ export function SignUpForm({
                 </div>
                 <div className="grid gap-2">
                   <div className="flex items-center">
-                    <Label htmlFor="password">Password</Label>
+                    <Label htmlFor="password">{t("Password")}</Label>
                   </div>
                   <Input
                     id="password"
@@ -145,12 +149,12 @@ export function SignUpForm({
                   />
                 </div>
                 <Button type="submit" className="w-full">
-                  Sign up
+                  {t("Sign up button")}
                 </Button>
               </div>
               <div className="text-center text-sm">
-                Already have an account?{" "}
-                <CustomLink to="/auth/signin">Login</CustomLink>
+                {t("Already have an account? ")}
+                <CustomLink to="/auth/signin">{t("click to login")}</CustomLink>
               </div>
             </div>
           </form>

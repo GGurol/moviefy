@@ -1,16 +1,10 @@
-import Container from "../Container";
-import FormInput from "../form/FormInput";
-import Submit from "../form/Submit";
-import Title from "../form/Title";
-import CustomLink from "../CustomLink";
-import { commonModalClasses } from "../../utils/theme";
-import FormContainer from "../form/FormContainer";
 import { useState } from "react";
-import { useAuth, useNotification } from "../../hooks";
-import { isValidEmail } from "../../utils/helper";
-import { LoginForm } from "../ui/LoginForm";
-import { GalleryVerticalEnd } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
+import { useAuth } from "../../hooks";
+import { isValidEmail } from "../../utils/helper";
+import FormContainer from "../form/FormContainer";
+import { LoginForm } from "../ui/LoginForm";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 // import { useTheme } from '../../hooks';
 
@@ -28,7 +22,7 @@ const validateUserInfo = ({ email, password }) => {
   return { ok: true };
 };
 
-function Signin() {
+export default function Signin() {
   const [userInfo, setUserInfo] = useState({
     email: "",
     password: "",
@@ -36,6 +30,7 @@ function Signin() {
 
   const { handleLogin, authInfo } = useAuth();
   const { isPending } = authInfo;
+  const { t } = useTranslation();
 
   // console.log(authInfo);
 
@@ -90,8 +85,8 @@ function Signin() {
     <FormContainer className="w-96 mx-auto">
       <Tabs defaultValue="user" className="w-[400px]">
         <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="user">User</TabsTrigger>
-          <TabsTrigger value="admin">Admin</TabsTrigger>
+          <TabsTrigger value="user">{t("User")}</TabsTrigger>
+          <TabsTrigger value="admin">{t("Admin")}</TabsTrigger>
         </TabsList>
         <TabsContent value="user">
           <LoginForm
@@ -111,5 +106,3 @@ function Signin() {
     </FormContainer>
   );
 }
-
-export default Signin;

@@ -1,17 +1,11 @@
 import { useEffect, useState } from "react";
-import { commonModalClasses } from "../../utils/theme";
-import Container from "../Container";
-import CustomLink from "../CustomLink";
-import FormContainer from "../form/FormContainer";
-import FormInput from "../form/FormInput";
-import Submit from "../form/Submit";
-import Title from "../form/Title";
-import { createUser } from "../../api/auth";
 import { useNavigate } from "react-router-dom";
-import { useAuth, useNotification } from "../../hooks";
-import { isValidEmail } from "../../utils/helper";
-import { SignUpForm } from "../ui/SignupForm";
 import { toast } from "sonner";
+import { createUser } from "../../api/auth";
+import { useAuth } from "../../hooks";
+import { isValidEmail } from "../../utils/helper";
+import FormContainer from "../form/FormContainer";
+import { SignUpForm } from "../ui/SignupForm";
 
 const validateUserInfo = ({ name, email, password }) => {
   // const isValidEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;

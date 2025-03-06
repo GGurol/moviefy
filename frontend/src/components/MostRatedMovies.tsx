@@ -4,9 +4,11 @@ import RatingStar from "./RatingStar";
 import { convertReviewCount } from "../utils/helper";
 import { Card, CardContent, CardHeader } from "./ui/card";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
-function MostRatedMovies() {
+export default function MostRatedMovies() {
   const [movies, setMovies] = useState([]);
+  const { t } = useTranslation();
 
   const fetchMostRatedMovies = async () => {
     const { error, movies } = await getMostRatedMovies();
@@ -26,7 +28,7 @@ function MostRatedMovies() {
   return (
     <Card>
       <CardHeader className="text-lg font-semibold">
-        Most Rated Movies
+        {t("Most Rated Movies")}
       </CardHeader>
       <CardContent>
         <ul className="space-y-7">
@@ -37,7 +39,8 @@ function MostRatedMovies() {
                 <div className="flex gap-6 text-sm items-center justify-between">
                   <RatingStar rating={movie.reviews?.ratingAvg} />
                   <p className="text-muted-foreground ">
-                    {convertReviewCount(movie.reviews?.reviewCount)} reviews
+                    {convertReviewCount(movie.reviews?.reviewCount)}
+                    {t(" reviews")}
                   </p>
                 </div>
               </li>
@@ -48,5 +51,3 @@ function MostRatedMovies() {
     </Card>
   );
 }
-
-export default MostRatedMovies;

@@ -1,6 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "../ui/badge";
 import MovieListColumnAction from "./MovieListColumnAction";
+import i18n from "@/utils/i18n";
 
 export type Movie = {
   poster: string;
@@ -12,7 +13,7 @@ export type Movie = {
 export const columns: ColumnDef<Movie>[] = [
   {
     accessorKey: "poster",
-    header: "Poster",
+    header: "TablePoster",
     cell: ({ row }) => {
       const value = row.getValue("poster");
       return (
@@ -24,7 +25,7 @@ export const columns: ColumnDef<Movie>[] = [
   },
   {
     accessorKey: "title",
-    header: "Title",
+    header: "TableTitle",
     cell: ({ row }) => {
       const value = row.getValue("title");
       return <div className="capitalize">{value}</div>;
@@ -32,7 +33,7 @@ export const columns: ColumnDef<Movie>[] = [
   },
   {
     accessorKey: "genres",
-    header: "Genres",
+    header: "TableGenres",
     cell: ({ row }) => {
       const value = row.getValue("genres");
       const vl = value.map((e) => {
@@ -47,7 +48,7 @@ export const columns: ColumnDef<Movie>[] = [
   },
   {
     accessorKey: "status",
-    header: "Status",
+    header: "TableStatus",
     cell: ({ row }) => {
       const value = row.getValue("status");
       return <div className="capitalize">{value}</div>;

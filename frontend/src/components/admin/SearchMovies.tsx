@@ -5,10 +5,12 @@ import { useNotification } from "../../hooks";
 import MovieListItem from "../MovieListItem";
 import NotFoundText from "../NotFoundText";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 function SearchMovies() {
   const [movies, setMovies] = useState([]);
   const [resultNotFound, setResultNotFound] = useState(false);
+  const { t } = useTranslation();
 
   const [searchParams] = useSearchParams();
 
@@ -46,7 +48,7 @@ function SearchMovies() {
 
   return (
     <div className="p-5 space-y-3">
-      <NotFoundText text="Record not found!" visible={resultNotFound} />
+      <NotFoundText text={t("Record not found")} visible={resultNotFound} />
       {!resultNotFound &&
         movies.map((movie) => {
           return (

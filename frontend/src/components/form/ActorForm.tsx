@@ -26,14 +26,14 @@ import {
   SelectValue,
 } from "../ui/select";
 import { Textarea } from "../ui/textarea";
-// import i18n from "i18next";
+import { formatBytes } from "@/utils/helper";
 
-const defaultActorInfo = {
-  name: "",
-  about: "",
-  gender: "male",
-  avatar: undefined,
-};
+// const defaultActorInfo = {
+//   name: "",
+//   about: "",
+//   gender: "male",
+//   avatar: undefined,
+// };
 
 const MAX_FILE_SIZE = 1024 * 1024 * 10;
 // const MAX_FILE_SIZE = 1024 * 10;
@@ -44,15 +44,6 @@ const ACCEPTED_IMAGE_TYPES = [
   "image/png",
   "image/webp",
 ];
-
-const formatBytes = (bytes: number, decimals = 2) => {
-  if (bytes === 0) return "0 Bytes";
-  const k = 1024;
-  const dm = decimals < 0 ? 0 : decimals;
-  const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
-};
 
 const validateAvatar = (file, ctx) => {
   // if (!file) return true;
@@ -80,8 +71,13 @@ const commonValidations = {
     .string()
     .nonempty(i18n.t("Name cannot be empty"))
     .max(50, i18n.t("Name cannot be greater than 50 characters")),
-  about: z.string().min(2).max(1000),
-  gender: z.enum(["male", "female"]),
+  about: z
+    .string()
+    .nonempty(i18n.t("About cannot be empty"))
+    .max(1000, i18n.t("About cannot be greater than 1000 characters")),
+  gender: z.enum(["male", "female"], {
+    errorMap: (issue, ctx) => ({ message: i18n.t("Gender cannot be empty") }),
+  }),
 };
 
 const formUpdateSchema = z.object({
@@ -104,9 +100,9 @@ export default function ActorForm({
   onSubmit,
   isUpdate = false,
 }) {
-  const [actorInfo, setActorInfo] = useState({
-    ...defaultActorInfo,
-  });
+  // const [actorInfo, setActorInfo] = useState({
+  //   ...defaultActorInfo,
+  // });
   const [selectedAvatarForUI, setSelectedAvatarForUI] = useState("");
   const { t } = useTranslation("translation");
 
@@ -120,10 +116,10 @@ export default function ActorForm({
     if (name === "avatar") {
       const file = files[0];
       updatePosterForUI(file);
-      return setActorInfo({ ...actorInfo, avatar: file });
+      // return setActorInfo({ ...actorInfo, avatar: file });
     }
 
-    setActorInfo({ ...actorInfo, [name]: value });
+    // setActorInfo({ ...actorInfo, [name]: value });
   };
 
   let form;
@@ -163,12 +159,12 @@ export default function ActorForm({
       form.setValue("about", initialState.about);
       form.setValue("gender", initialState.gender);
       // form.setValue("avatar", null);
-      setActorInfo({ ...initialState, avatar: null });
+      // setActorInfo({ ...initialState, avatar: null });
       setSelectedAvatarForUI(initialState.avatar);
     }
   }, [initialState]);
 
-  const { name, about, gender } = actorInfo;
+  // const { name, about, gender } = actorInfo;
 
   return (
     <Form {...form}>

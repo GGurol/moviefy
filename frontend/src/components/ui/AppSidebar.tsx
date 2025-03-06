@@ -12,20 +12,22 @@ import { Home, LogOut, MonitorPlay, UserRound } from "lucide-react";
 import { Link, NavLink } from "react-router-dom";
 import { Button } from "./button";
 import { useAuth } from "@/hooks";
+import { useTranslation } from "react-i18next";
+import i18n from "@/utils/i18n";
 
 const items = [
   {
-    title: "Home",
+    title: i18n.t("Home"),
     url: "/",
     icon: Home,
   },
   {
-    title: "Movies",
+    title: i18n.t("Movies"),
     url: "/movies",
     icon: MonitorPlay,
   },
   {
-    title: "Actors",
+    title: i18n.t("Actors"),
     url: "/actors",
     icon: UserRound,
   },
@@ -33,6 +35,7 @@ const items = [
 
 export function AppSidebar() {
   const { handleLogout } = useAuth();
+  const { t } = useTranslation();
   return (
     <Sidebar variant="inset">
       <SidebarHeader className="pl-4 mb-7">
@@ -58,7 +61,7 @@ export function AppSidebar() {
                   >
                     <div>
                       <item.icon size={18} />
-                      <span>{item.title}</span>
+                      <span>{t(item.title)}</span>
                     </div>
                   </Button>
                 </NavLink>
@@ -75,7 +78,7 @@ export function AppSidebar() {
           className="flex items-center justify-start w-full py-1 px-2"
         >
           <LogOut size={18} />
-          <span>Log out</span>
+          <span>{t("Log out")}</span>
         </Button>
       </SidebarFooter>
     </Sidebar>

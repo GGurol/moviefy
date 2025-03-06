@@ -1,4 +1,19 @@
 {
   "avatarTooLargeMessage": "Please choose an image smaller than {{maxSize}}",
-  "Please select an image file": "Please select an image file"
+  "Director": "Director:",
+  "Writer": "Writer:",
+  "Language": "Language:",
+  "Release Date": "Release Date:",
+  "Genres": "Genres:",
+  "Type": "Type:",
+  "Rating": "Rating:",
+  "Leader Actors": "Leader Actors:",
+  "TablePoster": "Poster",
+  "TableTitle": "Title",
+  "TableGenres": "Genres",
+  "TableStatus": "Status",
+  "Or continue with email": "Or continue with",
+  "Sign up button": "Sign up",
+  "click to login": "Login",
+  "Click here to sign up": "Sign up"
 }
