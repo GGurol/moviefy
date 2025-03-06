@@ -112,5 +112,11 @@
   "Please Enter Your Email": "请输入您的邮箱地址",
   "Send password reset link": "发送密码重置链接",
   "Log in": "登录",
-  "Invalid email address": "无效邮箱地址"
+  "Invalid email address": "无效邮箱地址",
+  "Enter New Password": "请输入新密码",
+  "New Password": "新密码",
+  "Confirm Password": "确认密码",
+  "Submit": "提交",
+  "Please wait we are verifying your token!": "请稍等，我们正在验证您的身份令牌！",
+  "Sorry the token is invalid!": "抱歉，您的身份令牌无效！"
 }

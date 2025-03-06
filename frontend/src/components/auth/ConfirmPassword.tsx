@@ -1,16 +1,15 @@
+import { Loader } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { commonModalClasses } from "../../utils/theme";
+import { toast } from "sonner";
+import { resetPassword, verifyPasswordResetToken } from "../../api/auth";
 import Container from "../Container";
 import FormContainer from "../form/FormContainer";
-import FormInput from "../form/FormInput";
-import Submit from "../form/Submit";
-import Title from "../form/Title";
-import { useEffect, useState } from "react";
-import { FaSpinner } from "react-icons/fa";
-import { resetPassword, verifyPasswordResetToken } from "../../api/auth";
-import { useNotification } from "../../hooks";
-import { toast } from "sonner";
-import { useTranslation } from "react-i18next";
+import { Button } from "../ui/button";
+import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
 
 function ConfirmPassword() {
   const [password, setPassword] = useState({
@@ -78,11 +77,11 @@ function ConfirmPassword() {
     return (
       <FormContainer>
         <Container>
-          <div className="flex space-x-2 items-center">
-            <h1 className="text-4xl font-semibold dark:text-white text-primary">
-              Please wait we are verifying your token!
+          <div className="flex gap-1 items-center">
+            <h1 className="text-3xl font-semibold">
+              {t("Please wait we are verifying your token!")}
             </h1>
-            <FaSpinner className="animate-spin text-4xl dark:text-white text-primary" />
+            <Loader className="animate-spin" size={30} />
           </div>
         </Container>
       </FormContainer>
@@ -92,8 +91,8 @@ function ConfirmPassword() {
     return (
       <FormContainer>
         <Container>
-          <h1 className="text-4xl font-semibold dark:text-white text-primary">
-            Sorry the token is invalid!
+          <h1 className="text-3xl font-semibold ">
+            {t("Sorry the token is invalid!")}
           </h1>
         </Container>
       </FormContainer>
@@ -101,28 +100,42 @@ function ConfirmPassword() {
 
   return (
     <FormContainer>
-      <Container>
-        <form onSubmit={handleSubmit} className={commonModalClasses + " w-96"}>
-          <Title>Enter New Password</Title>
-          <FormInput
-            value={password.one}
-            onChange={handleChange}
-            label="New Password"
-            placeholder="********"
-            name="one"
-            type="password"
-          />
-          <FormInput
-            value={password.two}
-            onChange={handleChange}
-            label="Confirm Password"
-            placeholder="********"
-            name="two"
-            type="password"
-          />
-          <Submit value="Confirm Password" />
-        </form>
-      </Container>
+      <form onSubmit={handleSubmit} className="w-80">
+        <Card>
+          <CardHeader className="font-bold">
+            {t("Enter New Password")}
+          </CardHeader>
+          <CardContent className="flex flex-col gap-6">
+            <div className="flex flex-col gap-3">
+              <Label htmlFor="one">{t("New Password")}</Label>
+              <Input
+                id="one"
+                name="one"
+                value={password.one}
+                onChange={handleChange}
+                placeholder="************"
+                type="password"
+              />
+            </div>
+            <div className="flex flex-col gap-3">
+              <Label htmlFor="two">{t("Confirm Password")}</Label>
+              <Input
+                id="two"
+                name="two"
+                value={password.two}
+                onChange={handleChange}
+                placeholder="************"
+                type="password"
+              />
+            </div>
+          </CardContent>
+          <CardFooter>
+            <Button className="w-full" type="submit">
+              {t("Submit")}
+            </Button>
+          </CardFooter>
+        </Card>
+      </form>
     </FormContainer>
   );
 }
