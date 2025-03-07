@@ -35,7 +35,9 @@ export default function MostRatedMovies() {
           {movies.map((movie) => {
             return (
               <li key={movie.id}>
-                <h1 className="font-semibold">{movie.title}</h1>
+                <h1 className="font-semibold">
+                  {t(`movies.${movie.id}.title`)}
+                </h1>
                 <div className="flex gap-6 text-sm items-center justify-between">
                   <RatingStar rating={movie.reviews?.ratingAvg} />
                   <p className="text-muted-foreground ">

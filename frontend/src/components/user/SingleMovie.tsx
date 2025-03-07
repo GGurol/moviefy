@@ -171,7 +171,7 @@ export default function SingleMovie() {
             </ListWithLabel>
 
             <ListWithLabel label={t("Language")}>
-              <CustomButtonLink label={language} clickable={false} />
+              <CustomButtonLink label={t(language)} clickable={false} />
             </ListWithLabel>
 
             <ListWithLabel label={t("Release Date")}>
@@ -184,7 +184,7 @@ export default function SingleMovie() {
             <ListWithLabel label={t("Genres")}>
               {genres.map((g) => (
                 <CustomButtonLink
-                  label={<Badge>{g}</Badge>}
+                  label={<Badge>{t(`genres.${g}` as string)}</Badge>}
                   key={g}
                   clickable={false}
                 />
@@ -192,7 +192,7 @@ export default function SingleMovie() {
             </ListWithLabel>
 
             <ListWithLabel label={t("Type")}>
-              <CustomButtonLink label={type} clickable={false} />
+              <CustomButtonLink label={t(type)} clickable={false} />
             </ListWithLabel>
           </div>
         </div>

@@ -147,12 +147,14 @@ const MovieCard = ({
       </CardHeader>
       <div className="flex items-center justify-between w-full">
         <CardContent className="p-1 overflow-auto w-72">
-          <h1 className="text-lg font-semibold capitalize">{title}</h1>
+          <h1 className="text-lg font-semibold capitalize">
+            {t(`movies.${movie.id}.title`)}
+          </h1>
           <div className="space-x-1  pb-2">
             {genres.map((g, index) => {
               return (
                 <span key={g + index} className="text-xs text-muted-foreground">
-                  {g}
+                  {t(`genres.${g}`)}
                 </span>
               );
             })}

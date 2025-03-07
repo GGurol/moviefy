@@ -196,7 +196,7 @@ const ActorProfile = ({
 }) => {
   const [showOptions, setShowOptions] = useState(false);
   const acceptedNameLength = 15;
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const handleOnMouseEnter = () => {
     setShowOptions(true);
@@ -209,7 +209,12 @@ const ActorProfile = ({
 
   if (!profile) return null;
 
-  const getName = (name) => {
+  const getName = (actor) => {
+    const nm = `actors.${actor.id}.name`;
+    let name = actor.name;
+    if (i18n.exists(nm)) {
+      name = t(nm);
+    }
     if (name.length <= acceptedNameLength) return name;
     return name.substring(0, acceptedNameLength) + "..";
   };
@@ -248,7 +253,7 @@ const ActorProfile = ({
           </CardTitle>
         </CardHeader>
         <CardContent className="px-1 py-1 flex flex-col gap-1">
-          <div className="capitalize">{getName(name)}</div>
+          <div className="capitalize">{getName(profile)}</div>
           <CardDescription> {about.substring(0, 120)}</CardDescription>
         </CardContent>
         {showOptions && (

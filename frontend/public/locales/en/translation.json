@@ -15,5 +15,168 @@
   "Or continue with email": "Or continue with",
   "Sign up button": "Sign up",
   "click to login": "Login",
-  "Click here to sign up": "Sign up"
+  "Click here to sign up": "Sign up",
+  "genres": {
+    "Action": "Action",
+    "Adventure": "Adventure",
+    "Animation": "Animation",
+    "Biography": "Biography",
+    "Comedy": "Comedy",
+    "Crime": "Crime",
+    "Documentary": "Documentary",
+    "Drama": "Drama",
+    "Family": "Family",
+    "Fantasy": "Fantasy",
+    "Fiction": "Fiction",
+    "Film-Noir": "Film-Noir",
+    "Game Show": "Game Show",
+    "History": "History",
+    "Horror": "Horror",
+    "Music": "Music",
+    "Musical": "Musical",
+    "Mystery": "Mystery",
+    "News": "News",
+    "Reality TV": "Reality TV",
+    "Romance": "Romance",
+    "Sci-Fi": "Sci-Fi",
+    "Superhero": "Superhero",
+    "Sport": "Sport",
+    "Talk Show": "Talk Show",
+    "Thriller": "Thriller",
+    "War": "War",
+    "Western": "Western"
+  },
+  "movies": {
+    "67c6c059d5287abf9732d359": {
+      "title": "Five Nights at Freddy's"
+    },
+    "67c6c6b7d5287abf9732d48b": {
+      "title": "Killers of the Flower Moon"
+    },
+    "67c6ca69d5287abf9732d52d": {
+      "title": "Inception"
+    },
+    "67c6e893d5287abf9732d66c": {
+      "title": "Venom: The Last Dance"
+    },
+    "67c6ed62d5287abf9732d6b0": {
+      "title": "The Substance"
+    },
+    "67c6f1c5d5287abf9732d6f8": {
+      "title": "Maharaja"
+    },
+    "67c6f5efd5287abf9732d7b2": {
+      "title": "Deadpool & Wolverine"
+    },
+    "67c6f8f5d5287abf9732d7e8": {
+      "title": "Dune: Part Two"
+    },
+    "67c6fd50d5287abf9732d83f": {
+      "title": "Conclave"
+    },
+    "67c700f2d5287abf9732d8f7": {
+      "title": "Sonic the Hedgehog 3"
+    }
+  },
+  "actors": {
+    "67c6bc79d5287abf9732d2f4": {
+      "name": "Josh Hutcherson"
+    },
+    "67c6bd78d5287abf9732d2fb": {
+      "name": "Elizabeth Lail"
+    },
+    "67c6be72d5287abf9732d30e": {
+      "name": "Matthew Lillard"
+    },
+    "67c6c166d5287abf9732d3d9": {
+      "name": "Emma Tammi"
+    },
+    "67c6c3a0d5287abf9732d476": {
+      "name": "Leonardo DiCaprio"
+    },
+    "67c6c43ad5287abf9732d479": {
+      "name": "Martin Scorsese"
+    },
+    "67c6c56ed5287abf9732d47c": {
+      "name": "Robert De Niro"
+    },
+    "67c6c71bd5287abf9732d48e": {
+      "name": "Lily Gladstone"
+    },
+    "67c6cb02d5287abf9732d530": {
+      "name": "Christopher Nolan"
+    },
+    "67c6cbdbd5287abf9732d5ba": {
+      "name": "Joseph Gordon-Levitt"
+    },
+    "67c6cd11d5287abf9732d5d1": {
+      "name": "Tom Hardy"
+    },
+    "67c6e766d5287abf9732d663": {
+      "name": "Kelly Marcel"
+    },
+    "67c6eae0d5287abf9732d69f": {
+      "name": "Demi Moore"
+    },
+    "67c6eb2ed5287abf9732d6a2": {
+      "name": "Margaret Qualley"
+    },
+    "67c6ec3bd5287abf9732d6a5": {
+      "name:": "Coralie Fargeat"
+    },
+    "67c6ee6ed5287abf9732d6e7": {
+      "name": "Vijay Sethupathi"
+    },
+    "67c6ef0cd5287abf9732d6ea": {
+      "name": "Anurag Kashyap"
+    },
+    "67c6efdbd5287abf9732d6ed": {
+      "name": "Nithilan Saminathan"
+    },
+    "67c6f380d5287abf9732d799": {
+      "name": "Ryan Reynolds"
+    },
+    "67c6f3cad5287abf9732d79c": {
+      "name": "Hugh Jackman"
+    },
+    "67c6f513d5287abf9732d79f": {
+      "name": "Shawn Levy"
+    },
+    "67c6f6c0d5287abf9732d7b5": {
+      "name": "Denis Villeneuve"
+    },
+    "67c6f77bd5287abf9732d7b8": {
+      "name": "Timothée Chalamet"
+    },
+    "67c6f7d0d5287abf9732d7bb": {
+      "name": "Rebecca Ferguson"
+    },
+    "67c6fb4dd5287abf9732d82b": {
+      "name": "Edward Berger"
+    },
+    "67c6fb9dd5287abf9732d82e": {
+      "name": "Peter Straughan"
+    },
+    "67c6fbebd5287abf9732d831": {
+      "name": "Ralph Fiennes"
+    },
+    "67c6fc37d5287abf9732d834": {
+      "name": "Stanley Tucci"
+    },
+    "67c6febbd5287abf9732d8de": {
+      "name": "Jeff Fowler"
+    },
+    "67c6fef2d5287abf9732d8e1": {
+      "name": "Pat Casey"
+    },
+    "67c6ff3fd5287abf9732d8e4": {
+      "name": "Jim Carrey"
+    },
+    "67c6ff98d5287abf9732d8e7": {
+      "name": "Keanu Reeves"
+    },
+    "67c6ffcfd5287abf9732d8ea": {
+      "name": "James Marsden"
+    }
+  }
 }

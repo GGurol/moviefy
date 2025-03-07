@@ -41,7 +41,7 @@ export function DataTable<TData, TValue>({
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
-                  console.log(header);
+                  // console.log(header);
                   return (
                     <TableHead
                       key={header.id}
@@ -51,7 +51,7 @@ export function DataTable<TData, TValue>({
                         ? null
                         : flexRender(
                             header.id !== "actions" &&
-                              t(header.column.columnDef.header),
+                              t(header.column.columnDef.header as string),
                             header.getContext()
                           )}
                     </TableHead>
@@ -64,17 +64,19 @@ export function DataTable<TData, TValue>({
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow key={row.id}>
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell
-                      key={cell.id}
-                      className="pt-2 pb-2 px-1 first-of-type:pl-4"
-                    >
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
+                  {row.getVisibleCells().map((cell) => {
+                    return (
+                      <TableCell
+                        key={cell.id}
+                        className="pt-2 pb-2 px-1 first-of-type:pl-4"
+                      >
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    );
+                  })}
                 </TableRow>
               ))
             ) : (

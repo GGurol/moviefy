@@ -27,8 +27,9 @@ export const columns: ColumnDef<Movie>[] = [
     accessorKey: "title",
     header: "TableTitle",
     cell: ({ row }) => {
-      const value = row.getValue("title");
-      return <div className="capitalize">{value}</div>;
+      const movieId = row.original.id;
+      const title = `movies.${movieId}.title`;
+      return <div className="capitalize">{i18n.t(title)}</div>;
     },
   },
   {
@@ -39,7 +40,7 @@ export const columns: ColumnDef<Movie>[] = [
       const vl = value.map((e) => {
         return (
           <Badge key={e} className="">
-            {e}
+            {i18n.t(`genres.${e}`)}
           </Badge>
         );
       });
@@ -51,7 +52,7 @@ export const columns: ColumnDef<Movie>[] = [
     header: "TableStatus",
     cell: ({ row }) => {
       const value = row.getValue("status");
-      return <div className="capitalize">{value}</div>;
+      return <div className="capitalize">{i18n.t(value)}</div>;
     },
   },
   {

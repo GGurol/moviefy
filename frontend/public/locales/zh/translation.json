@@ -183,32 +183,183 @@
   "Cast must be an array of string": "演员表必须是字符串数组",
   "Invalid actor ID inside cast": "演员表中的演员ID无效",
   "Rating must be a number between 0 and 10": "评分必须是0到10之间的数字",
-  "Action": "动作片",
-  "Adventure": "冒险片",
-  "Animation": "动画片",
-  "Biography": "传记片",
-  "Comedy": "喜剧片",
-  "Crime": "犯罪片",
-  "Documentary": "纪录片",
-  "Drama": "剧情片",
-  "Family": "家庭片",
-  "Fantasy": "奇幻片",
-  "Fiction": "科幻小说",
-  "Film-Noir": "黑色电影",
-  "Game Show": "游戏秀",
-  "History": "历史片",
-  "Horror": "恐怖片",
-  "Music": "音乐片",
-  "Musical": "歌舞片",
-  "Mystery": "悬疑片",
-  "News": "新闻",
-  "Reality TV": "真人秀",
-  "Romance": "爱情片",
-  "Sci-Fi": "科幻片",
-  "Superhero": "超级英雄片",
-  "Sport": "体育片",
-  "Talk Show": "脱口秀",
-  "Thriller": "惊悚片",
-  "War": "战争片",
-  "Western": "西部片"
+  "genres": {
+    "Action": "动作片",
+    "Adventure": "冒险片",
+    "Animation": "动画片",
+    "Biography": "传记片",
+    "Comedy": "喜剧片",
+    "Crime": "犯罪片",
+    "Documentary": "纪录片",
+    "Drama": "剧情片",
+    "Family": "家庭片",
+    "Fantasy": "奇幻片",
+    "Fiction": "科幻小说",
+    "Film-Noir": "黑色电影",
+    "Game Show": "游戏秀",
+    "History": "历史片",
+    "Horror": "恐怖片",
+    "Music": "音乐片",
+    "Musical": "歌舞片",
+    "Mystery": "悬疑片",
+    "News": "新闻",
+    "Reality TV": "真人秀",
+    "Romance": "爱情片",
+    "Sci-Fi": "科幻片",
+    "Superhero": "超级英雄片",
+    "Sport": "体育片",
+    "Talk Show": "脱口秀",
+    "Thriller": "惊悚片",
+    "War": "战争片",
+    "Western": "西部片"
+  },
+  "public": "公开",
+  "private": "私有",
+  "Chinese": "中文",
+  "English": "英语",
+  "French": "法语",
+  "German": "德语",
+  "Hindi": "印地语",
+  "Italian": "意大利语",
+  "Japanese": "日语",
+  "Korean": "韩语",
+  "Russian": "俄罗斯语",
+  "Spanish": "西班牙语",
+  "Other": "其他",
+  "Film": "电影",
+  "Short Film": "短片",
+  "TV Series": "电视剧",
+  "movies": {
+    "67c6c059d5287abf9732d359": {
+      "title": "弗雷迪的五夜惊魂"
+    },
+    "67c6c6b7d5287abf9732d48b": {
+      "title": "花月杀手"
+    },
+    "67c6ca69d5287abf9732d52d": {
+      "title": "盗梦空间"
+    },
+    "67c6e893d5287abf9732d66c": {
+      "title": "毒液：最后一舞"
+    },
+    "67c6ed62d5287abf9732d6b0": {
+      "title": "某种物质"
+    },
+    "67c6f1c5d5287abf9732d6f8": {
+      "title": "因果报应"
+    },
+    "67c6f5efd5287abf9732d7b2": {
+      "title": "死侍与金刚狼"
+    },
+    "67c6f8f5d5287abf9732d7e8": {
+      "title": "沙丘2"
+    },
+    "67c6fd50d5287abf9732d83f": {
+      "title": "秘密会议"
+    },
+    "67c700f2d5287abf9732d8f7": {
+      "title": "刺猬索尼克3"
+    }
+  },
+  "actors": {
+    "67c6bc79d5287abf9732d2f4": {
+      "name": "乔什·哈切森"
+    },
+    "67c6bd78d5287abf9732d2fb": {
+      "name": "伊丽莎白·莱尔"
+    },
+    "67c6be72d5287abf9732d30e": {
+      "name": "马修·利拉德"
+    },
+    "67c6c166d5287abf9732d3d9": {
+      "name": "艾玛·塔米"
+    },
+    "67c6c3a0d5287abf9732d476": {
+      "name": "莱昂纳多·迪卡普里奥"
+    },
+    "67c6c43ad5287abf9732d479": {
+      "name": "马丁·斯科塞斯"
+    },
+    "67c6c56ed5287abf9732d47c": {
+      "name": "罗伯特·德尼罗"
+    },
+    "67c6c71bd5287abf9732d48e": {
+      "name": "莉莉·格拉德斯通"
+    },
+    "67c6cb02d5287abf9732d530": {
+      "name": "克里斯托弗·诺兰"
+    },
+    "67c6cbdbd5287abf9732d5ba": {
+      "name": "约瑟夫·高登-莱维特"
+    },
+    "67c6cd11d5287abf9732d5d1": {
+      "name": "汤姆·哈迪"
+    },
+    "67c6e766d5287abf9732d663": {
+      "name": "凯莉·马塞尔"
+    },
+    "67c6eae0d5287abf9732d69f": {
+      "name": "黛米·摩尔"
+    },
+    "67c6eb2ed5287abf9732d6a2": {
+      "name": "玛格丽特·夸利"
+    },
+    "67c6ec3bd5287abf9732d6a5": {
+      "name": "科拉丽·法尔热"
+    },
+    "67c6ee6ed5287abf9732d6e7": {
+      "name": "维杰·谢图帕提"
+    },
+    "67c6ef0cd5287abf9732d6ea": {
+      "name": "阿努拉格·卡希亚普"
+    },
+    "67c6efdbd5287abf9732d6ed": {
+      "name": "尼蒂兰·萨米纳坦"
+    },
+    "67c6f380d5287abf9732d799": {
+      "name": "瑞安·雷诺兹"
+    },
+    "67c6f3cad5287abf9732d79c": {
+      "name": "休·杰克曼"
+    },
+    "67c6f513d5287abf9732d79f": {
+      "name": "肖恩·利维"
+    },
+    "67c6f6c0d5287abf9732d7b5": {
+      "name": "丹尼斯·维伦纽瓦"
+    },
+    "67c6f77bd5287abf9732d7b8": {
+      "name": "提莫西·夏拉梅"
+    },
+    "67c6f7d0d5287abf9732d7bb": {
+      "name": "瑞贝卡·弗格森"
+    },
+    "67c6fb4dd5287abf9732d82b": {
+      "name": "爱德华·伯杰"
+    },
+    "67c6fb9dd5287abf9732d82e": {
+      "name": "彼得·斯特劳汉"
+    },
+    "67c6fbebd5287abf9732d831": {
+      "name": "拉尔夫·费因斯"
+    },
+    "67c6fc37d5287abf9732d834": {
+      "name": "斯坦利·图奇"
+    },
+    "67c6febbd5287abf9732d8de": {
+      "name": "杰夫·福勒"
+    },
+    "67c6fef2d5287abf9732d8e1": {
+      "name": "派特·凯西"
+    },
+    "67c6ff3fd5287abf9732d8e4": {
+      "name": "吉姆·凯瑞"
+    },
+    "67c6ff98d5287abf9732d8e7": {
+      "name": "基努·里维斯"
+    },
+    "67c6ffcfd5287abf9732d8ea": {
+      "name": "詹姆斯·马斯登"
+    }
+  }
 }
