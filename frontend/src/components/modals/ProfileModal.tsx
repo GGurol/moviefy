@@ -6,13 +6,21 @@ import { useTranslation } from "react-i18next";
 
 function ProfileModal({ visible, profileId, onClose }) {
   const [profile, setProfile] = useState({});
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const fetchActorProfile = async () => {
     const { error, actor } = await getActorProfile(profileId);
     if (error) return toast.error(t(error));
 
     setProfile(actor);
+  };
+
+  const getName = (profile) => {
+    const nm = `actors.${profile.id}.name`;
+    if (i18n.exists(nm)) {
+      return t(nm);
+    }
+    return profile.name;
   };
 
   useEffect(() => {
@@ -29,9 +37,9 @@ function ProfileModal({ visible, profileId, onClose }) {
         </div>
         <div className="overflow-auto">
           <div className="mb-1">
-            <p className="capitalize ">{name}</p>
+            <p className="capitalize ">{getName(profile)}</p>
             <p className="capitalize text-muted-foreground  text-xs">
-              {gender}
+              {t(gender)}
             </p>
           </div>
           <p className="text-xs">{about}</p>

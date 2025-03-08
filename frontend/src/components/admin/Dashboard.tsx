@@ -26,27 +26,27 @@ export default function Dashboard() {
 
   return (
     <>
-      <div className="grid grid-cols-3 gap-5 p-5">
-        <Card>
-          <CardHeader className="text-lg font-semibold">
+      <div className="grid grid-cols-3 gap-3 sm:gap-5 p-2 sm:p-5">
+        <Card className="text-xs sm:text-lg">
+          <CardHeader className="font-semibold">
             <span>{t("Total Uploads")}</span>
           </CardHeader>
           <CardContent>{appInfo.movieCount.toLocaleString()}</CardContent>
         </Card>
-        <Card>
-          <CardHeader className="text-lg font-semibold">
+        <Card className="text-xs sm:text-lg">
+          <CardHeader className="font-semibold">
             <span>{t("Total Reviews")}</span>
           </CardHeader>
           <CardContent>{appInfo.reviewCount.toLocaleString()}</CardContent>
         </Card>
-        <Card>
-          <CardHeader className="text-lg font-semibold">
+        <Card className="text-xs sm:text-lg">
+          <CardHeader className="font-semibold">
             <span>{t("Total Users")}</span>
           </CardHeader>
           <CardContent>{appInfo.userCount.toLocaleString()}</CardContent>
         </Card>
       </div>
-      <div className="grid grid-cols-2 gap-5 p-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-2 sm:gap-5 sm:p-5">
         <LatestUploads />
         <MostRatedMovies />
       </div>

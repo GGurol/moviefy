@@ -72,7 +72,7 @@ export default function Movies() {
   // console.log(newMovies);
 
   return (
-    <div className="mx-5 mt-5">
+    <div className="mx-2 mt-3 sm:mx-5 sm:mt-5">
       <DataTable columns={columns} data={movies} />
       <NextAndPrevButton
         className="mt-5"

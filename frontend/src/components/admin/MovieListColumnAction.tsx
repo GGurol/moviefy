@@ -87,7 +87,7 @@ export default function MovieListColumnAction({ movieId }) {
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
-          className="h-8 w-8 p-0"
+          className="h-3 w-3 sm:w-8 sm:h-8 p-0"
           // ref={dropdownTriggerRef}
         >
           <span className="sr-only">Open menu</span>

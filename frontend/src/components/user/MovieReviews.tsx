@@ -125,7 +125,7 @@ export default function MovieReviews() {
             />
             {profileId ? (
               <CustomButtonLink
-                label={profileOwnersReview ? "View All" : "Find My review"}
+                label={profileOwnersReview ? "View All" : "My review"}
                 onClick={findProfileOwnersReview}
               />
             ) : null}

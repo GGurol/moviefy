@@ -21,7 +21,7 @@ export default function Navbar() {
 
   return (
     <Container>
-      <div className="flex items-center justify-between relative p-5">
+      <div className="flex items-center justify-between relative pt-5 pb-5">
         <div>
           <Link to="/">
             <img src="./logo.svg" alt="" className="sm:h-10 h-8" />

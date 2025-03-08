@@ -17,11 +17,11 @@ function NotVerified() {
   return (
     <div>
       {isLoggedIn && !isVerified ? (
-        <p className="text-sm text-muted-foreground  text-center p-2 bg-muted rounded-md mb-2">
+        <p className="text-sm text-muted-foreground  text-center p-1 bg-muted rounded-md mb-2">
           {t(`It looks like you haven't verified your email address. `)}
           <button
             onClick={navigateToVerification}
-            className="text-blue-500 font-semibold hover:underline text-sm"
+            className="text-red-500 font-semibold hover:underline text-sm"
           >
             {t("Click here to verify.")}
           </button>

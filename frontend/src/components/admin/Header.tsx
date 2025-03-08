@@ -65,19 +65,9 @@ export default function Header() {
   };
 
   return (
-    <div className="flex items-center justify-between relative p-5">
-      <div className=" flex gap-5 items-center">
+    <div className="flex items-center justify-between gap-3 relative px-2 py-5 sm:p-5">
+      <div className=" flex gap-3 items-center">
         <SidebarTrigger />
-
-        {/* <form onSubmit={handleSubmit}>
-          <Input
-            name="search"
-            value={search}
-            onChange={handleChange}
-            placeholder={t("Search movies...")}
-          />
-        
-        </form> */}
         <AppSearchForm
           placeholder={t("Search Movies...")}
           // inputClassName="border-dark-subtle text-white focus:border-white sm:w-auto w-40 sm:text-lg"

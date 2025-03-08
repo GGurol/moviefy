@@ -145,12 +145,12 @@ const MovieCard = ({
           />
         </CardTitle>
       </CardHeader>
-      <div className="flex items-center justify-between w-full">
-        <CardContent className="p-1 overflow-auto w-72">
-          <h1 className="text-lg font-semibold capitalize">
+      <div className="flex justify-between w-full flex-col lg:flex-row">
+        <CardContent className="p-1 overflow-auto w-full">
+          <h1 className="text-sm lg:text-lg font-semibold capitalize pb-1">
             {t(`movies.${movie.id}.title`)}
           </h1>
-          <div className="space-x-1  pb-2">
+          <div className="space-x-1 lg:pb-2 flex flex-wrap">
             {genres.map((g, index) => {
               return (
                 <span key={g + index} className="text-xs text-muted-foreground">
@@ -160,13 +160,13 @@ const MovieCard = ({
             })}
           </div>
         </CardContent>
-        <CardFooter className="p-1">
+        <CardFooter className="px-1 py-0 lg:p-1">
           {/* Status */}
           {status === "public" ? (
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <FolderOpen strokeWidth={0.75} size={20} />
+                  <FolderOpen strokeWidth={0.75} className="w-4 lg:w-5" />
                 </TooltipTrigger>
                 <TooltipContent>
                   <span>{t("Public")}</span>
@@ -177,7 +177,7 @@ const MovieCard = ({
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <FolderLock strokeWidth={0.75} size={20} />
+                  <FolderLock strokeWidth={0.75} className="w-4 lg:w-5" />
                 </TooltipTrigger>
                 <TooltipContent>
                   <span>{t("Private")}</span>
@@ -195,7 +195,7 @@ const MovieCard = ({
                     setOpenDelete(true);
                   }}
                 >
-                  <Trash2 strokeWidth={0.75} size={20} />
+                  <Trash2 strokeWidth={0.75} className="w-4 lg:w-5" />
                 </button>
               </TooltipTrigger>
               <TooltipContent>
@@ -238,7 +238,7 @@ const MovieCard = ({
             <Tooltip>
               <TooltipTrigger asChild>
                 <button onClick={() => setOpenEdit(true)}>
-                  <Pencil strokeWidth={0.75} size={20} />
+                  <Pencil strokeWidth={0.75} className="w-4 lg:w-5" />
                 </button>
               </TooltipTrigger>
               <TooltipContent>
@@ -268,7 +268,7 @@ const MovieCard = ({
             <Tooltip>
               <TooltipTrigger asChild>
                 <button onClick={onOpenClick}>
-                  <ExternalLink strokeWidth={0.75} size={20} />
+                  <ExternalLink strokeWidth={0.75} className="w-4 lg:w-5" />
                 </button>
               </TooltipTrigger>
               <TooltipContent>

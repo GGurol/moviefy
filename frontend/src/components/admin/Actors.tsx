@@ -132,7 +132,7 @@ export default function Actors() {
 
   return (
     <>
-      <div className="p-5">
+      <div className="p-2 sm:p-5">
         <div className="flex justify-end mb-5">
           <AppSearchForm
             onReset={handleSearchFormReset}
@@ -143,7 +143,7 @@ export default function Actors() {
         </div>
         <NotFoundText text={t("No Actors Found")} visible={resultNotFound} />
 
-        <div className="grid grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
           {results.length || resultNotFound
             ? results.map((actor) => (
                 <ActorProfile
@@ -247,12 +247,12 @@ const ActorProfile = ({
   return (
     <>
       <Card
-        className="flex rounded-md gap-2  hover:bg-muted relative h-32 overflow-hidden"
+        className="flex rounded-md gap-2  hover:bg-muted relative h-40 lg:h-32 overflow-hidden"
         onMouseEnter={handleOnMouseEnter}
         onMouseLeave={handleOnMouseLeave}
       >
         <CardHeader className="p-0">
-          <CardTitle className="w-32 h-32">
+          <CardTitle className="h-40 w-32 lg:w-32 lg:h-32">
             <img
               src={avatar}
               alt={name}

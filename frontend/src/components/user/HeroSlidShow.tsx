@@ -51,15 +51,15 @@ export default function HeroSlidShow() {
           delay: 5000,
         }),
       ]}
-      className="w-full max-w-6xl mx-auto"
+      className="w-full max-w-7xl mx-auto"
     >
       <CarouselContent>
         {slides.map((s, i) => (
-          <CarouselItem key={i} className="relative">
+          <CarouselItem key={i} className="relative md:basis-1/2 lg:basis-1/3">
             <Link to={"/movie/" + s.id}>
               <img src={s.poster} alt="poster" className="rounded-sm" />
             </Link>
-            <p className="absolute left-5 bottom-0 text-2xl font-semibold">
+            <p className="absolute left-5 bottom-0 text-white text-lg font-semibold">
               {s.title}
             </p>
             {/* <Card className="border-0">

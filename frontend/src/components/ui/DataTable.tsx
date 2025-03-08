@@ -15,6 +15,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useTranslation } from "react-i18next";
+import { useEffect, useState } from "react";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -30,6 +31,11 @@ export function DataTable<TData, TValue>({
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    state: {
+      columnVisibility: {
+        status: false,
+      },
+    },
   });
   const { t } = useTranslation();
 
@@ -45,7 +51,7 @@ export function DataTable<TData, TValue>({
                   return (
                     <TableHead
                       key={header.id}
-                      className="px-1 first-of-type:pl-4"
+                      className="px-1 first-of-type:pl-1 sm:first-of-type:pl-4"
                     >
                       {header.isPlaceholder
                         ? null
@@ -68,7 +74,7 @@ export function DataTable<TData, TValue>({
                     return (
                       <TableCell
                         key={cell.id}
-                        className="pt-2 pb-2 px-1 first-of-type:pl-4"
+                        className="pt-2 pb-2 px-1 first-of-type:pl-1 sm:first-of-type:pl-4"
                       >
                         {flexRender(
                           cell.column.columnDef.cell,

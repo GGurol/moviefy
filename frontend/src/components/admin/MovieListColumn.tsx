@@ -17,7 +17,7 @@ export const columns: ColumnDef<Movie>[] = [
     cell: ({ row }) => {
       const value = row.getValue("poster");
       return (
-        <div className="w-28">
+        <div className="w-20 sm:w-28">
           <img src={value} alt="Poster image" className="w-full rounded" />
         </div>
       );
@@ -29,7 +29,11 @@ export const columns: ColumnDef<Movie>[] = [
     cell: ({ row }) => {
       const movieId = row.original.id;
       const title = `movies.${movieId}.title`;
-      return <div className="capitalize">{i18n.t(title)}</div>;
+      return (
+        <div className="capitalize text-[10px] sm:text-xs lg:text-sm">
+          {i18n.t(title)}
+        </div>
+      );
     },
   },
   {
@@ -39,20 +43,26 @@ export const columns: ColumnDef<Movie>[] = [
       const value = row.getValue("genres");
       const vl = value.map((e) => {
         return (
-          <Badge key={e} className="">
+          <Badge
+            key={e}
+            className="text-[8px] rounded-sm max-sm:px-1 max-sm:py-0 max-sm:bg-muted-foreground sm:rounded-full  sm:text-xs"
+          >
             {i18n.t(`genres.${e}`)}
           </Badge>
         );
       });
-      return <div className="flex gap-1">{vl}</div>;
+      return <div className="flex gap-[1px] sm:gap-1 flex-wrap ">{vl}</div>;
     },
   },
   {
     accessorKey: "status",
     header: "TableStatus",
+    enableHiding: true,
     cell: ({ row }) => {
       const value = row.getValue("status");
-      return <div className="capitalize">{i18n.t(value)}</div>;
+      return (
+        <div className="capitalize  text-xs lg:text-sm">{i18n.t(value)}</div>
+      );
     },
   },
   {
