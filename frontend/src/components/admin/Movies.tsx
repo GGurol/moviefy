@@ -72,7 +72,7 @@ export default function Movies() {
   // console.log(newMovies);
 
   return (
-    <>
+    <div className="mx-5 mt-5">
       <DataTable columns={columns} data={movies} />
       <NextAndPrevButton
         className="mt-5"
@@ -81,6 +81,6 @@ export default function Movies() {
         noNext={noNext}
         noPrev={noPrev}
       />
-    </>
+    </div>
   );
 }

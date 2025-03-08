@@ -24,7 +24,7 @@ export default function Navbar() {
       <div className="flex items-center justify-between relative p-5">
         <div>
           <Link to="/">
-            <img src="./logo.png" alt="" className="sm:h-10 h-8" />
+            <img src="./logo.svg" alt="" className="sm:h-10 h-8" />
           </Link>
         </div>
         <div className="flex items-center gap-5">

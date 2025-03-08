@@ -38,9 +38,9 @@ export function AppSidebar() {
   const { t } = useTranslation();
   return (
     <Sidebar variant="inset">
-      <SidebarHeader className="pl-4 mb-7">
+      <SidebarHeader className="mb-8">
         <Link to="/">
-          <img src="./logo.png" alt="logo" className="h-14 p-2" />
+          <img src="./logo.svg" alt="MovieFy logo" className="w-full pt-2" />
         </Link>
       </SidebarHeader>
       <SidebarContent className="">
