@@ -196,6 +196,7 @@ const ActorProfile = ({
 }) => {
   const [showOptions, setShowOptions] = useState(false);
   const acceptedNameLength = 15;
+  const acceptedAboutLength = 70;
   const { t, i18n } = useTranslation();
 
   const handleOnMouseEnter = () => {
@@ -216,8 +217,16 @@ const ActorProfile = ({
       name = t(nm);
     }
     if (name.length <= acceptedNameLength) return name;
-    return name.substring(0, acceptedNameLength) + "..";
+    return name.substring(0, acceptedNameLength) + "...";
   };
+
+  const getAbout = (about) => {
+    if (about <= acceptedAboutLength) {
+      return about;
+    }
+    return about.substring(0, acceptedAboutLength) + "...";
+  };
+
   const { name, avatar, about = "" } = profile;
 
   const [open, setOpen] = useState(false);
@@ -254,7 +263,7 @@ const ActorProfile = ({
         </CardHeader>
         <CardContent className="px-1 py-1 flex flex-col gap-1">
           <div className="capitalize">{getName(profile)}</div>
-          <CardDescription> {about.substring(0, 120)}</CardDescription>
+          <CardDescription> {getAbout(about)}</CardDescription>
         </CardContent>
         {showOptions && (
           <div className="absolute inset-0 backdrop-blur-md flex justify-center items-center space-x-5">

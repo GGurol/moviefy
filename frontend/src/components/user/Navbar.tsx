@@ -35,8 +35,7 @@ export default function Navbar() {
         </div>
         <div className="flex items-center gap-5">
           <AppSearchForm
-            placeholder={t("Search movies...")}
-            // inputClassName="border-dark-subtle text-white focus:border-white sm:w-auto w-40 sm:text-lg"
+            placeholder={t("Search Movies...")}
             onSubmit={handleSearchSubmit}
           />
           <ThemeButton />

@@ -46,7 +46,7 @@ const ACCEPTED_IMAGE_TYPES = [
 ];
 
 const validateAvatar = (file, ctx) => {
-  // if (!file) return true;
+  if (!file) return;
   if (file.size > MAX_FILE_SIZE) {
     ctx.addIssue({
       code: z.ZodIssueCode.custom,

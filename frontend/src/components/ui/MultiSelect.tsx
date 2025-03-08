@@ -12,6 +12,7 @@ import {
 import { Command as CommandPrimitive } from "cmdk";
 import { GENRES } from "@/utils/genres";
 import { useCallback, useRef, useState, KeyboardEvent } from "react";
+import { useTranslation } from "react-i18next";
 
 type Genres = Record<"value" | "label" | "className", string>;
 
@@ -20,6 +21,7 @@ export function MultiSelect({ selected, setSelected, onSelect }) {
   const [open, setOpen] = useState(false);
   // const [selected, setSelected] = useState<Genres[]>([GENRES[0]]);
   const [inputValue, setInputValue] = useState("");
+  const { t } = useTranslation();
 
   const handleUnselect = useCallback(
     (genres: Genres) => {
@@ -72,7 +74,7 @@ export function MultiSelect({ selected, setSelected, onSelect }) {
                 variant="secondary"
                 className={genre.className}
               >
-                {genre.label}
+                {t(`genres.${genre.label}`)}
                 <button
                   className="ml-1 rounded-full outline-none ring-offset-background focus:ring-2 focus:ring-ring focus:ring-offset-2"
                   onKeyDown={(e) => {
@@ -98,7 +100,7 @@ export function MultiSelect({ selected, setSelected, onSelect }) {
             onValueChange={setInputValue}
             onBlur={() => setOpen(false)}
             onFocus={() => setOpen(true)}
-            placeholder="Select genres..."
+            placeholder={t("Select genres...")}
             className=" flex-1 bg-transparent outline-none placeholder:text-muted-foreground"
           />
         </div>
@@ -124,7 +126,7 @@ export function MultiSelect({ selected, setSelected, onSelect }) {
                       }}
                       className={"cursor-pointer " + genre.className}
                     >
-                      {genre.label}
+                      {t(`genres.${genre.label}`)}
                     </CommandItem>
                   );
                 })}

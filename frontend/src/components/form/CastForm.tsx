@@ -8,6 +8,7 @@ import { renderItem } from "../../utils/helper";
 import { searchActor } from "../../api/actor";
 import LiveSearchCast from "../LiveSearchCast";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 const defaultCastInfo = {
   profile: {},
@@ -37,6 +38,7 @@ function CastForm({
   // const [dupValues, setDupValues] = useState([]);
 
   const { handleSearch, resetSearch } = useSearch();
+  const { t } = useTranslation();
 
   const handleOnChange = ({ target }) => {
     const { checked, name, value } = target;
@@ -112,7 +114,7 @@ function CastForm({
         title="Set as lead actor"
       /> */}
       <LiveSearchCast
-        placeholder="Search profile..."
+        placeholder={t("Search actors...")}
         value={value}
         values={values}
         // dupValues={dupValues}

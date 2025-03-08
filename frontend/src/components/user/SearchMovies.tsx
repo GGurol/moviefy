@@ -33,7 +33,9 @@ function SearchMovies() {
   };
 
   useEffect(() => {
-    if (query.trim()) searchMovies(query);
+    if (query.trim()) {
+      searchMovies(query);
+    }
   }, [query]);
 
   return (

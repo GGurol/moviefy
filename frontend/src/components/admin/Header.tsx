@@ -27,6 +27,7 @@ import MovieForm from "./MovieForm";
 // import i18n from "i18next";
 import { useTranslation } from "react-i18next";
 import i18n from "@/utils/i18n";
+import AppSearchForm from "../form/AppSearchForm";
 
 export default function Header() {
   const [search, setSearch] = useState("");
@@ -58,13 +59,13 @@ export default function Header() {
     setSearch(e.target.value);
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!search.trim()) {
-      return;
-    }
-    navigate("/search?title=" + search);
-    setSearch("");
+  const handleSubmit = (query) => {
+    // e.preventDefault();
+    // if (!search.trim()) {
+    //   return;
+    // }
+    navigate("/search?title=" + query);
+    // setSearch("");
   };
 
   return (
@@ -72,14 +73,20 @@ export default function Header() {
       <div className=" flex gap-5 items-center">
         <SidebarTrigger />
 
-        <form onSubmit={handleSubmit}>
+        {/* <form onSubmit={handleSubmit}>
           <Input
             name="search"
             value={search}
             onChange={handleChange}
             placeholder={t("Search movies...")}
           />
-        </form>
+        
+        </form> */}
+        <AppSearchForm
+          placeholder={t("Search Movies...")}
+          // inputClassName="border-dark-subtle text-white focus:border-white sm:w-auto w-40 sm:text-lg"
+          onSubmit={handleSubmit}
+        />
       </div>
 
       <div className="flex items-center space-x-3">

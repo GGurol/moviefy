@@ -10,7 +10,7 @@ export default function AppSearchForm({
   showResetIcon,
   placeholder,
   onSubmit,
-  onReset,
+  // onReset,
   // inputClassName = defaultInputStyle,
   // inputClassName = "",
 }) {
@@ -23,7 +23,7 @@ export default function AppSearchForm({
 
   const handleReset = () => {
     setValue("");
-    onReset();
+    // onReset();
   };
 
   return (
