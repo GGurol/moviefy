@@ -28,6 +28,7 @@ import MovieForm from "./MovieForm";
 import { useTranslation } from "react-i18next";
 import i18n from "@/utils/i18n";
 import AppSearchForm from "../form/AppSearchForm";
+import LanguageButton from "../ui/LanguageButton";
 
 export default function Header() {
   const [search, setSearch] = useState("");
@@ -35,11 +36,6 @@ export default function Header() {
   const [busy, setBusy] = useState(false);
 
   const navigate = useNavigate();
-
-  const lngs = [
-    { code: "en", nativeName: "English" },
-    { code: "zh", nativeName: "中文" },
-  ];
 
   const { t } = useTranslation("translation");
 
@@ -91,18 +87,8 @@ export default function Header() {
 
       <div className="flex items-center space-x-3">
         <ThemeButton />
-        {lngs.map((lng) => {
-          return (
-            <button
-              className="m-4 p-2 bg-blue-600 rounded"
-              key={lng.code}
-              type="submit"
-              onClick={() => i18n.changeLanguage(lng.code)}
-            >
-              {lng.nativeName}
-            </button>
-          );
-        })}
+        <LanguageButton />
+
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button>{t("Create")}</Button>

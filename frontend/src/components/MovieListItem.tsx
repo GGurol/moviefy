@@ -253,10 +253,10 @@ const MovieCard = ({
                 }}
               >
                 <DialogHeader>
-                  <DialogTitle>{t("Update Movie")}</DialogTitle>
-                  <DialogDescription>
+                  <DialogTitle>{t("Edit Movie")}</DialogTitle>
+                  {/* <DialogDescription>
                     {t("Submit to update a movie")}
-                  </DialogDescription>
+                  </DialogDescription> */}
                 </DialogHeader>
                 <UpdateMovie movieId={movie.id} />
               </DialogContent>
