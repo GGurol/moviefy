@@ -2,7 +2,6 @@ import express from "express";
 import { isAuth, isAdmin } from "../middlewares/auth";
 import { uploadVideo, uploadImage, upload } from "../middlewares/multer";
 import {
-  uploadTrailer,
   createMovie,
   removeMovie,
   getMovies,
@@ -14,9 +13,10 @@ import {
   getRelatedMovies,
   getTopRatedMovies,
   searchPublicMovies,
+  getMoviesByTag,
 } from "../controllers/movie";
 import { parseData } from "../middlewares/helper";
-import { validateMovie, validate, validateTrailer } from "../middlewares/validator";
+import { validateMovie, validate } from "../middlewares/validator";
 
 const router = express.Router();
 
@@ -69,5 +69,6 @@ router.get("/single/:movieId", getSingleMovie);
 router.get("/related/:movieId", getRelatedMovies);
 router.get("/top-rated", getTopRatedMovies);
 router.get("/search-public", searchPublicMovies);
+router.get("/by-tag", getMoviesByTag);
 
 export default router;

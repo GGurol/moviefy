@@ -7,9 +7,11 @@ import {
   DropdownMenuTrigger,
 } from "./dropdown-menu";
 import { useTheme } from "./theme-provider";
+import { useTranslation } from "react-i18next";
 
 export default function ThemeButton() {
   const { setTheme } = useTheme();
+  const { t } = useTranslation();
 
   return (
     <DropdownMenu>
@@ -20,16 +22,16 @@ export default function ThemeButton() {
           <span className="sr-only">Toggle theme</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
+      <DropdownMenuContent align="end" className="min-w-0 w-24">
         <DropdownMenuItem onClick={() => setTheme("light")}>
-          Light
+          {t("Light")}
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme("dark")}>
-          Dark
+          {t("Dark")}
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("system")}>
+        {/* <DropdownMenuItem onClick={() => setTheme("system")}>
           System
-        </DropdownMenuItem>
+        </DropdownMenuItem> */}
       </DropdownMenuContent>
     </DropdownMenu>
   );

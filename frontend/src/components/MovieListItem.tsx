@@ -48,6 +48,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "./ui/dialog";
+import { useTranslation } from "react-i18next";
 
 const MovieListItem = ({ movie, afterDelete, afterUpdate }) => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
@@ -55,16 +56,17 @@ const MovieListItem = ({ movie, afterDelete, afterUpdate }) => {
   const [busy, setBusy] = useState(false);
   const [selectedMovieId, setSelectedMovieId] = useState(null);
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const handleOnDeleteConfirm = async () => {
     setBusy(true);
     const { error, message } = await deleteMovie(movie.id);
     setBusy(false);
 
-    if (error) return toast.error(error);
+    if (error) return toast.error(t(error));
 
     hideConfirmModal();
-    toast.success(message);
+    toast.success(t(message));
     afterDelete(movie);
   };
 
@@ -92,8 +94,8 @@ const MovieListItem = ({ movie, afterDelete, afterUpdate }) => {
     const { error, message } = await deleteMovie(movie.id);
     setBusy(false);
 
-    if (error) return toast.error(error);
-    toast.success(message);
+    if (error) return toast.error(t(error));
+    toast.success(t(message));
     setOpenDialog(false);
     afterDelete(movie);
   };
@@ -107,6 +109,7 @@ const MovieListItem = ({ movie, afterDelete, afterUpdate }) => {
         onOpenClick={handleOnOpenClick}
         handleDelete={handleDelete}
         busy={busy}
+        afterUpdate={afterUpdate}
       />
       {/* <div className="p-0">
         <UpdateMovie
@@ -126,10 +129,12 @@ const MovieCard = ({
   onEditClick,
   handleDelete,
   busy,
+  afterUpdate,
 }) => {
   const { poster, title, responsivePosters, genres = [], status } = movie;
   const [openDelete, setOpenDelete] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
+  const { t } = useTranslation();
 
   return (
     <Card className="rounded-sm flex items-center">
@@ -142,29 +147,31 @@ const MovieCard = ({
           />
         </CardTitle>
       </CardHeader>
-      <div className="flex items-center justify-between w-full">
-        <CardContent className="p-1 overflow-auto w-72">
-          <h1 className="text-lg font-semibold capitalize">{title}</h1>
-          <div className="space-x-1  pb-2">
+      <div className="flex justify-between w-full flex-col lg:flex-row">
+        <CardContent className="p-1 overflow-auto w-full">
+          <h1 className="text-sm lg:text-lg font-semibold capitalize pb-1">
+            {t(`movies.${movie.id}.title`)}
+          </h1>
+          <div className="space-x-1 lg:pb-2 flex flex-wrap">
             {genres.map((g, index) => {
               return (
                 <span key={g + index} className="text-xs text-muted-foreground">
-                  {g}
+                  {t(`genres.${g}`)}
                 </span>
               );
             })}
           </div>
         </CardContent>
-        <CardFooter className="p-1">
+        <CardFooter className="px-1 py-0 lg:p-1">
           {/* Status */}
           {status === "public" ? (
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <FolderOpen strokeWidth={0.75} size={20} />
+                  <FolderOpen strokeWidth={0.75} className="w-4 lg:w-5" />
                 </TooltipTrigger>
                 <TooltipContent>
-                  <span>Public</span>
+                  <span>{t("Public")}</span>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
@@ -172,10 +179,10 @@ const MovieCard = ({
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <FolderLock strokeWidth={0.75} size={20} />
+                  <FolderLock strokeWidth={0.75} className="w-4 lg:w-5" />
                 </TooltipTrigger>
                 <TooltipContent>
-                  <span>Private</span>
+                  <span>{t("Private")}</span>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
@@ -190,19 +197,19 @@ const MovieCard = ({
                     setOpenDelete(true);
                   }}
                 >
-                  <Trash2 strokeWidth={0.75} size={20} />
+                  <Trash2 strokeWidth={0.75} className="w-4 lg:w-5" />
                 </button>
               </TooltipTrigger>
               <TooltipContent>
-                <span>Delete</span>
+                <span>{t("Delete")}</span>
               </TooltipContent>
             </Tooltip>
             <AlertDialog open={openDelete}>
               <AlertDialogContent>
                 <AlertDialogHeader>
-                  <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                  <AlertDialogTitle>{t("Are you sure?")}</AlertDialogTitle>
                   <AlertDialogDescription>
-                    This action will remove this movie permanently!
+                    {t("This action will remove this movie permanently!")}
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
@@ -210,7 +217,7 @@ const MovieCard = ({
                     disabled={busy}
                     onClick={() => setOpenDelete(false)}
                   >
-                    Cancel
+                    {t("Cancel")}
                   </AlertDialogCancel>
                   <AlertDialogAction
                     onClick={() => {
@@ -220,7 +227,7 @@ const MovieCard = ({
                     disabled={busy}
                   >
                     <span className="w-12 flex items-center justify-center">
-                      {busy ? <Loader className="animate-spin" /> : "Delete"}
+                      {busy ? <Loader className="animate-spin" /> : t("Delete")}
                     </span>
                   </AlertDialogAction>
                 </AlertDialogFooter>
@@ -233,11 +240,11 @@ const MovieCard = ({
             <Tooltip>
               <TooltipTrigger asChild>
                 <button onClick={() => setOpenEdit(true)}>
-                  <Pencil strokeWidth={0.75} size={20} />
+                  <Pencil strokeWidth={0.75} className="w-4 lg:w-5" />
                 </button>
               </TooltipTrigger>
               <TooltipContent>
-                <span>Edit</span>
+                <span>{t("Edit")}</span>
               </TooltipContent>
             </Tooltip>
             <Dialog open={openEdit} onOpenChange={setOpenEdit}>
@@ -248,12 +255,12 @@ const MovieCard = ({
                 }}
               >
                 <DialogHeader>
-                  <DialogTitle>Update Actor</DialogTitle>
-                  <DialogDescription>
-                    Submit to update an actor.
-                  </DialogDescription>
+                  <DialogTitle>{t("Edit Movie")}</DialogTitle>
+                  {/* <DialogDescription>
+                    {t("Submit to update a movie")}
+                  </DialogDescription> */}
                 </DialogHeader>
-                <UpdateMovie movieId={movie.id} />
+                <UpdateMovie movieId={movie.id} afterUpdate={afterUpdate} />
               </DialogContent>
             </Dialog>
           </TooltipProvider>
@@ -263,11 +270,11 @@ const MovieCard = ({
             <Tooltip>
               <TooltipTrigger asChild>
                 <button onClick={onOpenClick}>
-                  <ExternalLink strokeWidth={0.75} size={20} />
+                  <ExternalLink strokeWidth={0.75} className="w-4 lg:w-5" />
                 </button>
               </TooltipTrigger>
               <TooltipContent>
-                <span>Open</span>
+                <span>{t("Open")}</span>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>

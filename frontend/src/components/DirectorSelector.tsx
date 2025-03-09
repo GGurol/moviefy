@@ -4,6 +4,7 @@ import { renderItem } from "../utils/helper";
 import { useSearch } from "../hooks";
 import { searchActor } from "../api/actor";
 import Label from "./Label";
+import { useTranslation } from "react-i18next";
 
 function DirectorSelector({
   updateDirector,
@@ -19,6 +20,7 @@ function DirectorSelector({
   const [selectedValue, setSelectedValue] = useState([]);
 
   const { handleSearch, resetSearch } = useSearch();
+  const { t } = useTranslation();
 
   const handleOnChange = ({ target }) => {
     const { value } = target;
@@ -61,7 +63,7 @@ function DirectorSelector({
       <LiveSearch
         name="director"
         value={value}
-        placeholder="Search profile..."
+        placeholder={t("Search director...")}
         results={profiles}
         renderItem={renderItem}
         onSelect={handleOnSelect}

@@ -153,6 +153,17 @@ export const getLatestUploads = async () => {
   }
 };
 
+export const getMoviesByTag = async (tag, limit = 5) => {
+  try {
+    const response = await client.get(
+      `/movie/by-tag?tag=${tag}&limit=${limit}`
+    );
+    return response.data;
+  } catch (error) {
+    return catchError(error);
+  }
+};
+
 export const getSingleMovie = async (id) => {
   try {
     const { data } = await client.get("/movie/single/" + id);

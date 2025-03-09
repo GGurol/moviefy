@@ -1,0 +1,429 @@
+{
+  "Create": "添加",
+  "Create Actor": "添加演员",
+  "Submit to create an actor. All fields are required.": "提交以创建演员，所有字段都是必填的",
+  "Search movies...": "搜索电影...",
+  "Search Movies...": "搜索电影...",
+  "Create Movie": "添加电影",
+  "Failed to create a movie": "创建电影失败",
+  "Successfully created a movie": "成功创建电影",
+  "Actor created successfully": "演员创建成功",
+  "Actor name": "演员姓名",
+  "Please enter actor name": "请输入演员姓名",
+  "About": "关于",
+  "Please enter actor's information": "请输入演员信息",
+  "Gender": "性别",
+  "Male": "男",
+  "Female": "女",
+  "male": "男",
+  "female": "女",
+  "Please select actor's gender": "请选择演员性别",
+  "Avatar": "头像",
+  "Select avatar": "选择头像",
+  "Please select an avatar": "请选择头像",
+  "Update": "更新",
+  "Please upload a valid image file (JPEG, PNG, or WebP)": "请上传有效的图片文件（JPEG, PNG, 或者WebP）",
+  "avatarTooLargeMessage": "请选择小于 {{maxSize}} 的图片",
+  "posterTooLargeMessage": "请选择小于 {{maxSize}} 的图片",
+  "videoTooLargeMessage": "请选择小于 {{maxSize}} 的视频文件",
+  "Please select an image file": "请选择一张图片文件",
+  "Name cannot be empty": "姓名不能为空",
+  "Name cannot be greater than 50 characters": "姓名不能超过50字符",
+  "About cannot be empty": "关于不能为空",
+  "About cannot be greater than 1000 characters": "关于不能超过1000个字符",
+  "Gender cannot be empty": "性别不能为空",
+  "Title cannot be empty": "片名不能为空",
+  "Title cannot be greater than 50 characters": "片名不能超过50字符",
+  "Story line cannot be empty": "故事情节不能为空",
+  "Story line cannot be greater than 2000 characters": "故事情节不能超过2000字符",
+  "At least one tag is required": "至少需要一个标签",
+  "Must add one director": "必须添加一位导演",
+  "Must add one writer": "必须添加一位编剧",
+  "At least one actor is required": "必须至少添加一位演员",
+  "Please select a release date": "请选择发行日期",
+  "Please select a language": "请选择语言",
+  "Please select a status": "请选择状态",
+  "Please select a type": "请选择影片类型",
+  "At least one genre is required": "至少需要一个题材",
+  "File type is not valid": "不是有效的文件类型",
+  "Video file is required": "视频文件缺失",
+  "FormTitle": "片名",
+  "FormGenres": "题材",
+  "FormDirector": "导演",
+  "FormWriter": "编剧",
+  "FormStatus": "状态",
+  "FormMovieTags": "影片标签",
+  "FormLeaderActors": "主演",
+  "FormReleaseDate": "发行日期",
+  "FormLanguage": "语言",
+  "FormType": "影片类型",
+  "FormStoryLine": "故事情节",
+  "FormPoster": "影片海报",
+  "Selected Video": "已选择的影片",
+  "Remove the video": "移除该影片",
+  "Reset Form": "重置表单",
+  "FormVideo": "影片",
+  "All the form data will be removed. If you accidentally clicked it, please click 'Cancel' to avoid data loss.": "所有表单数据将被删除。如果您不小心点击了它，请点击“取消”以避免数据丢失。",
+  "Enter movie title": "输入影片名称",
+  "Select genres...": "选择影片题材",
+  "Search director...": "搜索导演...",
+  "Search writer...": "搜索编剧...",
+  "Select a status": "选择影片状态",
+  "'Enter' key or comma separated": "回车键或半角逗号分隔",
+  "Search actors...": "搜索演员",
+  "Pick a date": "选择日期",
+  "Select a language": "选择语言",
+  "Select a type": "选择影片类型",
+  "Enter movie story line": "输入影片故事情节",
+  "Select poster": "选择影片海报",
+  "Drop video file here or click here": "将视频文件拖到此处或点击此处",
+  "Light": "亮色主题",
+  "Dark": "暗色主题",
+  "It looks like you haven't verified your email address. ": "看起来您尚未验证您的邮箱地址，",
+  "Click here to verify.": "请点击此处进行验证。",
+  "Log out": "登出",
+  "Login": "登录",
+  "Director": "导演：",
+  "Writer": "编剧：",
+  "Language": "语言：",
+  "Release Date": "发行日期：",
+  "Genres": "题材：",
+  "Type": "类型：",
+  "Rating": "评分：",
+  " Reviews": " 评论",
+  " reviews": " 评论",
+  "Rate The Movie": "为该影片打分",
+  "Leader Actors": "主演：",
+  "Total Uploads": "总上传数",
+  "Total Reviews": "总评论数",
+  "Total Users": "总用户数",
+  "Home": "主页",
+  "Movies": "电影",
+  "Actors": "演员",
+  "Recent Uploads": "最近上传的电影",
+  "Most Rated Movies": "最多评价的电影",
+  "No results.": "无结果",
+  "TablePoster": "海报",
+  "TableTitle": "片名",
+  "TableGenres": "题材",
+  "TableStatus": "状态",
+  "Edit": "编辑",
+  "Edit Movie": "编辑影片",
+  "Delete": "删除",
+  "Are you sure?": "您确定吗？",
+  "This action will remove this movie permanently!": "此操作将永久删除这部电影！",
+  "This action will remove this actor permanently!": "此操作将永久删除该演员！",
+  "Cancel": "取消",
+  "Open": "打开",
+  "Prev": "上页",
+  "Next": "下页",
+  "Search Actors...": "搜索演员...",
+  "Login with Google": "谷歌账号登录",
+  "Login with your Google account": "用您的谷歌账号进行登录",
+  "Forgot your password?": "忘了您的密码？",
+  "Sign up": "注册",
+  "Click here to sign up": "点击此处注册",
+  "Don't have an account? ": "还没有账号？",
+  "Email": "邮箱地址",
+  "Password": "密码",
+  "Or continue with": "或者以邮箱和密码登录",
+  "Or continue with email": "或者以邮箱和密码注册",
+  "Login as User": "以用户身份登录",
+  "Login as Admin": "以管理员身份登录",
+  "User": "用户",
+  "Admin": "管理员",
+  "Welcome": "欢迎",
+  "Sign up with your Google account": "用您的谷歌账号进行注册",
+  "Sign up with Google": "谷歌账号注册",
+  "Username": "用户名",
+  "Sign up button": "注册",
+  "John Doe": "王子轩",
+  "Already have an account? ": "已有账号？",
+  "click to login": "点击此处登录",
+  "No Actors Found": "未发现任何演员",
+  "Update Actor": "更新演员",
+  "Submit to update an actor.": "提交以更新演员",
+  "One-Time Password": "一次性密码",
+  "Your OTP must be 6 characters.": "一次性密码必须为6个字符.",
+  "invalid OTP": "无效一次性密码",
+  "Please enter the OTP sent to your email": "请输入发送到您邮箱的一次性密码",
+  "Verify Account": "验证账号",
+  "I don't have OTP": "没收到一次性密码",
+  "Public": "公开",
+  "Private": "私有",
+  "Update Movie": "更新电影",
+  "Submit to update a movie": "提交以更新电影",
+  "Failed to delete an actor": "删除演员失败",
+  "Record not found": "未找到相关影片",
+  "Go back": "后退",
+  "Password is missing": "密码缺失",
+  "Password must be at least 8 characters": "密码必须至少8个字符",
+  "Password does not match": "密码不一致",
+  "Please Enter Your Email": "请输入您的邮箱地址",
+  "Send password reset link": "发送密码重置链接",
+  "Log in": "登录",
+  "Invalid email address": "无效邮箱地址",
+  "Enter New Password": "请输入新密码",
+  "New Password": "新密码",
+  "Confirm Password": "确认密码",
+  "Submit": "提交",
+  "Please wait we are verifying your token!": "请稍等，我们正在验证您的身份令牌！",
+  "Sorry the token is invalid!": "抱歉，您的身份令牌无效！",
+  "Name is missing": "用户名缺失",
+  "This email is already in use": "该邮箱地址已被使用",
+  "Failed to update actor": "更新演员信息失败",
+  "Actor updated successfully": "更新演员信息成功",
+  "You don't have any review": "您没有任何评论",
+  "Invalid User ID": "无效的用户ID",
+  "User not found": "未找到该用户",
+  "User is already verified": "用户已完成验证，请不要重复验证",
+  "Token not found": "身份令牌未找到",
+  "Invalid OTP": "无效的一次性密码",
+  "User is verified": "用户验证成功",
+  "Only after one hour you can request for another token": "一小时后您才可以请求获取另一个身份令牌",
+  "New OTP has been sent to your email": "新的一次性密码已经发送到您的邮箱",
+  "Email is required": "邮箱地址为必填项",
+  "Reset password link has been sent to your email": "重置密码的链接已经发送到您的邮箱",
+  "New password must be different from old password": "新密码必须不同于旧密码",
+  "Password reset successfully": "密码重置成功",
+  "Email or Password is incorrect": "邮箱或密码错误",
+  "Invalid movie ID": "无效的影片ID",
+  "Movie not found": "未找到该影片",
+  "You have already reviewed this movie": "您已评论过该影片",
+  "Your review has been added": "评论成功",
+  "Invalid Review ID": "无效的评论ID",
+  "Review not found": "评论未找到",
+  "Your review has been updated": "评论更新成功",
+  "Invalid request, review not found": "无效的请求，评论未找到",
+  "Review removed successfully": "评论删除成功",
+  "File is missing": "视频和图片文件缺失",
+  "Invalid director ID": "无效的导演ID",
+  "Invalid writer ID": "无效的编剧ID",
+  "Could not update video at the moment": "暂时无法上传视频",
+  "Could not update poster at the moment": "暂时无法上传图片",
+  "Movie is updated": "影片更新成功",
+  "Could not remove poster at the moment": "暂时无法删除该图片文件",
+  "Could not find video in the cloud": "在云服务器上无法找到该影片",
+  "Could not remove video at the moment": "暂时无法删除该视频文件",
+  "Movie removed successfully": "影片删除成功",
+  "Invalid requests": "无效请求",
+  "Invalid request": "无效请求",
+  "Invalid Actor ID": "无效的演员ID",
+  "Invalid request, actor not found": "无效请求，该演员未找到",
+  "Could not remove image from cloud": "无法从云服务器上移除图片文件",
+  "Actor removed successfully": "该演员删除成功",
+  "Invalid token": "无效令牌",
+  "Invalid token, user not found": "无效令牌，未找到该用户",
+  "Only administrators can perform this action": "只有管理员才能执行该操作",
+  "Supported only image files": "只支持图片文件",
+  "Supported only video files": "只支持视频文件",
+  "Email is invalid": "不是有效的邮箱",
+  "Password must be between 8 to 20 characters long": "密码必须在8到20个字符之间",
+  "Actor name is missing": "演员姓名缺失",
+  "About is a required field": "关于缺失",
+  "Gender is a required field": "性别缺失",
+  "Title is missing": "影片名称缺失",
+  "Storyline is missing": "故事情节缺失",
+  "Language is missing": "语言缺失",
+  "Movie status must be public or private": "电影状态必须是公开或者私有",
+  "Movie type is missing": "电影类型缺失",
+  "Genres must be an array": "题材必须是数组",
+  "Invalid genre": "无效题材",
+  "Tags must be an array of strings": "标签必须是字符串数组",
+  "Cast must be an array of string": "演员表必须是字符串数组",
+  "Invalid actor ID inside cast": "演员表中的演员ID无效",
+  "Rating must be a number between 0 and 10": "评分必须是0到10之间的数字",
+  "Please select a video file": "请选择一个视频文件",
+  "Enter actor's name": "输入演员姓名",
+  "Enter actor's information": "输入演员相关信息",
+  "Select actor's gender": "选择演员性别",
+  "Top Rated Drama": "高分剧情片",
+  "Top Rated Thriller": "高分惊悚片",
+  "Top Rated Action": "高分动作片",
+  "Related Movies": "相关影片",
+  "No Reviews": "无评论",
+  "This action will remove this review permanently": "该操作将永久删除该评论",
+  "View All": "查看所有",
+  "My Review": "我的评论",
+  "Back": "后退",
+  "Reviews for": "评论：",
+  "genres": {
+    "Action": "动作片",
+    "Adventure": "冒险片",
+    "Animation": "动画片",
+    "Biography": "传记片",
+    "Comedy": "喜剧片",
+    "Crime": "犯罪片",
+    "Documentary": "纪录片",
+    "Drama": "剧情片",
+    "Family": "家庭片",
+    "Fantasy": "奇幻片",
+    "Fiction": "科幻小说",
+    "Film-Noir": "黑色电影",
+    "Game Show": "游戏秀",
+    "History": "历史片",
+    "Horror": "恐怖片",
+    "Music": "音乐片",
+    "Musical": "歌舞片",
+    "Mystery": "悬疑片",
+    "News": "新闻",
+    "Reality TV": "真人秀",
+    "Romance": "爱情片",
+    "Sci-Fi": "科幻片",
+    "Superhero": "超级英雄片",
+    "Sport": "体育片",
+    "Talk Show": "脱口秀",
+    "Thriller": "惊悚片",
+    "War": "战争片",
+    "Western": "西部片"
+  },
+  "public": "公开",
+  "private": "私有",
+  "Chinese": "中文",
+  "English": "英语",
+  "French": "法语",
+  "German": "德语",
+  "Hindi": "印地语",
+  "Italian": "意大利语",
+  "Japanese": "日语",
+  "Korean": "韩语",
+  "Russian": "俄罗斯语",
+  "Spanish": "西班牙语",
+  "Other": "其他",
+  "Film": "电影",
+  "Short Film": "短片",
+  "TV Series": "电视剧",
+  "movies": {
+    "67c6c059d5287abf9732d359": {
+      "title": "弗雷迪的五夜惊魂"
+    },
+    "67c6c6b7d5287abf9732d48b": {
+      "title": "花月杀手"
+    },
+    "67c6ca69d5287abf9732d52d": {
+      "title": "盗梦空间"
+    },
+    "67c6e893d5287abf9732d66c": {
+      "title": "毒液：最后一舞"
+    },
+    "67c6ed62d5287abf9732d6b0": {
+      "title": "某种物质"
+    },
+    "67c6f1c5d5287abf9732d6f8": {
+      "title": "因果报应"
+    },
+    "67c6f5efd5287abf9732d7b2": {
+      "title": "死侍与金刚狼"
+    },
+    "67c6f8f5d5287abf9732d7e8": {
+      "title": "沙丘2"
+    },
+    "67c6fd50d5287abf9732d83f": {
+      "title": "秘密会议"
+    },
+    "67c700f2d5287abf9732d8f7": {
+      "title": "刺猬索尼克3"
+    }
+  },
+  "actors": {
+    "67c6bc79d5287abf9732d2f4": {
+      "name": "乔什·哈切森"
+    },
+    "67c6bd78d5287abf9732d2fb": {
+      "name": "伊丽莎白·莱尔"
+    },
+    "67c6be72d5287abf9732d30e": {
+      "name": "马修·利拉德"
+    },
+    "67c6c166d5287abf9732d3d9": {
+      "name": "艾玛·塔米"
+    },
+    "67c6c3a0d5287abf9732d476": {
+      "name": "莱昂纳多·迪卡普里奥"
+    },
+    "67c6c43ad5287abf9732d479": {
+      "name": "马丁·斯科塞斯"
+    },
+    "67c6c56ed5287abf9732d47c": {
+      "name": "罗伯特·德尼罗"
+    },
+    "67c6c71bd5287abf9732d48e": {
+      "name": "莉莉·格拉德斯通"
+    },
+    "67c6cb02d5287abf9732d530": {
+      "name": "克里斯托弗·诺兰"
+    },
+    "67c6cbdbd5287abf9732d5ba": {
+      "name": "约瑟夫·高登-莱维特"
+    },
+    "67c6cd11d5287abf9732d5d1": {
+      "name": "汤姆·哈迪"
+    },
+    "67c6e766d5287abf9732d663": {
+      "name": "凯莉·马塞尔"
+    },
+    "67c6eae0d5287abf9732d69f": {
+      "name": "黛米·摩尔"
+    },
+    "67c6eb2ed5287abf9732d6a2": {
+      "name": "玛格丽特·夸利"
+    },
+    "67c6ec3bd5287abf9732d6a5": {
+      "name": "科拉丽·法尔热"
+    },
+    "67c6ee6ed5287abf9732d6e7": {
+      "name": "维杰·谢图帕提"
+    },
+    "67c6ef0cd5287abf9732d6ea": {
+      "name": "阿努拉格·卡希亚普"
+    },
+    "67c6efdbd5287abf9732d6ed": {
+      "name": "尼蒂兰·萨米纳坦"
+    },
+    "67c6f380d5287abf9732d799": {
+      "name": "瑞安·雷诺兹"
+    },
+    "67c6f3cad5287abf9732d79c": {
+      "name": "休·杰克曼"
+    },
+    "67c6f513d5287abf9732d79f": {
+      "name": "肖恩·利维"
+    },
+    "67c6f6c0d5287abf9732d7b5": {
+      "name": "丹尼斯·维伦纽瓦"
+    },
+    "67c6f77bd5287abf9732d7b8": {
+      "name": "提莫西·夏拉梅"
+    },
+    "67c6f7d0d5287abf9732d7bb": {
+      "name": "瑞贝卡·弗格森"
+    },
+    "67c6fb4dd5287abf9732d82b": {
+      "name": "爱德华·伯杰"
+    },
+    "67c6fb9dd5287abf9732d82e": {
+      "name": "彼得·斯特劳汉"
+    },
+    "67c6fbebd5287abf9732d831": {
+      "name": "拉尔夫·费因斯"
+    },
+    "67c6fc37d5287abf9732d834": {
+      "name": "斯坦利·图奇"
+    },
+    "67c6febbd5287abf9732d8de": {
+      "name": "杰夫·福勒"
+    },
+    "67c6fef2d5287abf9732d8e1": {
+      "name": "派特·凯西"
+    },
+    "67c6ff3fd5287abf9732d8e4": {
+      "name": "金·凯瑞"
+    },
+    "67c6ff98d5287abf9732d8e7": {
+      "name": "基努·里维斯"
+    },
+    "67c6ffcfd5287abf9732d8ea": {
+      "name": "詹姆斯·马斯登"
+    }
+  }
+}

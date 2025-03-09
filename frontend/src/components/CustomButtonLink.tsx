@@ -25,9 +25,9 @@ function CustomButtonLink({ label, clickable = true, onClick }: Props) {
   }
 
   return (
-    <p className={`h-9 flex items-center text-sm font-medium text-primary`}>
+    <div className={`h-9 flex items-center text-sm font-medium text-primary`}>
       {label}
-    </p>
+    </div>
   );
 }
 

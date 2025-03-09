@@ -34,6 +34,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
+import { useTranslation } from "react-i18next";
 
 let currentPageNo = 0;
 const limit = 9;
@@ -47,10 +48,11 @@ export default function Actors() {
   const { handleSearch, resetSearch, resultNotFound } = useSearch();
   const [noNext, setNoNext] = useState(false);
   const [noPrev, setNoPrev] = useState(false);
+  const { t } = useTranslation();
 
   const fetchActors = async (pageNo) => {
     const { profiles, error, totalActorCount } = await getActors(pageNo, limit);
-    if (error) return toast.error(error);
+    if (error) return toast.error(t(error));
     if (currentPageNo === 0) {
       setNoPrev(true);
     }
@@ -116,10 +118,10 @@ export default function Actors() {
     setBusy(false);
 
     if (error) {
-      return toast.error("Failed to delete an actor.");
+      return toast.error(t("Failed to delete an actor"));
     }
 
-    toast.success(message);
+    toast.success(t(message));
     setOpenAlertModal(false);
     fetchActors(currentPageNo);
   };
@@ -130,18 +132,18 @@ export default function Actors() {
 
   return (
     <>
-      <div className="p-5">
+      <div className="p-2 sm:p-5">
         <div className="flex justify-end mb-5">
           <AppSearchForm
             onReset={handleSearchFormReset}
             onSubmit={handleOnSearchSubmit}
-            placeholder="Search Actors..."
+            placeholder={t("Search Actors...")}
             showResetIcon={results.length || resultNotFound}
           />
         </div>
-        <NotFoundText text="No Actors Found" visible={resultNotFound} />
+        <NotFoundText text={t("No Actors Found")} visible={resultNotFound} />
 
-        <div className="grid grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
           {results.length || resultNotFound
             ? results.map((actor) => (
                 <ActorProfile
@@ -194,6 +196,8 @@ const ActorProfile = ({
 }) => {
   const [showOptions, setShowOptions] = useState(false);
   const acceptedNameLength = 15;
+  const acceptedAboutLength = 70;
+  const { t, i18n } = useTranslation();
 
   const handleOnMouseEnter = () => {
     setShowOptions(true);
@@ -206,10 +210,23 @@ const ActorProfile = ({
 
   if (!profile) return null;
 
-  const getName = (name) => {
+  const getName = (actor) => {
+    const nm = `actors.${actor.id}.name`;
+    let name = actor.name;
+    if (i18n.exists(nm)) {
+      name = t(nm);
+    }
     if (name.length <= acceptedNameLength) return name;
-    return name.substring(0, acceptedNameLength) + "..";
+    return name.substring(0, acceptedNameLength) + "...";
   };
+
+  const getAbout = (about) => {
+    if (about <= acceptedAboutLength) {
+      return about;
+    }
+    return about.substring(0, acceptedAboutLength) + "...";
+  };
+
   const { name, avatar, about = "" } = profile;
 
   const [open, setOpen] = useState(false);
@@ -230,12 +247,12 @@ const ActorProfile = ({
   return (
     <>
       <Card
-        className="flex rounded-md gap-2  hover:bg-muted relative h-32 overflow-hidden"
+        className="flex rounded-md gap-2  hover:bg-muted relative h-40 lg:h-32 overflow-hidden"
         onMouseEnter={handleOnMouseEnter}
         onMouseLeave={handleOnMouseLeave}
       >
         <CardHeader className="p-0">
-          <CardTitle className="w-32 h-32">
+          <CardTitle className="h-40 w-32 lg:w-32 lg:h-32">
             <img
               src={avatar}
               alt={name}
@@ -245,8 +262,8 @@ const ActorProfile = ({
           </CardTitle>
         </CardHeader>
         <CardContent className="px-1 py-1 flex flex-col gap-1">
-          <div className="capitalize">{getName(name)}</div>
-          <CardDescription> {about.substring(0, 120)}</CardDescription>
+          <div className="capitalize">{getName(profile)}</div>
+          <CardDescription> {getAbout(about)}</CardDescription>
         </CardContent>
         {showOptions && (
           <div className="absolute inset-0 backdrop-blur-md flex justify-center items-center space-x-5">
@@ -268,9 +285,9 @@ const ActorProfile = ({
                 }}
               >
                 <DialogHeader>
-                  <DialogTitle>Update Actor</DialogTitle>
+                  <DialogTitle>{t("Update Actor")}</DialogTitle>
                   <DialogDescription>
-                    Submit to update an actor.
+                    {t("Submit to update an actor.")}
                   </DialogDescription>
                 </DialogHeader>
                 <UpdateActor
@@ -297,9 +314,9 @@ const ActorProfile = ({
               </AlertDialogTrigger>
               <AlertDialogContent>
                 <AlertDialogHeader>
-                  <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                  <AlertDialogTitle>{t("Are you sure?")}</AlertDialogTitle>
                   <AlertDialogDescription>
-                    This action will remove this actor permanently!
+                    {t("This action will remove this actor permanently!")}
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
@@ -307,7 +324,7 @@ const ActorProfile = ({
                     disabled={busy}
                     onClick={() => setOpenAlertModal(false)}
                   >
-                    Cancel
+                    {t("Cancel")}
                   </AlertDialogCancel>
                   <AlertDialogAction
                     onClick={() => {
@@ -317,7 +334,7 @@ const ActorProfile = ({
                     className={buttonVariants({ variant: "destructive" })}
                   >
                     <span className="w-12 flex items-center justify-center">
-                      {busy ? <Loader className="animate-spin" /> : "Delete"}
+                      {busy ? <Loader className="animate-spin" /> : t("Delete")}
                     </span>
                   </AlertDialogAction>
                 </AlertDialogFooter>

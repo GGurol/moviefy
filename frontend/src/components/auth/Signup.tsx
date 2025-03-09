@@ -1,17 +1,12 @@
 import { useEffect, useState } from "react";
-import { commonModalClasses } from "../../utils/theme";
-import Container from "../Container";
-import CustomLink from "../CustomLink";
-import FormContainer from "../form/FormContainer";
-import FormInput from "../form/FormInput";
-import Submit from "../form/Submit";
-import Title from "../form/Title";
-import { createUser } from "../../api/auth";
 import { useNavigate } from "react-router-dom";
-import { useAuth, useNotification } from "../../hooks";
-import { isValidEmail } from "../../utils/helper";
-import { SignUpForm } from "../ui/SignupForm";
 import { toast } from "sonner";
+import { createUser } from "../../api/auth";
+import { useAuth } from "../../hooks";
+import { isValidEmail } from "../../utils/helper";
+import FormContainer from "../form/FormContainer";
+import { SignUpForm } from "../ui/SignupForm";
+import { useTranslation } from "react-i18next";
 
 const validateUserInfo = ({ name, email, password }) => {
   // const isValidEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
@@ -31,7 +26,7 @@ const validateUserInfo = ({ name, email, password }) => {
   return { ok: true };
 };
 
-function Signup() {
+export default function Signup() {
   const [userInfo, setUserInfo] = useState({
     name: "",
     email: "",
@@ -41,6 +36,7 @@ function Signup() {
   const navigate = useNavigate();
   const { authInfo } = useAuth();
   const { isLoggedIn } = authInfo;
+  const { t } = useTranslation();
 
   const handleChange = ({ target }) => {
     // console.log(target);
@@ -52,12 +48,12 @@ function Signup() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { ok, error } = validateUserInfo(userInfo);
-    if (!ok) return toast.error(error);
+    if (!ok) return toast.error(t(error as string));
 
     const response = await createUser(userInfo);
     // already defined 'error', so don't use desctructuring
     console.log(response);
-    if (response.error) return toast.error(response.error);
+    if (response.error) return toast.error(t(response.error));
     navigate("/auth/verification", {
       state: { user: response.user },
       replace: true,
@@ -77,5 +73,3 @@ function Signup() {
     </FormContainer>
   );
 }
-
-export default Signup;

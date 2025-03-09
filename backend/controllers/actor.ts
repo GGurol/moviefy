@@ -24,9 +24,9 @@ export const updateActor = async (req, res) => {
   const { file } = req;
   const { actorId } = req.params;
 
-  if (!isValidObjectId(actorId)) return sendError(res, "Invalid Actor Id!");
+  if (!isValidObjectId(actorId)) return sendError(res, "Invalid Actor ID"); // Trans
   const actor = await Actor.findById(actorId);
-  if (!actor) return sendError(res, "Invalid request, record not found!");
+  if (!actor) return sendError(res, "Invalid request, actor not found"); // trans
 
   const public_id = actor.avatar?.public_id;
 
@@ -35,7 +35,7 @@ export const updateActor = async (req, res) => {
     const { result } = await cloudinary.uploader.destroy(public_id);
     console.log(result);
     if (result !== "ok") {
-      return sendError(res, "Could not remove image from cloud");
+      return sendError(res, "Could not remove image from cloud"); // Trans
     }
   }
 
@@ -60,10 +60,10 @@ export const updateActor = async (req, res) => {
 export const removeActor = async (req, res) => {
   const { actorId } = req.params;
 
-  if (!isValidObjectId(actorId)) return sendError(res, "Invalid Actor Id!");
+  if (!isValidObjectId(actorId)) return sendError(res, "Invalid Actor ID");
 
   const actor = await Actor.findById(actorId);
-  if (!actor) return sendError(res, "Invalid request, record not found!");
+  if (!actor) return sendError(res, "Invalid request, actor not found");
 
   const public_id = actor.avatar?.public_id;
 
@@ -77,7 +77,7 @@ export const removeActor = async (req, res) => {
 
   await Actor.findByIdAndDelete(actorId);
 
-  res.json({ message: "Record removed successfully!" });
+  res.json({ message: "Actor removed successfully" }); // Trans
 };
 
 export const searchActor = async (req, res) => {
@@ -110,10 +110,10 @@ export const getLatestActors = async (req, res) => {
 export const getSingleActor = async (req, res) => {
   const { id } = req.params;
 
-  if (!isValidObjectId(id)) return sendError(res, "Invalid request!");
+  if (!isValidObjectId(id)) return sendError(res, "Invalid request");
 
   const actor = await Actor.findById(id);
-  if (!actor) return sendError(res, "Invalid request, actor not found!", 404);
+  if (!actor) return sendError(res, "Invalid request, actor not found", 404);
   res.json({ actor: formateActor(actor) });
 };
 

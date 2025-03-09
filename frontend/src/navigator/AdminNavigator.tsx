@@ -11,12 +11,7 @@ import SearchMovies from "../components/admin/SearchMovies";
 function AdminNavigator() {
   return (
     <>
-      <SidebarProvider
-        style={{
-          "--sidebar-width": "10rem",
-          "--sidebar-width-mobile": "10rem",
-        }}
-      >
+      <SidebarProvider>
         <AppSidebar />
         <SidebarInset className="">
           <Header />

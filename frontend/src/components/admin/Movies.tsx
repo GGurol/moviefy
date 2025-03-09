@@ -8,6 +8,7 @@ import ConfirmModal from "../modals/ConfirmModal";
 import { DataTable } from "../ui/DataTable";
 import { columns } from "./MovieListColumn";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 const limit = 6;
 let currentPageNo = 0;
@@ -21,10 +22,11 @@ export default function Movies() {
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [noNext, setNoNext] = useState(false);
   const [noPrev, setNoPrev] = useState(false);
+  const { t } = useTranslation();
 
   const fetchMovies = async (pageNo) => {
     const { error, movies, totalMovieCount } = await getMovies(pageNo, limit);
-    if (error) return toast.error(error);
+    if (error) return toast.error(t(error));
     if (currentPageNo === 0) {
       setNoPrev(true);
     }
@@ -70,7 +72,7 @@ export default function Movies() {
   // console.log(newMovies);
 
   return (
-    <>
+    <div className="mx-2 mt-3 sm:mx-5 sm:mt-5">
       <DataTable columns={columns} data={movies} />
       <NextAndPrevButton
         className="mt-5"
@@ -79,6 +81,6 @@ export default function Movies() {
         noNext={noNext}
         noPrev={noPrev}
       />
-    </>
+    </div>
   );
 }

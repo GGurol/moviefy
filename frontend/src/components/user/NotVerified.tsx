@@ -1,11 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks";
+import { useTranslation } from "react-i18next";
 
 function NotVerified() {
   const { authInfo } = useAuth();
   const { isLoggedIn } = authInfo;
   const isVerified = authInfo.profile?.isVerified;
   // console.log(authInfo);
+  const { t } = useTranslation();
 
   const navigate = useNavigate();
   const navigateToVerification = () => {
@@ -15,13 +17,13 @@ function NotVerified() {
   return (
     <div>
       {isLoggedIn && !isVerified ? (
-        <p className="text-sm  text-center p-2 bg-muted rounded-md mb-2">
-          {`It looks like you haven't verified your account`},{" "}
+        <p className="text-sm text-muted-foreground  text-center p-1 bg-muted rounded-md mb-2">
+          {t(`It looks like you haven't verified your email address. `)}
           <button
             onClick={navigateToVerification}
-            className="text-blue-500 font-semibold hover:underline text-sm"
+            className="text-red-500 font-semibold hover:underline text-sm"
           >
-            click here to verify your account.
+            {t("Click here to verify.")}
           </button>
         </p>
       ) : null}

@@ -12,7 +12,7 @@ const storage = multer.diskStorage({});
 const imageFileFilter = (req, file, cb) => {
   // console.log(file);
   if (!file.mimetype.startsWith("image")) {
-    cb("Supported only image files", false);
+    cb("Supported only image files", false); // Trans
   }
   cb(null, true);
 };
@@ -20,7 +20,7 @@ const imageFileFilter = (req, file, cb) => {
 const videoFileFilter = (req, file, cb) => {
   // console.log(file);
   if (!file.mimetype.startsWith("video")) {
-    cb("Supported only video files", false);
+    cb("Supported only video files", false); // Trans
   }
   cb(null, true);
 };

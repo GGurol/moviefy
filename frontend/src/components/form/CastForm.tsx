@@ -8,6 +8,7 @@ import { renderItem } from "../../utils/helper";
 import { searchActor } from "../../api/actor";
 import LiveSearchCast from "../LiveSearchCast";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 const defaultCastInfo = {
   profile: {},
@@ -37,6 +38,7 @@ function CastForm({
   // const [dupValues, setDupValues] = useState([]);
 
   const { handleSearch, resetSearch } = useSearch();
+  const { t } = useTranslation();
 
   const handleOnChange = ({ target }) => {
     const { checked, name, value } = target;
@@ -78,16 +80,16 @@ function CastForm({
     onSelect(selectedActors.map((e) => e.id));
   }, [JSON.stringify(selectedActors)]);
 
-  const handleSubmit = () => {
-    const { profile, roleAs } = castInfo;
-    if (!profile.name) return toast.error("Cast profile is missing!");
-    if (!roleAs.trim()) return toast.error("Cast role is missing!");
+  // const handleSubmit = () => {
+  //   const { profile, roleAs } = castInfo;
+  //   if (!profile.name) return toast.error("Cast profile is missing!");
+  //   if (!roleAs.trim()) return toast.error("Cast role is missing!");
 
-    onSubmit(castInfo);
-    setCastInfo({ ...defaultCastInfo, profile: { name: "" } });
-    resetSearch();
-    setProfiles([]);
-  };
+  //   onSubmit(castInfo);
+  //   setCastInfo({ ...defaultCastInfo, profile: { name: "" } });
+  //   resetSearch();
+  //   setProfiles([]);
+  // };
 
   const handleProfileChange = ({ target }) => {
     const { value } = target;
@@ -96,7 +98,7 @@ function CastForm({
     profile.name = value;
     setCastInfo({ ...castInfo, ...profile });
     handleSearch(searchActor, value, values, setProfiles);
-    console.log("handleProfileChange", value);
+    // console.log("handleProfileChange", value);
   };
 
   const { leadActor, profile, roleAs } = castInfo;
@@ -112,7 +114,7 @@ function CastForm({
         title="Set as lead actor"
       /> */}
       <LiveSearchCast
-        placeholder="Search profile..."
+        placeholder={t("Search actors...")}
         value={value}
         values={values}
         // dupValues={dupValues}

@@ -3,6 +3,7 @@ import { renderItem } from "../utils/helper";
 import LiveSearch from "./LiveSearch";
 import { useSearch } from "../hooks";
 import { searchActor } from "../api/actor";
+import { useTranslation } from "react-i18next";
 
 function WriterSelector({
   updateWriter,
@@ -17,6 +18,7 @@ function WriterSelector({
   const [profiles, setProfiles] = useState([]);
 
   const { handleSearch, resetSearch } = useSearch();
+  const { t } = useTranslation();
 
   const handleOnChange = ({ target }) => {
     const { value } = target;
@@ -34,8 +36,8 @@ function WriterSelector({
 
   return (
     <LiveSearch
-      name="writers"
-      placeholder="Search profile..."
+      name="writer"
+      placeholder={t("Search writer...")}
       results={profiles}
       renderItem={renderItem}
       onSelect={handleOnSelect}

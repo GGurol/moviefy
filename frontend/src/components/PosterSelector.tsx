@@ -39,7 +39,7 @@ export default function PosterSelector({
 const PosterUI = ({ label, className }) => {
   return (
     <div className={commonPosterStyle + " " + className}>
-      <span className="text-gray-400">{label}</span>
+      <span className="text-muted-foreground">{label}</span>
     </div>
   );
 };

@@ -7,14 +7,10 @@ import { generateOTP, generateMailTransporter, sendEmail } from "../utils/mail";
 import { sendError, generateRandomByte } from "../utils/helper";
 
 export const create = async (req, res) => {
-  // console.log(req.body);
-  // without app.use(express.json()) middleware, req.body will be undefined
   const { name, email, password } = req.body;
 
   const oldUser = await User.findOne({ email });
-  if (oldUser)
-    // return res.status(401).json({ error: 'This email is already in use!' });
-    return sendError(res, "This email is already in use!");
+  if (oldUser) return sendError(res, "This email is already in use"); // Trans
 
   const newUser = new User({ name, email, password });
   await newUser.save();
@@ -74,17 +70,17 @@ export const create = async (req, res) => {
 export const verifyEmail = async (req, res) => {
   const { userId, OTP } = req.body;
 
-  if (!isValidObjectId(userId)) return res.json({ error: "Invalid User Id!" });
+  if (!isValidObjectId(userId)) return res.json({ error: "Invalid User ID" }); // Trans
 
   const user = await User.findById(userId);
-  if (!user) return sendError(res, "User not found!", 404);
-  if (user.isVerified) return sendError(res, "User is already verified!");
+  if (!user) return sendError(res, "User not found", 404); // Trans
+  if (user.isVerified) return sendError(res, "User is already verified"); // Trans
 
   const token = await EmailVerificationToken.findOne({ owner: userId });
-  if (!token) return sendError(res, "Token not found!");
+  if (!token) return sendError(res, "Token not found"); // Trans
 
   const isMatched = await token.compareToken(OTP);
-  if (!isMatched) return sendError(res, "Invalid OTP!");
+  if (!isMatched) return sendError(res, "Invalid OTP"); // Trans
 
   user.isVerified = true;
   await user.save();
@@ -118,7 +114,7 @@ export const verifyEmail = async (req, res) => {
       isVerified: user.isVerified,
       role: user.role,
     },
-    message: "User is verified!",
+    message: "User is verified", // Trans
   });
 };
 
@@ -126,14 +122,14 @@ export const resendEmailVerificationToken = async (req, res) => {
   const { userId } = req.body;
 
   const user = await User.findById(userId);
-  if (!user) return sendError(res, "User not found!");
+  if (!user) return sendError(res, "User not found");
 
-  if (user.isVerified) return sendError(res, "User is already verified!");
+  if (user.isVerified) return sendError(res, "User is already verified");
 
   const alreadyHasToken = await EmailVerificationToken.findOne({
     owner: userId,
   });
-  if (alreadyHasToken) return sendError(res, "Only after one hour you can request for another token");
+  if (alreadyHasToken) return sendError(res, "Only after one hour you can request for another token"); // Trans
 
   // generate 6 digit otp
   let OTP = generateOTP();
@@ -166,20 +162,20 @@ export const resendEmailVerificationToken = async (req, res) => {
   //     await sendEmail(user.name, user.email, 'Email Verification', htmlContent);
 
   res.json({
-    message: "New OTP has been sent to your email!",
+    message: "New OTP has been sent to your email", // Trans
   });
 };
 
 export const forgetPassword = async (req, res) => {
   const { email } = req.body;
-  if (!email) return sendError(res, "Email is required!");
+  if (!email) return sendError(res, "Email is required"); // Trans
   const user = await User.findOne({ email });
-  if (!user) return sendError(res, "User not found!", 404);
+  if (!user) return sendError(res, "User not found", 404); // Trans
 
   const alreadyHasToken = await PasswordResetToken.findOne({
     owner: user._id,
   });
-  if (alreadyHasToken) return sendError(res, "Only after one hour you can request for another token");
+  if (alreadyHasToken) return sendError(res, "Only after one hour you can request for another token"); // Trans
 
   const token = await generateRandomByte();
   const newPasswordResetToken = await new PasswordResetToken({
@@ -211,7 +207,7 @@ export const forgetPassword = async (req, res) => {
   //     await sendEmail(user.name, user.email, 'Forget Password', htmlContent);
 
   res.json({
-    message: "Reset password link has been sent to your email!",
+    message: "Reset password link has been sent to your email", // Trans
   });
 };
 
@@ -224,7 +220,7 @@ export const resetPassword = async (req, res) => {
 
   const user = await User.findById(userId);
   const matched = await user.comparePassword(newPassword);
-  if (matched) return sendError(res, "New password must be different from old password!");
+  if (matched) return sendError(res, "New password must be different from old password"); // Trans
 
   user.password = newPassword;
   await user.save();
@@ -250,7 +246,7 @@ export const resetPassword = async (req, res) => {
 
   //     await sendEmail(user.name, user.email, 'Password Changed', htmlContent);
 
-  res.json({ message: "Password reset successfully!" });
+  res.json({ message: "Password reset successfully" }); // Trans
 };
 
 export const signIn = async (req, res, next) => {
@@ -258,10 +254,10 @@ export const signIn = async (req, res, next) => {
 
   // try {
   const user = await User.findOne({ email });
-  if (!user) return sendError(res, "Email/Password is incorrect!");
+  if (!user) return sendError(res, "Email or Password is incorrect"); // Trans
 
   const matched = await user.comparePassword(password);
-  if (!matched) return sendError(res, "Email/Password mismatch!");
+  if (!matched) return sendError(res, "Email or Password is incorrect");
 
   const { _id, name, role, isVerified } = user;
 

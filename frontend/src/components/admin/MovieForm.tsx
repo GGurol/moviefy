@@ -75,6 +75,10 @@ import {
   AlertDialogTrigger,
 } from "../ui/alert-dialog";
 import { GENRES } from "@/utils/genres";
+import { formatBytes } from "@/utils/helper";
+import i18n from "@/utils/i18n";
+import { useTranslation } from "react-i18next";
+import { zhCN, enUS } from "date-fns/locale";
 type Genres = Record<"value" | "label" | "className", string>;
 
 const defaultMovieInfo = {
@@ -85,7 +89,7 @@ const defaultMovieInfo = {
   director: {},
   writers: [],
   writer: "",
-  releseDate: "",
+  releaseDate: "",
   poster: null,
   genres: [],
   type: "",
@@ -93,7 +97,8 @@ const defaultMovieInfo = {
   status: "",
 };
 
-const MAX_FILE_SIZE = 1024 * 1024 * 10;
+const MAX_POSTER_SIZE = 1024 * 1024 * 10;
+const MAX_VIDEO_SIZE = 1024 * 1024 * 10;
 
 const ACCEPTED_IMAGE_TYPES = [
   "image/jpeg",
@@ -109,74 +114,88 @@ const ACCEPTED_VIDEO_TYPES = [
   "video/x-msvideo",
 ];
 
-const formatBytes = (bytes: number, decimals = 2) => {
-  if (bytes === 0) return "0 Bytes";
-  const k = 1024;
-  const dm = decimals < 0 ? 0 : decimals;
-  const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
-};
-
-const validatePoster = (file) => {
-  if (!file) return true;
-  if (file.size > MAX_FILE_SIZE) {
-    return new Error(
-      `Please choose an image smaller than ${formatBytes(MAX_FILE_SIZE)}.`
-    );
+const validatePoster = (file, ctx) => {
+  if (!file) return;
+  if (file.size > MAX_POSTER_SIZE) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: i18n.t("posterTooLargeMessage", {
+        maxSize: formatBytes(MAX_POSTER_SIZE),
+      }),
+      fatal: true,
+    });
   }
   if (!ACCEPTED_IMAGE_TYPES.includes(file.type)) {
-    return new Error("Please upload a valid image file (JPEG, PNG, or WebP).");
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: i18n.t("Please upload a valid image file (JPEG, PNG, or WebP)"),
+      fatal: true,
+    });
   }
-  return true;
+  // return true;
 };
 
-const validateVideo = (file) => {
+const validateVideo = (file, ctx) => {
   if (!file) return true;
-  if (file.size > MAX_FILE_SIZE) {
-    return new Error(
-      `Please choose a video file smaller than ${formatBytes(MAX_FILE_SIZE)}.`
-    );
+  if (file.size > MAX_VIDEO_SIZE) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: i18n.t("videoTooLargeMessage", {
+        maxSize: formatBytes(MAX_VIDEO_SIZE),
+      }),
+      fatal: true,
+    });
   }
   if (!ACCEPTED_VIDEO_TYPES.includes(file.type)) {
-    return new Error("Please upload a valid video file (MP4, AVI, or MKV)");
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: i18n.t("Please upload a valid image file (JPEG, PNG, or WebP)"),
+      fatal: true,
+    });
   }
-  return true;
+  // return true;
 };
 
 const commonValidation = {
-  title: z.string().min(2).max(50),
-  storyLine: z.string().min(2).max(2000),
-  tags: z.array(z.string()).nonempty("At least one tag is required"),
-  director: z.string().nonempty("Must add one director"),
-  writer: z.string().nonempty("Must add one writer"),
-  cast: z.array(z.string()).nonempty("At least one actor is required"),
-  releaseDate: z.date(),
-  language: z.string(),
-  status: z.string(),
-  type: z.string(),
-  genres: z.array(z.string()).nonempty("At least one genre is required"),
+  title: z
+    .string()
+    .nonempty(i18n.t("Title cannot be empty"))
+    .max(50, i18n.t("Title cannot be greater than 50 characters")),
+  storyLine: z
+    .string()
+    .nonempty(i18n.t("Story line cannot be empty"))
+    .max(2000, i18n.t("Story line cannot be greater than 2000 characters")),
+  tags: z.array(z.string()).nonempty(i18n.t("At least one tag is required")),
+  director: z.string().nonempty(i18n.t("Must add one director")),
+  writer: z.string().nonempty(i18n.t("Must add one writer")),
+  cast: z.array(z.string()).nonempty(i18n.t("At least one actor is required")),
+  releaseDate: z.date({ message: i18n.t("Please select a release date") }),
+  language: z.string().nonempty(i18n.t("Please select a language")),
+  status: z.string().nonempty(i18n.t("Please select a status")),
+  type: z.string().nonempty(i18n.t("Please select a type")),
+  genres: z
+    .array(z.string())
+    .nonempty(i18n.t("At least one genre is required")),
 };
 
 const formUpdateSchema = z.object({
   ...commonValidation,
-  poster: z.any().optional().refine(validatePoster),
-  video: z.any().optional().refine(validateVideo),
+  poster: z.any().optional().superRefine(validatePoster),
+  video: z.any().optional().superRefine(validateVideo),
 });
 
 const formSchema = z.object({
   ...commonValidation,
   poster: z
     .instanceof(File, {
-      message: "Please select an image file.",
+      message: i18n.t("Please select an image file"),
     })
-    .refine(validatePoster),
-
+    .superRefine(validatePoster),
   video: z
     .instanceof(File, {
-      message: "Please select a video file.",
+      message: i18n.t("Please select a video file"),
     })
-    .refine(validateVideo),
+    .superRefine(validateVideo),
 });
 
 export default function MovieForm({
@@ -207,6 +226,9 @@ export default function MovieForm({
         video: undefined,
         poster: undefined,
         genres: [],
+        type: "",
+        language: "",
+        status: "",
       },
     });
   } else {
@@ -222,6 +244,9 @@ export default function MovieForm({
         video: undefined,
         poster: undefined,
         genres: [],
+        type: "",
+        language: "",
+        status: "",
       },
     });
   }
@@ -337,6 +362,7 @@ export default function MovieForm({
   const [directorSelectRes, setDirectorSelectRes] = useState("");
   // const [dupValues, setDupValues] = useState([]);
   const [selectedActors, setSelectedActors] = useState([]);
+  const { t, i18n } = useTranslation();
 
   // const leaderActors = useActorStore((state) => state.leaderActors);
   // console.log(leaderActors);
@@ -362,7 +388,7 @@ export default function MovieForm({
       if (!fileType) {
         form.setValue("video", null);
         form.setError("video", {
-          message: "File type is not valid",
+          message: t("File type is not valid"),
           type: "typeError",
         });
       } else {
@@ -372,11 +398,19 @@ export default function MovieForm({
     } else {
       form.setValue("video", null);
       form.setError("video", {
-        message: "Video is required",
+        message: t("Video file is required"),
         type: "typeError",
       });
     }
   }
+
+  const getLocale = () => {
+    return i18n.language === "en"
+      ? enUS
+      : i18n.language === "zh"
+      ? zhCN
+      : undefined;
+  };
 
   useEffect(() => {
     if (initialState) {
@@ -442,16 +476,19 @@ export default function MovieForm({
   } = movieInfo;
   return (
     <Form {...form}>
-      <form className="flex gap-10" onSubmit={form.handleSubmit(handleSubmit)}>
-        <div className="space-y-5 w-[33%]">
+      <form
+        className="flex max-sm:flex-col max-sm:gap-0  gap-1 md:gap-2 lg:gap-10"
+        onSubmit={form.handleSubmit(handleSubmit)}
+      >
+        <div className="space-y-5 w-[33%] max-sm:w-full ">
           <FormField
             name="title"
             control={form.control}
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Title</FormLabel>
+                <FormLabel>{t("FormTitle")}</FormLabel>
                 <FormControl>
-                  <Input {...field} placeholder="Enter movie title" />
+                  <Input {...field} placeholder={t("Enter movie title")} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -462,7 +499,7 @@ export default function MovieForm({
             name="genres"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Genres</FormLabel>
+                <FormLabel>{t("FormGenres")}</FormLabel>
                 <FormControl>
                   <MultiSelect
                     selected={selectedGenre}
@@ -486,7 +523,7 @@ export default function MovieForm({
             control={form.control}
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Director</FormLabel>
+                <FormLabel>{t("FormDirector")}</FormLabel>
                 <FormControl>
                   <DirectorSelector
                     updateDirector={updateDirector}
@@ -511,7 +548,7 @@ export default function MovieForm({
             control={form.control}
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Writer</FormLabel>
+                <FormLabel>{t("FormWriter")}</FormLabel>
                 <FormControl>
                   <WriterSelector
                     updateWriter={updateWriter}
@@ -531,12 +568,39 @@ export default function MovieForm({
             )}
           />
           <FormField
+            control={form.control}
+            name="status"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t("FormStatus")}</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  value={field.value || ""}
+                >
+                  <FormControl>
+                    <SelectTrigger className="hover:bg-muted">
+                      <SelectValue placeholder={t("Select a status")} />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {statusOptions.map((e) => (
+                      <SelectItem key={e.value} value={e.value}>
+                        {t(e.title)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
             name="tags"
             control={form.control}
             render={({ field }) => {
               return (
                 <FormItem>
-                  <FormLabel>Movie Tags</FormLabel>
+                  <FormLabel>{t("FormMovieTags")}</FormLabel>
                   <FormControl>
                     <InputTags
                       value={tagValues}
@@ -546,7 +610,7 @@ export default function MovieForm({
                         // form.setValue("tags", values);
                         field.onChange(values);
                       }}
-                      placeholder="Enter comma separated values..."
+                      placeholder={t("'Enter' key or comma separated")}
                     />
                   </FormControl>
                   <FormMessage />
@@ -555,13 +619,13 @@ export default function MovieForm({
             }}
           />
         </div>
-        <div className="space-y-5 w-[33%]">
+        <div className="space-y-5 max-sm:mt-5 w-[33%] max-sm:w-full">
           <FormField
             name="cast"
             control={form.control}
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Leader Actors</FormLabel>
+                <FormLabel>{t("FormLeaderActors")}</FormLabel>
                 <FormControl>
                   <CastForm
                     updateCast={updateCast}
@@ -590,7 +654,7 @@ export default function MovieForm({
             name="releaseDate"
             render={({ field }) => (
               <FormItem className="flex flex-col">
-                <FormLabel>Release Date</FormLabel>
+                <FormLabel>{t("FormReleaseDate")}</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
                     <FormControl>
@@ -602,9 +666,9 @@ export default function MovieForm({
                         )}
                       >
                         {field.value ? (
-                          format(field.value, "PPP")
+                          format(field.value, "PPP", { locale: getLocale() })
                         ) : (
-                          <span>Pick a date</span>
+                          <span>{t("Pick a date")}</span>
                         )}
                         <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                       </Button>
@@ -619,6 +683,8 @@ export default function MovieForm({
                         date > new Date() || date < new Date("1900-01-01")
                       }
                       initialFocus
+                      weekStartsOn={1}
+                      locale={getLocale()}
                     />
                   </PopoverContent>
                 </Popover>
@@ -631,20 +697,20 @@ export default function MovieForm({
             name="language"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Language</FormLabel>
+                <FormLabel>{t("FormLanguage")}</FormLabel>
                 <Select
                   onValueChange={field.onChange}
                   value={field.value || ""}
                 >
                   <FormControl>
                     <SelectTrigger className="hover:bg-muted">
-                      <SelectValue placeholder="Select a language" />
+                      <SelectValue placeholder={t("Select a language")} />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
                     {languageOptions.map((e) => (
                       <SelectItem key={e.value} value={e.value}>
-                        {e.title}
+                        {t(e.title)}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -658,47 +724,20 @@ export default function MovieForm({
             name="type"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Type</FormLabel>
+                <FormLabel>{t("FormType")}</FormLabel>
                 <Select
                   onValueChange={field.onChange}
                   value={field.value || ""}
                 >
                   <FormControl>
                     <SelectTrigger className="hover:bg-muted">
-                      <SelectValue placeholder="Select a type" />
+                      <SelectValue placeholder={t("Select a type")} />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
                     {typeOptions.map((e) => (
                       <SelectItem key={e.value} value={e.value}>
-                        {e.title}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="status"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Status</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  value={field.value || ""}
-                >
-                  <FormControl>
-                    <SelectTrigger className="hover:bg-muted">
-                      <SelectValue placeholder="Select a status" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {statusOptions.map((e) => (
-                      <SelectItem key={e.value} value={e.value}>
-                        {e.title}
+                        {t(e.title)}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -713,28 +752,32 @@ export default function MovieForm({
             control={form.control}
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Story Line</FormLabel>
+                <FormLabel>{t("FormStoryLine")}</FormLabel>
                 <FormControl>
-                  <Textarea {...field} placeholder="Enter movie story line" />
+                  <Textarea
+                    {...field}
+                    placeholder={t("Enter movie story line")}
+                    className="h-36"
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
         </div>
-        <div className="space-y-5 w-[33%]">
+        <div className="space-y-5 max-sm:mt-5 md:w-[33%] max-sm:w-full">
           <FormField
             control={form.control}
             name="poster"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Poster</FormLabel>
+                <FormLabel>{t("FormPoster")}</FormLabel>
                 <FormControl>
                   <PosterSelector
                     name="poster"
                     selectedPoster={selectedPosterForUI}
-                    label="Select poster"
-                    className="w-60 h-36 aspect-square object-cover rounded-md hover:bg-muted"
+                    label={t("Select poster")}
+                    className="w-full sm:w-52 md:w-60 h-36 text-sm aspect-square object-cover rounded-md hover:bg-muted"
                     onChange={(e) => {
                       field.onChange(e.target.files && e.target.files[0]);
                       handleChange(e);
@@ -752,11 +795,11 @@ export default function MovieForm({
             name="video"
             render={({ field }) => (
               <FormItem className="w-full">
-                <FormLabel>Video</FormLabel>
+                <FormLabel>{t("FormVideo")}</FormLabel>
                 <FormControl>
                   <Dropzone
                     {...field}
-                    dropMessage="Drop file or click"
+                    dropMessage={t("Drop video file here or click here")}
                     handleOnDrop={handleOnDrop}
                     accept="video/*"
                   />
@@ -766,10 +809,10 @@ export default function MovieForm({
             )}
           />
           {form.watch("video") && (
-            <Card className="w-60 h-20">
-              <CardHeader className="p-2">
+            <Card className="w-full sm:w-52 md:w-60 h-20">
+              <CardHeader className="p-2 pb-1">
                 <CardDescription className="flex items-center justify-between">
-                  <span>Selected Video</span>
+                  <span>{t("Selected Video")}</span>
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger asChild>
@@ -780,43 +823,44 @@ export default function MovieForm({
                         />
                       </TooltipTrigger>
                       <TooltipContent>
-                        <p>Remove the video</p>
+                        <p>{t("Remove the video")}</p>
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
                 </CardDescription>
               </CardHeader>
-              <CardContent className="text-xs pt-1 pl-2 pb-4 flex justify-between items-center overflow-auto ">
+              <CardContent className="text-xs px-2 pb-2 flex justify-between items-center overflow-auto ">
                 <span>{form.watch("video")?.name}</span>
               </CardContent>
             </Card>
           )}
-          <div className="flex flex-col gap-2 w-60">
+          <div className="flex flex-col gap-2 w-full sm:w-52 md:w-60">
             <Button type="submit" variant="default" disabled={busy}>
-              {busy ? <Loader className="animate-spin" /> : "Submit"}
+              {busy ? <Loader className="animate-spin" /> : t("Submit")}
             </Button>
             <AlertDialog>
               <AlertDialogTrigger asChild>
                 <Button type="button" variant="secondary">
-                  Reset
+                  {t("Reset Form")}
                 </Button>
               </AlertDialogTrigger>
               <AlertDialogContent>
                 <AlertDialogHeader>
-                  <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                  <AlertDialogTitle>{t("Are you sure?")}</AlertDialogTitle>
                   <AlertDialogDescription>
-                    All the form data will be removed, if you accidentally
-                    clicked it, please click "Cancel" to avoid data loss.
+                    {t(
+                      "All the form data will be removed. If you accidentally clicked it, please click 'Cancel' to avoid data loss."
+                    )}
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogCancel>{t("Cancel")}</AlertDialogCancel>
                   <AlertDialogAction
                     className={buttonVariants({ variant: "destructive" })}
                     type="reset"
                     onClick={resetForm}
                   >
-                    Reset
+                    {t("Reset Form")}
                   </AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>

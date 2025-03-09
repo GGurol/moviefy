@@ -7,11 +7,13 @@ import Container from "../Container";
 import { toast } from "sonner";
 import { Button } from "../ui/button";
 import { ArrowLeft } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 function SearchMovies() {
   const [movies, setMovies] = useState([]);
   const [resultNotFound, setResultNotFound] = useState(false);
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const [searchParams] = useSearchParams();
 
@@ -19,7 +21,7 @@ function SearchMovies() {
 
   const searchMovies = async (val) => {
     const { error, results } = await searchPublicMovies(val);
-    if (error) return toast.error(error);
+    if (error) return toast.error(t(error));
 
     if (!results.length) {
       setResultNotFound(true);
@@ -31,7 +33,9 @@ function SearchMovies() {
   };
 
   useEffect(() => {
-    if (query.trim()) searchMovies(query);
+    if (query.trim()) {
+      searchMovies(query);
+    }
   }, [query]);
 
   return (
@@ -43,9 +47,9 @@ function SearchMovies() {
           onClick={() => navigate(-1)}
         >
           <ArrowLeft />
-          <span>Go back</span>
+          <span>{t("Go back")}</span>
         </Button>
-        <NotFoundText text="Record not found!" visible={resultNotFound} />
+        <NotFoundText text={t("Record not found")} visible={resultNotFound} />
         <MovieList movies={movies} />
       </Container>
     </div>

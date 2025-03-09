@@ -9,11 +9,9 @@ function Home() {
   return (
     <div className="min-h-screen">
       <NotVerified />
-      <Container className="px-2 xl:p-0">
-        {/* slider */}
+      <Container className="px-2 xl:p-0 mt-5">
         <HeroSlidShow />
-        {/* Most rated movies */}
-        <div className="space-y-3 py-8">
+        <div className="space-y-8 py-8">
           <TopRatedDrama />
           <TopRatedThriller />
           <TopRatedAction />

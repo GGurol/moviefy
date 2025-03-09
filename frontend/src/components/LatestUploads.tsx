@@ -5,6 +5,7 @@ import MovieListItem from "./MovieListItem";
 import ConfirmModal from "./modals/ConfirmModal";
 import UpdateMovie from "./modals/UpdateMovie";
 import { Card, CardContent, CardHeader } from "./ui/card";
+import { useTranslation } from "react-i18next";
 
 const pageNo = 0;
 const limit = 3;
@@ -15,6 +16,7 @@ function LatestUploads() {
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [busy, setBusy] = useState(false);
+  const { t } = useTranslation();
 
   const { fetchLatestUploads, latestUploads } = useMovies();
 
@@ -27,7 +29,7 @@ function LatestUploads() {
   return (
     <Card className="">
       <CardHeader className="text-lg font-semibold">
-        <span>Recent Uploads</span>
+        <span>{t("Recent Uploads")}</span>
       </CardHeader>
       <CardContent>
         <div className="space-y-3">
