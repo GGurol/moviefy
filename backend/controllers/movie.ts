@@ -164,7 +164,7 @@ export const updateMovie = async (req, res) => {
     movie.writer = writer;
   }
 
-  if (files.video[0]) {
+  if (files && files.video[0]) {
     const videoID = movie.video?.public_id;
     if (videoID) {
       const { result } = await cloudinary.uploader.destroy(videoID);
@@ -178,7 +178,7 @@ export const updateMovie = async (req, res) => {
   }
 
   // update poster
-  if (files.poster[0]) {
+  if (files && files.poster[0]) {
     // removing poster from cloud if there is any
     const posterID = movie.poster?.public_id;
     if (posterID) {
@@ -498,4 +498,23 @@ export const searchPublicMovies = async (req, res) => {
   res.json({
     results,
   });
+};
+
+export const getMoviesByTag = async (req, res) => {
+  const { tag, limit } = req.query;
+
+  const results = await Movie.find({ status: "public", tags: { $regex: tag, $options: "i", $in: [tag] } })
+    .sort("-createdAt")
+    .limit(parseInt(limit));
+
+  const movies = results.map((m) => ({
+    id: m._id,
+    title: m.title,
+    storyLine: m.storyLine,
+    poster: m.poster?.url,
+    responsivePosters: m.poster.responsive,
+    video: m.video?.url,
+  }));
+
+  res.json({ movies });
 };

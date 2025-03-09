@@ -109,6 +109,7 @@ const MovieListItem = ({ movie, afterDelete, afterUpdate }) => {
         onOpenClick={handleOnOpenClick}
         handleDelete={handleDelete}
         busy={busy}
+        afterUpdate={afterUpdate}
       />
       {/* <div className="p-0">
         <UpdateMovie
@@ -128,6 +129,7 @@ const MovieCard = ({
   onEditClick,
   handleDelete,
   busy,
+  afterUpdate,
 }) => {
   const { poster, title, responsivePosters, genres = [], status } = movie;
   const [openDelete, setOpenDelete] = useState(false);
@@ -258,7 +260,7 @@ const MovieCard = ({
                     {t("Submit to update a movie")}
                   </DialogDescription> */}
                 </DialogHeader>
-                <UpdateMovie movieId={movie.id} />
+                <UpdateMovie movieId={movie.id} afterUpdate={afterUpdate} />
               </DialogContent>
             </Dialog>
           </TooltipProvider>

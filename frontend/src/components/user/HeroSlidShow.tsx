@@ -1,7 +1,7 @@
 import Autoplay from "embla-carousel-autoplay";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { getLatestUploads } from "../../api/movie";
+import { getLatestUploads, getMoviesByTag } from "../../api/movie";
 import {
   Card,
   CardContent,
@@ -31,9 +31,10 @@ export default function HeroSlidShow() {
     responsivePosters: string;
     trailer: string;
   }
-  const fetchLatestUploads = async () => {
+  const fetchMoviesByTag = async () => {
     const { error, movies }: { error: string; movies: LatestMovie[] } =
-      await getLatestUploads();
+      // await getLatestUploads();
+      await getMoviesByTag("Slide");
     if (error) {
       return toast.error(t(error));
     }
@@ -49,7 +50,7 @@ export default function HeroSlidShow() {
   };
 
   useEffect(() => {
-    fetchLatestUploads();
+    fetchMoviesByTag();
   }, []);
 
   return (

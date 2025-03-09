@@ -6,7 +6,7 @@ import { useEffect } from "react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 
-function UpdateMovie({ visible, onSuccess, movieId }) {
+function UpdateMovie({ visible, onSuccess, movieId, afterUpdate }) {
   const [busy, setBusy] = useState(false);
   const [ready, setReady] = useState(false);
   const [selectedMovie, setSelectedMovie] = useState(null);
@@ -19,6 +19,7 @@ function UpdateMovie({ visible, onSuccess, movieId }) {
     if (error) return toast.error(t(error));
 
     toast.success(t(message));
+    afterUpdate && afterUpdate();
     onSuccess(movie);
   };
 
