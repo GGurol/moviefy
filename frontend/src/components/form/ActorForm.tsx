@@ -168,8 +168,11 @@ export default function ActorForm({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="flex gap-8">
-        <div className="space-y-5">
+      <form
+        onSubmit={form.handleSubmit(handleSubmit)}
+        className="flex gap-0 sm:gap-8 flex-col sm:flex-row"
+      >
+        <div className="space-y-2 sm:space-y-5  sm:w-[50%]">
           <FormField
             control={form.control}
             name="name"
@@ -177,11 +180,11 @@ export default function ActorForm({
               <FormItem>
                 <FormLabel>{t("Actor name")}</FormLabel>
                 <FormControl>
-                  <Input {...field} />
+                  <Input {...field} placeholder={t("Enter actor's name")} />
                 </FormControl>
-                <FormDescription>
+                {/* <FormDescription>
                   {t("Please enter actor name")}
-                </FormDescription>
+                </FormDescription> */}
                 <FormMessage />
               </FormItem>
             )}
@@ -193,11 +196,15 @@ export default function ActorForm({
               <FormItem>
                 <FormLabel>{t("About")}</FormLabel>
                 <FormControl>
-                  <Textarea {...field} />
+                  <Textarea
+                    {...field}
+                    placeholder={t("Enter actor's information")}
+                    className="h-36"
+                  />
                 </FormControl>
-                <FormDescription>
+                {/* <FormDescription>
                   {t("Please enter actor's information")}
-                </FormDescription>
+                </FormDescription> */}
                 <FormMessage />
               </FormItem>
             )}
@@ -215,7 +222,7 @@ export default function ActorForm({
                 >
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder={t("Gender")} />
+                      <SelectValue placeholder={t("Select actor's gender")} />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
@@ -223,16 +230,16 @@ export default function ActorForm({
                     <SelectItem value="female">{t("Female")}</SelectItem>
                   </SelectContent>
                 </Select>
-                <FormDescription>
+                {/* <FormDescription>
                   {t("Please select actor's gender")}
-                </FormDescription>
+                </FormDescription> */}
                 <FormMessage />
               </FormItem>
             )}
           />
         </div>
 
-        <div className="space-y-5">
+        <div className="space-y-2 max-sm:mt-2 sm:space-y-5">
           <FormField
             control={form.control}
             name="avatar"
@@ -242,7 +249,7 @@ export default function ActorForm({
                 <FormControl>
                   <PosterSelector
                     selectedPoster={selectedAvatarForUI}
-                    className="w-56 h-56 aspect-square object-cover rounded"
+                    className="h-48 w-64 sm:w-56 sm:h-64 aspect-square object-cover rounded"
                     name="avatar"
                     onChange={(e) => {
                       field.onChange(e.target.files && e.target.files[0]);
@@ -253,9 +260,9 @@ export default function ActorForm({
                     // ref={field.ref}
                   />
                 </FormControl>
-                <FormDescription>
+                {/* <FormDescription>
                   {t("Please select an avatar")}
-                </FormDescription>
+                </FormDescription> */}
                 <FormMessage />
               </FormItem>
             )}

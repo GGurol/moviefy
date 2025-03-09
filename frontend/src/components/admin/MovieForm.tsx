@@ -163,8 +163,8 @@ const commonValidation = {
     .max(50, i18n.t("Title cannot be greater than 50 characters")),
   storyLine: z
     .string()
-    .nonempty(i18n.t("storyLine cannot be empty"))
-    .max(2000, i18n.t("storyLine cannot be greater than 2000 characters")),
+    .nonempty(i18n.t("Story line cannot be empty"))
+    .max(2000, i18n.t("Story line cannot be greater than 2000 characters")),
   tags: z.array(z.string()).nonempty(i18n.t("At least one tag is required")),
   director: z.string().nonempty(i18n.t("Must add one director")),
   writer: z.string().nonempty(i18n.t("Must add one writer")),
@@ -476,8 +476,11 @@ export default function MovieForm({
   } = movieInfo;
   return (
     <Form {...form}>
-      <form className="flex gap-10" onSubmit={form.handleSubmit(handleSubmit)}>
-        <div className="space-y-5 w-[33%]">
+      <form
+        className="flex max-sm:flex-col max-sm:gap-0  gap-1 md:gap-2 lg:gap-10"
+        onSubmit={form.handleSubmit(handleSubmit)}
+      >
+        <div className="space-y-5 w-[33%] max-sm:w-full ">
           <FormField
             name="title"
             control={form.control}
@@ -616,7 +619,7 @@ export default function MovieForm({
             }}
           />
         </div>
-        <div className="space-y-5 w-[33%]">
+        <div className="space-y-5 max-sm:mt-5 w-[33%] max-sm:w-full">
           <FormField
             name="cast"
             control={form.control}
@@ -762,7 +765,7 @@ export default function MovieForm({
             )}
           />
         </div>
-        <div className="space-y-5 w-[33%]">
+        <div className="space-y-5 max-sm:mt-5 md:w-[33%] max-sm:w-full">
           <FormField
             control={form.control}
             name="poster"
@@ -774,7 +777,7 @@ export default function MovieForm({
                     name="poster"
                     selectedPoster={selectedPosterForUI}
                     label={t("Select poster")}
-                    className="w-60 h-36 text-sm aspect-square object-cover rounded-md hover:bg-muted"
+                    className="w-full sm:w-52 md:w-60 h-36 text-sm aspect-square object-cover rounded-md hover:bg-muted"
                     onChange={(e) => {
                       field.onChange(e.target.files && e.target.files[0]);
                       handleChange(e);
@@ -806,7 +809,7 @@ export default function MovieForm({
             )}
           />
           {form.watch("video") && (
-            <Card className="w-60 h-20">
+            <Card className="w-full sm:w-52 md:w-60 h-20">
               <CardHeader className="p-2 pb-1">
                 <CardDescription className="flex items-center justify-between">
                   <span>{t("Selected Video")}</span>
@@ -831,7 +834,7 @@ export default function MovieForm({
               </CardContent>
             </Card>
           )}
-          <div className="flex flex-col gap-2 w-60">
+          <div className="flex flex-col gap-2 w-full sm:w-52 md:w-60">
             <Button type="submit" variant="default" disabled={busy}>
               {busy ? <Loader className="animate-spin" /> : t("Submit")}
             </Button>

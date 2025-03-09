@@ -92,14 +92,14 @@ export default function Header() {
                 </DropdownMenuItem>
               </DialogTrigger>
               <DialogContent
-                className="w-[500px]"
+                className="w-[305px] max-sm:rounded-md sm:w-[570px] overflow-y-scroll max-h-screen"
                 onInteractOutside={(e) => {
                   e.preventDefault();
                 }}
               >
                 <DialogHeader>
                   <DialogTitle>{t("Create Actor")}</DialogTitle>
-                  <DialogDescription>
+                  <DialogDescription className="max-sm:hidden">
                     {t("Submit to create an actor. All fields are required.")}
                   </DialogDescription>
                 </DialogHeader>
@@ -118,7 +118,7 @@ export default function Header() {
                 </DropdownMenuItem>
               </DialogTrigger>
               <DialogContent
-                className="w-[900px]"
+                className="w-[350px] sm:w-[600px] max-md:p-2 max-sm:rounded-md md:w-[750px] lg:w-[900px] overflow-y-scroll max-h-screen"
                 onInteractOutside={(e) => {
                   e.preventDefault();
                 }}
