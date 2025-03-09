@@ -25,5 +25,5 @@ export default function TopRatedDrama() {
     fetchMovies();
   }, []);
 
-  return <MovieList movies={movies} title="Viewers choice (Drama)" />;
+  return <MovieList movies={movies} title={t("Top Rated Drama")} />;
 }

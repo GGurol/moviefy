@@ -22,5 +22,5 @@ export default function TopRatedThriller() {
     fetchMovies();
   }, []);
 
-  return <MovieList movies={movies} title="Viewers choice (Thriller)" />;
+  return <MovieList movies={movies} title={t("Top Rated Thriller")} />;
 }

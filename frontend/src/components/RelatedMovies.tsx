@@ -19,5 +19,5 @@ export default function RelatedMovies({ movieId }) {
     if (movieId) fetchRelatedMovies();
   }, [movieId]);
 
-  return <MovieList title="Related Movies" movies={movies} />;
+  return <MovieList title={t("Related Movies")} movies={movies} />;
 }

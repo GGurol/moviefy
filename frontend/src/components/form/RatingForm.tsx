@@ -2,6 +2,7 @@ import { Loader, Star } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { DialogContent } from "../ui/dialog";
+import { useTranslation } from "react-i18next";
 
 const createArray = (count) => {
   return new Array(count).fill("");
@@ -12,7 +13,7 @@ const ratings = createArray(10);
 function RatingForm({ onSubmit, initialState, busy }) {
   const [selectedRatings, setSelectedRatings] = useState([]);
   const [content, setContent] = useState("");
-
+  const { t } = useTranslation();
   const handleMouseEnter = (index) => {
     const ratings = createArray(index + 1);
     // console.log(ratings);
@@ -61,7 +62,7 @@ function RatingForm({ onSubmit, initialState, busy }) {
 
         <Button onClick={handleSubmit} className="w-full">
           <span className="w-10 flex items-center justify-center">
-            {busy ? <Loader className="animate-spin" /> : "Submit"}
+            {busy ? <Loader className="animate-spin" /> : t("Submit")}
           </span>
         </Button>
       </div>

@@ -57,7 +57,7 @@ export default function SingleMovie() {
     type: "",
     reviews: {},
   });
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const { authInfo } = useAuth();
   const { isLoggedIn } = authInfo;
@@ -132,6 +132,14 @@ export default function SingleMovie() {
     genres,
   } = movie;
 
+  const getTitle = (movie) => {
+    const title = `movies.${movie.id}.title`;
+    if (i18n.exists(title)) {
+      return t(title);
+    }
+    return movie.title;
+  };
+
   return (
     <div className=" min-h-screen pb-10">
       <Container className="xl:px-0 px-2">
@@ -146,7 +154,7 @@ export default function SingleMovie() {
             height={720}
             className="w-full mx-auto mt-5 p-4 bg-muted rounded-md"
           />
-          <h1 className="pl-4 pb-4 font-semibold">{title}</h1>
+          <h1 className="pl-4 pb-4 font-semibold">{getTitle(movie)}</h1>
         </div>
 
         <div className="mt-10 bg-muted p-4 rounded-md">
@@ -240,7 +248,7 @@ export default function SingleMovie() {
 
 const ListWithLabel = ({ label, children }) => {
   return (
-    <div className="flex space-x-3 items-center text-muted-foreground">
+    <div className="flex space-x-2 items-center text-muted-foreground flex-wrap">
       <p className="">{label}</p>
       {children}
     </div>

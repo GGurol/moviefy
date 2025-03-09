@@ -27,7 +27,7 @@ export default function MovieReviews() {
   const [busy, setBusy] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedReview, setSelectedReview] = useState(null);
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const { movieId } = useParams();
   const navigate = useNavigate();
@@ -103,6 +103,14 @@ export default function MovieReviews() {
     setSelectedReview(null);
   };
 
+  const getTitle = () => {
+    const title = `movies.${movieId}.title`;
+    if (i18n.exists(title)) {
+      return t(title);
+    }
+    return movieTitle;
+  };
+
   useEffect(() => {
     if (movieId) fetchReviews();
   }, [movieId]);
@@ -110,29 +118,29 @@ export default function MovieReviews() {
   return (
     <div className=" min-h-screen pb-10">
       <Container className="xl:px-0 px-2 py-4">
-        <div className="flex justify-between items-center">
-          <h1 className="text-2xl font-semibold space-x-4">
+        <div className="flex gap-4 justify-between items-center">
+          <h1 className="text-sm sm:text-xl font-semibold space-x-2">
             <span className="font-normal text-muted-foreground">
-              Reviews for:
+              {t("Reviews for")}
             </span>
-            <span className="">{movieTitle}</span>
+            <span className="">{getTitle()}</span>
           </h1>
 
           <div className="flex gap-4">
             <CustomButtonLink
-              label={"Back"}
+              label={t("Back")}
               onClick={() => navigate(`/movie/${movieId}`)}
             />
             {profileId ? (
               <CustomButtonLink
-                label={profileOwnersReview ? "View All" : "My review"}
+                label={profileOwnersReview ? t("View All") : t("My Review")}
                 onClick={findProfileOwnersReview}
               />
             ) : null}
           </div>
         </div>
 
-        <NotFoundText text="No Reviews!" visible={!reviews.length} />
+        <NotFoundText text={t("No Reviews")} visible={!reviews.length} />
 
         {profileOwnersReview ? (
           <div className="mt-3">
@@ -166,8 +174,8 @@ export default function MovieReviews() {
       </Container>
 
       <ConfirmModal
-        title="Are you sure?"
-        subtitle="This action will remove this review permanently"
+        title={t("Are you sure?")}
+        subtitle={t("This action will remove this review permanently")}
         busy={busy}
         visible={showConfirmModal}
         onConfirm={handleDeleteConfirm}

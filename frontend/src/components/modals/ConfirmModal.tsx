@@ -10,9 +10,10 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "../ui/alert-dialog";
+import { useTranslation } from "react-i18next";
 
 function ConfirmModal({ busy, visible, onConfirm, onCancel, title, subtitle }) {
-  const commonClass = "px-3 py-1 text-white rounded";
+  const { t } = useTranslation();
 
   return (
     <AlertDialog open={visible}>
@@ -23,10 +24,10 @@ function ConfirmModal({ busy, visible, onConfirm, onCancel, title, subtitle }) {
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel onClick={onCancel} disabled={busy}>
-            Cancel
+            {t("Cancel")}
           </AlertDialogCancel>
           <AlertDialogAction onClick={onConfirm} disabled={busy}>
-            Delete
+            {t("Delete")}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

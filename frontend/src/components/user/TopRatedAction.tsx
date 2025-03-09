@@ -22,5 +22,5 @@ export default function TopRatedAction() {
     fetchMovies();
   }, []);
 
-  return <MovieList movies={movies} title="Viewers choice (Action)" />;
+  return <MovieList movies={movies} title={t("Top Rated Action")} />;
 }
