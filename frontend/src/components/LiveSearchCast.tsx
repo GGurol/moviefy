@@ -3,8 +3,6 @@ import { commonInputClasses } from "../utils/theme";
 import { Badge } from "./ui/badge";
 import { XIcon } from "lucide-react";
 import { Button } from "./ui/button";
-import useActorStore from "@/store/actor";
-import { useArray } from "@/store/array";
 
 export default function LiveSearchCast({
   value = "",

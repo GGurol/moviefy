@@ -1,11 +1,12 @@
 {
-  "name": "review_backend_api",
+  "name": "moviefy_api",
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
   "type": "module",
   "scripts": {
-    "dev": "tsx watch app.ts "
+    "dev": "tsx watch app.ts",
+    "start": "tsx app.ts"
   },
   "author": "Nicolas",
   "license": "ISC",
@@ -23,7 +24,7 @@
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.9.4",
-    "sib-api-v3-sdk": "^8.5.0"
+    "tsx": "^4.19.3"
   },
   "engines": {
     "node": "20.x",
