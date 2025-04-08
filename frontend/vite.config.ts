@@ -9,4 +9,12 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  server: {
+    host: true,
+    port: 5174, // This is the port which we will use in docker
+    hmr: {
+      overlay: false, // This is to disable the overlay error message
+    },
+    allowedHosts: ["movie.linze.pro"],
+  },
 });
