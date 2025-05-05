@@ -31,4 +31,5 @@ const PORT = process.env.PORT || 8000;
 
 app.listen(PORT, () => {
   console.log("the port is listening on port " + PORT);
+  console.log("current environment is: " + process.env.NODE_ENV);
 });

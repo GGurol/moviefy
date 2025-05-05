@@ -4,4 +4,4 @@ frontend/build:
 
 .PHONY: frontend/send
 frontend/send:
-	@cd frontend && scp -r dist nicolas@106.14.126.186:~/moviefy/react-build && cd ..
+	@cd frontend && rsync -rP dist nicolas@106.14.126.186:~/moviefy/react-build && cd ..

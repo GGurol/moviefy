@@ -165,7 +165,7 @@ const MovieCard = ({
         <CardFooter className="px-1 py-0 lg:p-1">
           {/* Status */}
           {status === "public" ? (
-            <TooltipProvider>
+            <TooltipProvider delayDuration={0}>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <FolderOpen strokeWidth={0.75} className="w-4 lg:w-5" />
@@ -176,7 +176,7 @@ const MovieCard = ({
               </Tooltip>
             </TooltipProvider>
           ) : (
-            <TooltipProvider>
+            <TooltipProvider delayDuration={0}>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <FolderLock strokeWidth={0.75} className="w-4 lg:w-5" />
@@ -189,7 +189,7 @@ const MovieCard = ({
           )}
 
           {/* Delete */}
-          <TooltipProvider>
+          <TooltipProvider delayDuration={0}>
             <Tooltip>
               <TooltipTrigger asChild>
                 <button
@@ -236,7 +236,7 @@ const MovieCard = ({
           </TooltipProvider>
 
           {/* Edit */}
-          <TooltipProvider>
+          <TooltipProvider delayDuration={0}>
             <Tooltip>
               <TooltipTrigger asChild>
                 <button onClick={() => setOpenEdit(true)}>
@@ -266,7 +266,7 @@ const MovieCard = ({
           </TooltipProvider>
 
           {/* Open */}
-          <TooltipProvider>
+          <TooltipProvider delayDuration={0}>
             <Tooltip>
               <TooltipTrigger asChild>
                 <button onClick={onOpenClick}>

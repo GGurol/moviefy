@@ -25,7 +25,7 @@ import i18n from "@/utils/i18n";
 
 const FormSchema = z.object({
   pin: z.string().min(OTP_LENGTH, {
-    message: "Your OTP must be 6 characters.",
+    message: `Your OTP must be ${OTP_LENGTH} characters.`,
   }),
 });
 
@@ -164,8 +164,6 @@ export default function EmailVerification() {
                             <InputOTPSlot index={1} />
                             <InputOTPSlot index={2} />
                             <InputOTPSlot index={3} />
-                            <InputOTPSlot index={4} />
-                            <InputOTPSlot index={5} />
                           </InputOTPGroup>
                         </InputOTP>
                       </FormControl>

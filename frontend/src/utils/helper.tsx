@@ -46,7 +46,7 @@ export const convertReviewCount = (count = 0) => {
   return parseFloat(count / 1000).toFixed(2) + "k";
 };
 
-export const OTP_LENGTH = 6;
+export const OTP_LENGTH = 4;
 
 export const formatBytes = (bytes: number, decimals = 2) => {
   if (bytes === 0) return "0 Bytes";
