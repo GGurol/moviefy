@@ -91,11 +91,13 @@ const MovieListItem = ({ movie, afterDelete, afterUpdate }) => {
 
   const handleDelete = async (setOpenDialog) => {
     setBusy(true);
-    const { error, message } = await deleteMovie(movie.id);
+    await new Promise((r) => setTimeout(r, 500));
+    // const { error, message } = await deleteMovie(movie.id);
+    toast.error("Unauthorized");
     setBusy(false);
 
-    if (error) return toast.error(t(error));
-    toast.success(t(message));
+    // if (error) return toast.error(t(error));
+    // toast.success(t(message));
     setOpenDialog(false);
     afterDelete(movie);
   };
@@ -266,7 +268,7 @@ const MovieCard = ({
           </TooltipProvider>
 
           {/* Open */}
-          <TooltipProvider delayDuration={0}>
+          {/* <TooltipProvider delayDuration={0}>
             <Tooltip>
               <TooltipTrigger asChild>
                 <button onClick={onOpenClick}>
@@ -277,7 +279,7 @@ const MovieCard = ({
                 <span>{t("Open")}</span>
               </TooltipContent>
             </Tooltip>
-          </TooltipProvider>
+          </TooltipProvider> */}
         </CardFooter>
       </div>
     </Card>

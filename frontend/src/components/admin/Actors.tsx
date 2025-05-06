@@ -114,14 +114,17 @@ export default function Actors() {
 
   const handleOnDeleteConfirm = async (setOpenAlertModal) => {
     setBusy(true);
-    const { error, message } = await deleteActor(selectedProfile.id);
+    // const { error, message } = await deleteActor(selectedProfile.id);
+    await new Promise((r) => setTimeout(r, 500));
+    toast.error("Unauthorized");
+
     setBusy(false);
 
-    if (error) {
-      return toast.error(t("Failed to delete an actor"));
-    }
+    // if (error) {
+    //   return toast.error(t("Failed to delete an actor"));
+    // }
 
-    toast.success(t(message));
+    // toast.success(t(message));
     setOpenAlertModal(false);
     fetchActors(currentPageNo);
   };

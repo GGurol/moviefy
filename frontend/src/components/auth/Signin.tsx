@@ -91,14 +91,14 @@ export default function Signin() {
         <TabsContent value="user">
           <LoginForm
             title="Login as User"
-            defaultEmail="test1@email.com"
+            defaultEmail="test3@email.com"
             defaultPass="123123123"
           />
         </TabsContent>
         <TabsContent value="admin">
           <LoginForm
             title="Login as Admin"
-            defaultEmail="test@email.com"
+            defaultEmail="nicolas.leigh@qq.com"
             defaultPass="123123123"
           />
         </TabsContent>
