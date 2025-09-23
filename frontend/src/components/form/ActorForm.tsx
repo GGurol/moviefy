@@ -11,7 +11,6 @@ import { DialogFooter } from "../ui/dialog";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -28,16 +27,9 @@ import {
 import { Textarea } from "../ui/textarea";
 import { formatBytes } from "@/utils/helper";
 
-// const defaultActorInfo = {
-//   name: "",
-//   about: "",
-//   gender: "male",
-//   avatar: undefined,
-// };
+const BACKEND_URL = "http://localhost:8000";
 
 const MAX_FILE_SIZE = 1024 * 1024 * 10;
-// const MAX_FILE_SIZE = 1024 * 10;
-
 const ACCEPTED_IMAGE_TYPES = [
   "image/jpeg",
   "image/jpg",
@@ -45,7 +37,8 @@ const ACCEPTED_IMAGE_TYPES = [
   "image/webp",
 ];
 
-const validateAvatar = (file, ctx) => {
+// Validation logic and schemas remain the same
+const validateAvatar = (file: File | undefined, ctx: z.RefinementCtx) => {
   if (!file) return;
   if (file.size > MAX_FILE_SIZE) {
     ctx.addIssue({
@@ -63,7 +56,6 @@ const validateAvatar = (file, ctx) => {
       fatal: true,
     });
   }
-  // return true;
 };
 
 const commonValidations = {
@@ -100,71 +92,66 @@ export default function ActorForm({
   onSubmit,
   isUpdate = false,
 }) {
-  // const [actorInfo, setActorInfo] = useState({
-  //   ...defaultActorInfo,
-  // });
   const [selectedAvatarForUI, setSelectedAvatarForUI] = useState("");
   const { t } = useTranslation("translation");
+  
+  // --- THE FIX IS HERE ---
+  // 1. Determine the schema to use BEFORE calling the hook.
+  const schema = isUpdate ? formUpdateSchema : formSchema;
+  
+  // 2. Pass the stable 'schema' variable to the resolver.
+  const form = useForm({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      name: initialState?.name || "",
+      about: initialState?.about || "",
+      gender: initialState?.gender,
+      avatar: undefined,
+    },
+  });
+  // --- END OF FIX ---
 
-  const updatePosterForUI = (file) => {
-    const url = URL.createObjectURL(file);
-    setSelectedAvatarForUI(url);
-  };
-
-  const handleChange = ({ target }) => {
-    const { value, files, name } = target;
-    if (name === "avatar") {
-      const file = files[0];
-      updatePosterForUI(file);
-      // return setActorInfo({ ...actorInfo, avatar: file });
-    }
-
-    // setActorInfo({ ...actorInfo, [name]: value });
-  };
-
-  let form;
-  if (isUpdate) {
-    form = useForm<z.infer<typeof formUpdateSchema>>({
-      resolver: zodResolver(formUpdateSchema),
-      defaultValues: {
-        name: "",
-        about: "",
-        gender: undefined,
-        avatar: undefined,
-      },
-    });
-  } else {
-    form = useForm<z.infer<typeof formSchema>>({
-      resolver: zodResolver(formSchema),
-      defaultValues: {
-        name: "",
-        about: "",
-        gender: undefined,
-        avatar: undefined,
-      },
-    });
-  }
-
-  const handleSubmit = (values: z.infer<typeof formSchema>) => {
+  const handleSubmit = (values: z.infer<typeof schema>) => {
     const formData = new FormData();
-    for (const [key, value] of Object.entries(values)) {
-      formData.append(key, value);
+    for (const key in values) {
+      if (values[key] !== undefined && values[key] !== null) {
+        formData.append(key, values[key]);
+      }
     }
     onSubmit(formData);
   };
 
   useEffect(() => {
     if (initialState) {
-      form.setValue("name", initialState.name);
-      form.setValue("about", initialState.about);
-      form.setValue("gender", initialState.gender);
-      // form.setValue("avatar", null);
-      // setActorInfo({ ...initialState, avatar: null });
-      setSelectedAvatarForUI(initialState.avatar);
+      form.reset({
+        name: initialState.name,
+        about: initialState.about,
+        gender: initialState.gender,
+      });
+      if (initialState.avatar) {
+        setSelectedAvatarForUI(`${BACKEND_URL}${initialState.avatar}`);
+      } else {
+        setSelectedAvatarForUI("");
+      }
     }
-  }, [initialState]);
+  }, [initialState, form]);
 
-  // const { name, about, gender } = actorInfo;
+  const updatePosterForUI = (file: File | null) => {
+    if (file) {
+      const url = URL.createObjectURL(file);
+      setSelectedAvatarForUI(url);
+    }
+  };
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { files, name } = event.target;
+    if (name === "avatar") {
+      const file = files?.[0];
+      if (file) {
+        updatePosterForUI(file);
+      }
+    }
+  };
 
   return (
     <Form {...form}>
@@ -182,9 +169,6 @@ export default function ActorForm({
                 <FormControl>
                   <Input {...field} placeholder={t("Enter actor's name")} />
                 </FormControl>
-                {/* <FormDescription>
-                  {t("Please enter actor name")}
-                </FormDescription> */}
                 <FormMessage />
               </FormItem>
             )}
@@ -202,9 +186,6 @@ export default function ActorForm({
                     className="h-36"
                   />
                 </FormControl>
-                {/* <FormDescription>
-                  {t("Please enter actor's information")}
-                </FormDescription> */}
                 <FormMessage />
               </FormItem>
             )}
@@ -230,15 +211,11 @@ export default function ActorForm({
                     <SelectItem value="female">{t("Female")}</SelectItem>
                   </SelectContent>
                 </Select>
-                {/* <FormDescription>
-                  {t("Please select actor's gender")}
-                </FormDescription> */}
                 <FormMessage />
               </FormItem>
             )}
           />
         </div>
-
         <div className="space-y-2 max-sm:mt-2 sm:space-y-5">
           <FormField
             control={form.control}
@@ -252,17 +229,13 @@ export default function ActorForm({
                     className="h-48 w-64 sm:w-56 sm:h-64 aspect-square object-cover rounded"
                     name="avatar"
                     onChange={(e) => {
-                      field.onChange(e.target.files && e.target.files[0]);
+                      field.onChange(e.target.files?.[0]);
                       handleChange(e);
                     }}
                     label={t("Select avatar")}
                     accept="image/*"
-                    // ref={field.ref}
                   />
                 </FormControl>
-                {/* <FormDescription>
-                  {t("Please select an avatar")}
-                </FormDescription> */}
                 <FormMessage />
               </FormItem>
             )}

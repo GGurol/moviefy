@@ -23,6 +23,7 @@ services:
       - ./backend:/app
       - /app/node_modules
     # CORRECTED: Map to the port the backend is actually using
+      - ./backend/uploads:/app/uploads
     ports:
       - "${BACKEND_PORT}:${BACKEND_PORT}"
     networks:
@@ -45,6 +46,16 @@ services:
       - moviefy_network
     depends_on:
       - backend
+
+    # ADDED: MailHog service to catch all outgoing emails
+  mailhog:
+    image: mailhog/mailhog
+    container_name: moviefy-mailhog
+    ports:
+      - "1025:1025" # SMTP server port
+      - "8025:8025" # Web UI port
+    networks:
+      - moviefy_network
 
 volumes:
   mongo_data:

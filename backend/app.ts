@@ -2,7 +2,6 @@ import express from "express";
 import "express-async-errors";
 import morgan from "morgan";
 import "dotenv/config";
-// require("dotenv").config();
 import "./db";
 import { errorHandler } from "./middlewares/error";
 import cors from "cors";
@@ -12,11 +11,21 @@ import actorRouter from "./routes/actor";
 import movieRouter from "./routes/movie";
 import reviewRouter from "./routes/review";
 import adminRouter from "./routes/admin";
+import path from "path";
+import { fileURLToPath } from "url"; // Import this helper
+
+// --- ADDED: ES Module-compatible way to get __dirname ---
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
-app.use(cors()); // for cross origin resource sharing
-app.use(express.json()); // for parsing application/json
+app.use(cors());
+app.use(express.json());
 app.use(morgan("dev"));
+
+// This line will now work correctly
+app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
+
 app.use("/api/user", userRouter);
 app.use("/api/actor", actorRouter);
 app.use("/api/movie", movieRouter);

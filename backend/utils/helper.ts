@@ -1,35 +1,44 @@
 import crypto from "crypto";
-import cloudinary from "../cloud";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url"; // Import this helper
 import Review from "../models/review";
+
+// --- ADDED: ES Module-compatible way to get __dirname ---
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 export const sendError = (res, error, statusCode = 401) => {
   res.status(statusCode).json({ error });
 };
 
-// https://nodejs.org/api/crypto.html#cryptorandombytessize-callback
 export const generateRandomByte = () => {
   return new Promise((resolve, reject) => {
     crypto.randomBytes(30, (err, buff) => {
       if (err) reject(err);
       const buffString = buff.toString("hex");
-      // console.log(buffString);
       resolve(buffString);
     });
   });
 };
 
 export const handleNotFound = (req, res) => {
-  this.sendError(res, "Not Found!", 404);
+  sendError(res, "Not Found!", 404);
 };
 
-export const uploadImageToCloud = async (file) => {
-  const { secure_url: url, public_id } = await cloudinary.uploader.upload(file, {
-    gravity: "face",
-    height: 500,
-    width: 500,
-    crop: "thumb",
-  });
-  return { url, public_id };
+export const saveImageLocally = (file) => {
+  const uploadsDir = path.join(__dirname, "../../uploads"); 
+  if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir, { recursive: true });
+  }
+
+  const fileExt = path.extname(file.originalname);
+  const newFileName = `${crypto.randomBytes(16).toString("hex")}${fileExt}`;
+  const newPath = path.join(uploadsDir, newFileName);
+
+  fs.renameSync(file.path, newPath);
+  
+  return `/uploads/${newFileName}`;
 };
 
 export const formateActor = (actor) => {
@@ -39,20 +48,12 @@ export const formateActor = (actor) => {
     name,
     about,
     gender,
-    avatar: avatar?.url,
+    avatar: avatar,
   };
 };
 
 export const averageRatingPipeline = (movieId) => {
   return [
-    // {
-    //   $lookup: {
-    //     from: 'Review',
-    //     localField: 'rating',
-    //     foreignField: '_id',
-    //     as: 'avgRat',
-    //   },
-    // },
     {
       $match: { parentMovie: movieId },
     },
@@ -72,14 +73,6 @@ export const averageRatingPipeline = (movieId) => {
 
 export const relatedMovieAggregation = (tags, movieId) => {
   return [
-    // {
-    //   $lookup: {
-    //     from: 'Movie',
-    //     localField: 'tags',
-    //     foreignField: '_id',
-    //     as: 'relatedMovies',
-    //   },
-    // },
     {
       $match: {
         tags: { $in: [...tags] },
@@ -100,7 +93,7 @@ export const relatedMovieAggregation = (tags, movieId) => {
 };
 
 export const topRatedMoviesPipeline = (genre) => {
-  const matchOptions = {
+  const matchOptions: any = {
     reviews: { $exists: true, $ne: [] },
     status: { $eq: "public" },
   };
@@ -108,14 +101,6 @@ export const topRatedMoviesPipeline = (genre) => {
   if (genre) matchOptions.genres = { $in: [genre] };
 
   return [
-    // {
-    //   $lookup: {
-    //     from: 'Movie',
-    //     localField: 'reviews',
-    //     foreignField: '_id',
-    //     as: 'topRated',
-    //   },
-    // },
     {
       $match: matchOptions,
     },
@@ -137,9 +122,11 @@ export const topRatedMoviesPipeline = (genre) => {
 };
 
 export const getAverageRatings = async (movieId) => {
-  const [aggregatedResponse] = await Review.aggregate(averageRatingPipeline(movieId));
+  const [aggregatedResponse] = await Review.aggregate(
+    averageRatingPipeline(movieId)
+  );
 
-  const reviews = {};
+  const reviews: { ratingAvg?: string, reviewCount?: number } = {};
 
   if (aggregatedResponse) {
     const { ratingAvg, reviewCount } = aggregatedResponse;

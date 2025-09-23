@@ -36,6 +36,9 @@ import {
 } from "../ui/dialog";
 import { useTranslation } from "react-i18next";
 
+// This constant should ideally come from an environment variable
+const BACKEND_URL = "http://localhost:8000";
+
 let currentPageNo = 0;
 const limit = 9;
 let totalPage;
@@ -224,7 +227,7 @@ const ActorProfile = ({
   };
 
   const getAbout = (about) => {
-    if (about <= acceptedAboutLength) {
+    if (about.length <= acceptedAboutLength) {
       return about;
     }
     return about.substring(0, acceptedAboutLength) + "...";
@@ -256,10 +259,10 @@ const ActorProfile = ({
       >
         <CardHeader className="p-0">
           <CardTitle className="h-40 w-32 lg:w-32 lg:h-32">
+            {/* CORRECTED: Prepend the backend URL to the avatar path */}
             <img
-              src={avatar}
+              src={avatar ? `${BACKEND_URL}${avatar}` : "default-avatar.png"} // Added a fallback
               alt={name}
-              // className="w-full aspect-square object-cover rounded-l-md"
               className="w-full h-full aspect-square object-cover rounded-l-md"
             />
           </CardTitle>

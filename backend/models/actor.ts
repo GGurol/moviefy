@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 
-// SchemaTypes
 const actorSchema = new mongoose.Schema(
   {
     name: {
@@ -18,16 +17,15 @@ const actorSchema = new mongoose.Schema(
       trim: true,
       required: true,
     },
+    // CORRECTED: Avatar is now a simple String to store the local file path
     avatar: {
-      type: Object,
-      url: String,
-      public_id: String,
+      type: String,
+      trim: true,
     },
   },
   { timestamps: true }
 );
 
-// Text Index
 actorSchema.index({ name: "text" });
 
 export default mongoose.model("Actor", actorSchema);

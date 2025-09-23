@@ -6,12 +6,12 @@ const movieSchema = new mongoose.Schema(
     title: {
       type: String,
       trim: true,
-      require: true,
+      required: true, // Corrected from 'require'
     },
     storyLine: {
       type: String,
       trim: true,
-      require: true,
+      required: true, // Corrected from 'require'
     },
     director: {
       type: mongoose.Schema.Types.ObjectId,
@@ -19,63 +19,54 @@ const movieSchema = new mongoose.Schema(
     },
     releaseDate: {
       type: Date,
-      require: true,
+      required: true, // Corrected from 'require'
     },
     status: {
       type: String,
-      require: true,
+      required: true, // Corrected from 'require'
       enum: ["public", "private"],
     },
     type: {
       type: String,
-      require: true,
+      required: true, // Corrected from 'require'
     },
     genres: {
       type: [String],
-      require: true,
+      required: true, // Corrected from 'require'
       enum: genres,
     },
     tags: {
       type: [String],
-      require: true,
+      required: true, // Corrected from 'require'
     },
     cast: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Actor",
-        // actor: { type: mongoose.Schema.Types.ObjectId, ref: "Actor" },
-        // roleAs: String,
-        // leadActor: Boolean,
       },
     ],
     writer: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Actor",
     },
-
+    // CORRECTED: Poster is now a simple String to store the local file path
     poster: {
-      type: Object,
-      url: { type: String, required: true },
-      public_id: { type: String, required: true },
-      responsive: [URL],
+      type: String,
+      trim: true,
       required: true,
     },
+    // CORRECTED: Video is now a simple String to store the local file path
     video: {
-      type: Object,
-      url: { type: String, required: true },
-      public_id: { type: String, required: true },
-      required: true,
+      type: String,
+      trim: true,
     },
     reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: "Review" }],
     language: {
       type: String,
-      require: true,
+      required: true, // Corrected from 'require'
     },
   },
   { timestamps: true }
 );
 
-const Movie = mongoose.model("Movie", movieSchema);
-export default Movie;
-
-// module.exports = mongoose.model('Movie', movieSchema);
+export default mongoose.model("Movie", movieSchema);
