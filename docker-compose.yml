@@ -1,0 +1,54 @@
+services:
+  mongodb:
+    restart: always
+    image: mongo:7.0-jammy
+    container_name: moviefy-mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+    volumes:
+      - mongo_data:/data/db
+    ports:
+      - "27017:27017"
+    networks:
+      - moviefy_network
+
+  backend:
+    build: ./backend
+    container_name: moviefy-backend
+    command: npm run dev
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    # CORRECTED: Map to the port the backend is actually using
+    ports:
+      - "${BACKEND_PORT}:${BACKEND_PORT}"
+    networks:
+      - moviefy_network
+    depends_on:
+      - mongodb
+
+  frontend:
+    build: ./frontend
+    container_name: moviefy-frontend
+    command: npm run dev
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "5173:5173"
+    networks:
+      - moviefy_network
+    depends_on:
+      - backend
+
+volumes:
+  mongo_data:
+
+networks:
+  moviefy_network:
+    driver: bridge

@@ -1,10 +1,8 @@
 import axios from "axios";
 
-let baseURL = "http://localhost:8082/api";
-
-if (import.meta.env.PROD) {
-  baseURL = "https://movie.linze.pro/api";
-}
+// CORRECTED: Read the API URL from Vite's environment variables,
+// with a fallback to the correct local backend port.
+const baseURL = import.meta.env.VITE_API_URL || "http://localhost:8000/api";
 
 const client = axios.create({
   baseURL: baseURL,

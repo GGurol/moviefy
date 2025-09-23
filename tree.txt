@@ -1,0 +1,215 @@
+.
+├── backend
+│   ├── app.ts
+│   ├── cloud
+│   │   └── index.ts
+│   ├── compose.yaml
+│   ├── controllers
+│   │   ├── actor.ts
+│   │   ├── admin.ts
+│   │   ├── movie.ts
+│   │   ├── review.ts
+│   │   └── user.ts
+│   ├── db
+│   │   └── index.ts
+│   ├── Dockerfile
+│   ├── middlewares
+│   │   ├── auth.ts
+│   │   ├── error.ts
+│   │   ├── helper.ts
+│   │   ├── multer.ts
+│   │   ├── user.ts
+│   │   └── validator.ts
+│   ├── models
+│   │   ├── actor.ts
+│   │   ├── emailVerificationToken.ts
+│   │   ├── movie.ts
+│   │   ├── passwordResetToken.ts
+│   │   ├── review.ts
+│   │   └── user.ts
+│   ├── package.json
+│   ├── package-lock.json
+│   ├── routes
+│   │   ├── actor.ts
+│   │   ├── admin.ts
+│   │   ├── movie.ts
+│   │   ├── review.ts
+│   │   └── user.ts
+│   ├── tsconfig.json
+│   └── utils
+│       ├── genres.ts
+│       ├── helper.ts
+│       └── mail.ts
+├── Caddyfile-example
+├── compose.yaml
+├── frontend
+│   ├── components.json
+│   ├── index.html
+│   ├── nginx
+│   │   ├── default.conf
+│   │   └── Dockerfile
+│   ├── package.json
+│   ├── package-lock.json
+│   ├── postcss.config.js
+│   ├── public
+│   │   ├── cn.svg
+│   │   ├── favicon.svg
+│   │   ├── locales
+│   │   │   ├── en
+│   │   │   │   └── translation.json
+│   │   │   └── zh
+│   │   │       └── translation.json
+│   │   ├── logo.svg
+│   │   └── us.svg
+│   ├── src
+│   │   ├── api
+│   │   │   ├── actor.ts
+│   │   │   ├── admin.ts
+│   │   │   ├── auth.ts
+│   │   │   ├── client.ts
+│   │   │   ├── movie.ts
+│   │   │   └── review.ts
+│   │   ├── App.tsx
+│   │   ├── components
+│   │   │   ├── admin
+│   │   │   │   ├── Actors.tsx
+│   │   │   │   ├── Dashboard.tsx
+│   │   │   │   ├── Header.tsx
+│   │   │   │   ├── MovieForm.tsx
+│   │   │   │   ├── MovieListColumnAction.tsx
+│   │   │   │   ├── MovieListColumn.tsx
+│   │   │   │   ├── Movies.tsx
+│   │   │   │   ├── MovieUpload.tsx
+│   │   │   │   ├── Navbar.tsx
+│   │   │   │   └── SearchMovies.tsx
+│   │   │   ├── AppInfoBox.tsx
+│   │   │   ├── auth
+│   │   │   │   ├── ConfirmPassword.tsx
+│   │   │   │   ├── EmailVerification.tsx
+│   │   │   │   ├── ForgetPassword.tsx
+│   │   │   │   ├── Signin.tsx
+│   │   │   │   └── Signup.tsx
+│   │   │   ├── Container.tsx
+│   │   │   ├── CustomButtonLink.tsx
+│   │   │   ├── CustomLink.tsx
+│   │   │   ├── DirectorSelector.tsx
+│   │   │   ├── form
+│   │   │   │   ├── ActorForm.tsx
+│   │   │   │   ├── AppSearchForm.tsx
+│   │   │   │   ├── CastForm.tsx
+│   │   │   │   ├── FormContainer.tsx
+│   │   │   │   ├── FormInput.tsx
+│   │   │   │   ├── RatingForm.tsx
+│   │   │   │   ├── Submit.tsx
+│   │   │   │   └── Title.tsx
+│   │   │   ├── GenresSelector.tsx
+│   │   │   ├── GridContainer.tsx
+│   │   │   ├── Home.tsx
+│   │   │   ├── Label.tsx
+│   │   │   ├── LabelWithBadge.tsx
+│   │   │   ├── LatestUploads.tsx
+│   │   │   ├── LiveSearchCast.tsx
+│   │   │   ├── LiveSearch.tsx
+│   │   │   ├── modals
+│   │   │   │   ├── ActorUpload.tsx
+│   │   │   │   ├── AddRatingModal.tsx
+│   │   │   │   ├── CastModal.tsx
+│   │   │   │   ├── ConfirmModal.tsx
+│   │   │   │   ├── EditRatingModal.tsx
+│   │   │   │   ├── GenresModal.tsx
+│   │   │   │   ├── ModalContainer.tsx
+│   │   │   │   ├── ProfileModal.tsx
+│   │   │   │   ├── UpdateActor.tsx
+│   │   │   │   ├── UpdateMovie.tsx
+│   │   │   │   └── WritersModal.tsx
+│   │   │   ├── MostRatedMovies.tsx
+│   │   │   ├── MovieListItem.tsx
+│   │   │   ├── NextAndPrevButton.tsx
+│   │   │   ├── NotFoundText.tsx
+│   │   │   ├── NotFound.tsx
+│   │   │   ├── PosterSelector.tsx
+│   │   │   ├── RatingStar.tsx
+│   │   │   ├── RelatedMovies.tsx
+│   │   │   ├── Selector.tsx
+│   │   │   ├── TagsInput.tsx
+│   │   │   ├── ui
+│   │   │   │   ├── alert-dialog.tsx
+│   │   │   │   ├── AppSidebar.tsx
+│   │   │   │   ├── badge.tsx
+│   │   │   │   ├── button.tsx
+│   │   │   │   ├── calendar.tsx
+│   │   │   │   ├── card.tsx
+│   │   │   │   ├── carousel.tsx
+│   │   │   │   ├── command.tsx
+│   │   │   │   ├── DataTable.tsx
+│   │   │   │   ├── dialog.tsx
+│   │   │   │   ├── dropdown-menu.tsx
+│   │   │   │   ├── DropZone.tsx
+│   │   │   │   ├── form.tsx
+│   │   │   │   ├── input-otp.tsx
+│   │   │   │   ├── InputTags.tsx
+│   │   │   │   ├── input.tsx
+│   │   │   │   ├── label.tsx
+│   │   │   │   ├── LanguageButton.tsx
+│   │   │   │   ├── LoginForm.tsx
+│   │   │   │   ├── MultiSelect.tsx
+│   │   │   │   ├── popover.tsx
+│   │   │   │   ├── select.tsx
+│   │   │   │   ├── separator.tsx
+│   │   │   │   ├── sheet.tsx
+│   │   │   │   ├── sidebar.tsx
+│   │   │   │   ├── SignupForm.tsx
+│   │   │   │   ├── skeleton.tsx
+│   │   │   │   ├── sonner.tsx
+│   │   │   │   ├── table.tsx
+│   │   │   │   ├── tabs.tsx
+│   │   │   │   ├── textarea.tsx
+│   │   │   │   ├── ThemeButton.tsx
+│   │   │   │   ├── theme-provider.tsx
+│   │   │   │   └── tooltip.tsx
+│   │   │   ├── user
+│   │   │   │   ├── HeroSlidShow.tsx
+│   │   │   │   ├── MovieList.tsx
+│   │   │   │   ├── MovieReviews.tsx
+│   │   │   │   ├── Navbar.tsx
+│   │   │   │   ├── NotVerified.tsx
+│   │   │   │   ├── SearchMovies.tsx
+│   │   │   │   ├── SingleMovie.tsx
+│   │   │   │   ├── TopRatedAction.tsx
+│   │   │   │   ├── TopRatedDrama.tsx
+│   │   │   │   └── TopRatedThriller.tsx
+│   │   │   ├── ViewAllButton.tsx
+│   │   │   └── WriterSelector.tsx
+│   │   ├── context
+│   │   │   ├── AuthProvider.tsx
+│   │   │   ├── index.tsx
+│   │   │   ├── MoviesProvider.tsx
+│   │   │   ├── NotificationProvider.tsx
+│   │   │   ├── SearchProvider.tsx
+│   │   │   └── ThemeProvider.tsx
+│   │   ├── hooks
+│   │   │   ├── index.ts
+│   │   │   ├── use-mobile.tsx
+│   │   │   └── useWindowSize.tsx
+│   │   ├── index.css
+│   │   ├── lib
+│   │   │   └── utils.ts
+│   │   ├── main.tsx
+│   │   ├── navigator
+│   │   │   └── AdminNavigator.tsx
+│   │   └── utils
+│   │       ├── genres.ts
+│   │       ├── helper.tsx
+│   │       ├── i18n.ts
+│   │       ├── options.ts
+│   │       ├── theme.ts
+│   │       └── validator.ts
+│   ├── tailwind.config.ts
+│   ├── tsconfig.json
+│   └── vite.config.ts
+├── LICENSE
+├── Makefile
+├── README.md
+└── tree.txt
+
+29 directories, 184 files

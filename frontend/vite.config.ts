@@ -11,7 +11,7 @@ export default defineConfig({
   },
   server: {
     host: true,
-    port: 5174, // This is the port which we will use in docker
+    port: 5173, // This is the port which we will use in docker
     hmr: {
       overlay: false, // This is to disable the overlay error message
     },
