@@ -3,7 +3,11 @@ import { Badge } from "../ui/badge";
 import MovieListColumnAction from "./MovieListColumnAction";
 import i18n from "@/utils/i18n";
 
+// This constant should ideally come from an environment variable
+const BACKEND_URL = "http://localhost:8000";
+
 export type Movie = {
+  id: string; // Add id to the type for the action column
   poster: string;
   title: string;
   status: "public" | "private";
@@ -13,34 +17,39 @@ export type Movie = {
 export const columns: ColumnDef<Movie>[] = [
   {
     accessorKey: "poster",
-    header: "TablePoster",
+    header: "Poster", // Changed to a simple string
     cell: ({ row }) => {
-      const value = row.getValue("poster");
+      const value = row.getValue("poster") as string;
+      // CORRECTED: Prepend the backend URL to the poster path
+      const imageUrl = value ? `${BACKEND_URL}${value}` : "/placeholder.png"; // Added a fallback
       return (
         <div className="w-20 sm:w-28">
-          <img src={value} alt="Poster image" className="w-full rounded" />
+          <img src={imageUrl} alt="Poster image" className="w-full rounded" />
         </div>
       );
     },
   },
   {
     accessorKey: "title",
-    header: "TableTitle",
+    header: "Title", // Changed to a simple string
     cell: ({ row }) => {
-      const movieId = row.original.id;
-      const title = `movies.${movieId}.title`;
+      // CORRECTED: Get the title directly from the row's data
+      const title = row.getValue("title") as string;
       return (
-        <div className="capitalize text-[10px] sm:text-xs lg:text-sm">
-          {i18n.t(title)}
+        <div className="capitalize text-[10px] sm:text-xs lg:text-sm font-semibold">
+          {title}
         </div>
       );
     },
   },
   {
     accessorKey: "genres",
-    header: "TableGenres",
+    header: "Genres", // Changed to a simple string
     cell: ({ row }) => {
-      const value = row.getValue("genres");
+      const value = row.getValue("genres") as string[];
+      // Added a check to prevent error if genres is not an array
+      if (!Array.isArray(value)) return null; 
+      
       const vl = value.map((e) => {
         return (
           <Badge
@@ -56,10 +65,10 @@ export const columns: ColumnDef<Movie>[] = [
   },
   {
     accessorKey: "status",
-    header: "TableStatus",
+    header: "Status", // Changed to a simple string
     enableHiding: true,
     cell: ({ row }) => {
-      const value = row.getValue("status");
+      const value = row.getValue("status") as string;
       return (
         <div className="capitalize  text-xs lg:text-sm">{i18n.t(value)}</div>
       );
@@ -68,7 +77,8 @@ export const columns: ColumnDef<Movie>[] = [
   {
     id: "actions",
     cell: ({ row }) => {
-      return <MovieListColumnAction movieId={row.original.id} />;
+      // Pass the entire movie object to the action component
+      return <MovieListColumnAction movie={row.original} />;
     },
   },
 ];
