@@ -61,6 +61,24 @@ import { zhCN, enUS } from "date-fns/locale";
 type Genres = Record<"value" | "label" | "className", string>;
 const BACKEND_URL = "http://localhost:8000";
 
+const formatDateInput = (value: string): string => {
+  const cleanValue = value.replace(/\D/g, '');
+  const chars = cleanValue.split('');
+  let formattedValue = '';
+
+  if (chars.length > 0) {
+    formattedValue += chars.slice(0, 2).join('');
+  }
+  if (chars.length > 2) {
+    formattedValue += '/' + chars.slice(2, 4).join('');
+  }
+  if (chars.length > 4) {
+    formattedValue += '/' + chars.slice(4, 8).join('');
+  }
+  
+  return formattedValue;
+};
+
 
 const defaultMovieInfo = {
   title: "",
@@ -150,7 +168,9 @@ const commonValidation = {
   director: z.string().nonempty(i18n.t("Must add one director")),
   writer: z.string().nonempty(i18n.t("Must add one writer")),
   cast: z.array(z.string()).nonempty(i18n.t("At least one actor is required")),
-  releaseDate: z.date({ message: i18n.t("Please select a release date") }),
+  releaseDate: z.string().regex(/^\d{2}\/\d{2}\/\d{4}$/, {
+    message: i18n.t("Please use DD/MM/YYYY format"),
+  }),
   language: z.string().nonempty(i18n.t("Please select a language")),
   status: z.string().nonempty(i18n.t("Please select a status")),
   type: z.string().nonempty(i18n.t("Please select a type")),
@@ -278,7 +298,6 @@ export default function MovieForm({
     setMovieInfo({ ...movieInfo, cast: [...cast, castInfo] });
   };
 
-  const [tagValues, setTagValues] = useState<string[]>([]);
   const [directorVal, setDirectorVal] = useState("");
   const [writerVal, setWriterVal] = useState("");
   const [castVal, setCastVal] = useState([]);
@@ -334,7 +353,8 @@ useEffect(() => {
     form.setValue("storyLine", initialState.storyLine);
     form.setValue("status", initialState.status);
     form.setValue("language", initialState.language);
-    form.setValue("releaseDate", new Date(initialState.releaseDate));
+    const formattedDate = format(new Date(initialState.releaseDate), "dd/MM/yyyy");
+    form.setValue("releaseDate", formattedDate);
     form.setValue("tags", initialState.tags);
     form.setValue("type", initialState.type);
     
@@ -517,30 +537,23 @@ useEffect(() => {
               </FormItem>
             )}
           />
-          <FormField
-            name="tags"
-            control={form.control}
-            render={({ field }) => {
-              return (
-                <FormItem>
-                  <FormLabel>{t("FormMovieTags")}</FormLabel>
-                  <FormControl>
-                    <InputTags
-                      value={tagValues}
-                      onChange={(values) => {
-                        setTagValues(values);
-                        field.value = values;
-                        // form.setValue("tags", values);
-                        field.onChange(values);
-                      }}
-                      placeholder={t("'Enter' key or comma separated")}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              );
-            }}
-          />
+<FormField
+  name="tags"
+  control={form.control}
+  render={({ field }) => (
+    <FormItem>
+      <FormLabel>{t("FormMovieTags")}</FormLabel>
+      <FormControl>
+        <InputTags
+          value={field.value}
+          onChange={field.onChange}
+          placeholder={t("'Enter' key or comma separated")}
+        />
+      </FormControl>
+      <FormMessage />
+    </FormItem>
+  )}
+/>
         </div>
         <div className="space-y-5 max-sm:mt-5 w-[33%] max-sm:w-full">
           <FormField
@@ -572,49 +585,26 @@ useEffect(() => {
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="releaseDate"
-            render={({ field }) => (
-              <FormItem className="flex flex-col">
-                <FormLabel>{t("FormReleaseDate")}</FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        variant={"outline"}
-                        className={cn(
-                          " pl-3 text-left font-normal",
-                          !field.value && "text-muted-foreground"
-                        )}
-                      >
-                        {field.value ? (
-                          format(field.value, "PPP", { locale: getLocale() })
-                        ) : (
-                          <span>{t("Pick a date")}</span>
-                        )}
-                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={field.value}
-                      onSelect={field.onChange}
-                      disabled={(date) =>
-                        date > new Date() || date < new Date("1900-01-01")
-                      }
-                      initialFocus
-                      weekStartsOn={1}
-                      locale={getLocale()}
-                    />
-                  </PopoverContent>
-                </Popover>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+<FormField
+  control={form.control}
+  name="releaseDate"
+  render={({ field }) => (
+    <FormItem>
+      <FormLabel>{t("FormReleaseDate")}</FormLabel>
+      <FormControl>
+        <Input
+          {...field}
+          placeholder="DD/MM/YYYY"
+          onChange={(e) => {
+            const formatted = formatDateInput(e.target.value);
+            field.onChange(formatted);
+          }}
+        />
+      </FormControl>
+      <FormMessage />
+    </FormItem>
+  )}
+/>
           <FormField
             control={form.control}
             name="language"

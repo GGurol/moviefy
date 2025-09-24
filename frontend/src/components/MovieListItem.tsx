@@ -137,14 +137,16 @@ const MovieCard = ({
   const [openDelete, setOpenDelete] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const { t } = useTranslation();
+  const BACKEND_URL = "http://localhost:8000";
 
   return (
     <Card className="rounded-sm flex items-center">
       <CardHeader className="p-1">
         <CardTitle className="w-24">
           <img
-            className="w-full aspect-square object-cover rounded-lg p-1"
-            src={getPoster(responsivePosters) || poster}
+            // --- DEĞİŞİKLİK 1: En-boy oranı ve src düzeltildi ---
+            className="w-full aspect-[2/3] object-cover rounded-lg p-1"
+            src={getPoster(responsivePosters) || (poster ? `${BACKEND_URL}${poster}`: '')}
             alt={title}
           />
         </CardTitle>
@@ -152,7 +154,8 @@ const MovieCard = ({
       <div className="flex justify-between w-full flex-col lg:flex-row">
         <CardContent className="p-1 overflow-auto w-full">
           <h1 className="text-sm lg:text-lg font-semibold capitalize pb-1">
-            {t(`movies.${movie.id}.title`)}
+            {/* --- DEĞİŞİKLİK 2: Başlık doğrudan kullanıldı --- */}
+            {title}
           </h1>
           <div className="space-x-1 lg:pb-2 flex flex-wrap">
             {genres.map((g, index) => {
@@ -258,28 +261,14 @@ const MovieCard = ({
               >
                 <DialogHeader>
                   <DialogTitle>{t("Edit Movie")}</DialogTitle>
-                  {/* <DialogDescription>
-                    {t("Submit to update a movie")}
-                  </DialogDescription> */}
+
                 </DialogHeader>
                 <UpdateMovie movieId={movie.id} afterUpdate={afterUpdate} />
               </DialogContent>
             </Dialog>
           </TooltipProvider>
 
-          {/* Open */}
-          {/* <TooltipProvider delayDuration={0}>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button onClick={onOpenClick}>
-                  <ExternalLink strokeWidth={0.75} className="w-4 lg:w-5" />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <span>{t("Open")}</span>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider> */}
+
         </CardFooter>
       </div>
     </Card>

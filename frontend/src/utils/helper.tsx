@@ -1,3 +1,5 @@
+const BACKEND_URL = "http://localhost:8000";
+
 export const isValidEmail = (email) => {
   const isValid = /[^\s@]+@[^\s@]+\.[^\s@]+/gi;
   return isValid.test(email);
@@ -16,11 +18,11 @@ export const catchError = (error) => {
   return { error: error.message || error };
 };
 
-export const renderItem = (result) => {
+export const renderItem = (result: { id: string; avatar: string; name: string }) => {
   return (
     <div key={result.id} className="flex space-x-2 rounded overflow-hidden">
       <img
-        src={result.avatar}
+        src={`${BACKEND_URL}${result.avatar}xxx`}
         alt={result.name}
         className="w-16 h-16 object-cover"
       />
@@ -29,15 +31,17 @@ export const renderItem = (result) => {
   );
 };
 
-export const getPoster = (posters = []) => {
+export const getPoster = (posters: string[] = []) => {
   const { length } = posters;
+  if (!length) return ""; 
 
-  if (!length) return null;
-  // if poster has more than 2 items then selecting second poster,
-  if (length > 2) return posters[1];
+  let posterPath = posters[0];
+  if (length > 2) {
+    posterPath = posters[1];
+  }
 
-  // otherwise selecting first poster
-  return posters[0];
+  if (!posterPath) return "";
+  return `${BACKEND_URL}${posterPath}`;
 };
 
 export const convertReviewCount = (count = 0) => {

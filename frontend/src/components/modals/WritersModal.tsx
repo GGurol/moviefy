@@ -1,6 +1,8 @@
 import { AiOutlineClose } from "react-icons/ai";
 import ModalContainer from "./ModalContainer";
 
+const BACKEND_URL = "http://localhost:8000";
+
 function WritersModal({ profiles = [], visible, onClose, onRemoveClick }) {
   return (
     <ModalContainer ignoreContainer onClose={onClose} visible={visible}>

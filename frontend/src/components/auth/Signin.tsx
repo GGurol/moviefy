@@ -1,24 +1,28 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { useAuth } from "../../hooks";
 import { isValidEmail } from "../../utils/helper";
 import FormContainer from "../form/FormContainer";
-import { LoginForm } from "../ui/LoginForm";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
-// import { useTheme } from '../../hooks';
+import CustomLink from "../CustomLink";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Link, useNavigate } from "react-router-dom";
 
 const validateUserInfo = ({ email, password }) => {
-  // const isValidEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
-  // const isValidEmail = /[^\s@]+@[^\s@]+\.[^\s@]+/gi;
-
   if (!email.trim()) return { ok: false, error: "Email is missing!" };
   if (!isValidEmail(email)) return { ok: false, error: "Invalid email!" };
-
   if (!password.trim()) return { ok: false, error: "Password is missing!" };
   if (password.length < 8)
     return { ok: false, error: "Password must be 8 characters!" };
-
   return { ok: true };
 };
 
@@ -29,18 +33,14 @@ export default function Signin() {
   });
 
   const { handleLogin, authInfo } = useAuth();
-  const { isPending } = authInfo;
+  const { isPending, isLoggedIn } = authInfo;
   const { t } = useTranslation();
-
-  // console.log(authInfo);
+  const navigate = useNavigate();
 
   const handleChange = ({ target }) => {
     const { value, name } = target;
     setUserInfo({ ...userInfo, [name]: value });
   };
-  // const theme = useTheme();
-  // console.log(theme);
-  // theme.method();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -48,61 +48,70 @@ export default function Signin() {
     if (!ok) return toast.error(t(error as string));
     handleLogin(userInfo.email, userInfo.password);
   };
-
-  // // already used in AuthProvider.jsx
-  // useEffect(() => {
-  //   if (isLoggedIn) navigate('/');
-  // }, [isLoggedIn]);
+  
+  useEffect(() => {
+    if (isLoggedIn) navigate("/");
+  }, [isLoggedIn, navigate]);
 
   return (
-    // <FormContainer>
-    //   <Container>
-    //     <form onSubmit={handleSubmit} className={commonModalClasses + ' w-72'}>
-    //       <Title>Sign in</Title>
-    //       <FormInput
-    //         value={userInfo.email}
-    //         onChange={handleChange}
-    //         label='Email'
-    //         placeholder='john@email.com'
-    //         name='email'
-    //       />
-    //       <FormInput
-    //         value={userInfo.password}
-    //         onChange={handleChange}
-    //         label='Password'
-    //         placeholder='********'
-    //         name='password'
-    //         type='password'
-    //       />
-    //       <Submit value='Sign in' busy={isPending} />
-    //       <div className='flex justify-between'>
-    //         <CustomLink to='/auth/forget-password'>Forget password</CustomLink>
-    //         <CustomLink to='/auth/signup'>Sign up</CustomLink>
-    //       </div>
-    //     </form>
-    //   </Container>
-    // </FormContainer>
     <FormContainer className="w-96 mx-auto">
-      <Tabs defaultValue="user" className="w-[400px]">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="user">{t("User")}</TabsTrigger>
-          <TabsTrigger value="admin">{t("Admin")}</TabsTrigger>
-        </TabsList>
-        <TabsContent value="user">
-          <LoginForm
-            title="Login as User"
-            defaultEmail="test3@email.com"
-            defaultPass="123123123"
-          />
-        </TabsContent>
-        <TabsContent value="admin">
-          <LoginForm
-            title="Login as Admin"
-            defaultEmail="nicolas.leigh@qq.com"
-            defaultPass="123123123"
-          />
-        </TabsContent>
-      </Tabs>
+      <Card>
+        <CardHeader className="text-center">
+          <CardTitle className="text-xl">{t("Login")}</CardTitle>
+          <CardDescription>
+            {t("Enter your email below to login to your account")}
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit}>
+            <div className="grid gap-6">
+              <div className="grid gap-4">
+                <div className="grid gap-2">
+                  <Label htmlFor="email">{t("Email")}</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    name="email"
+                    placeholder="m@example.com"
+                    required
+                    value={userInfo.email}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <div className="flex items-center">
+                    <Label htmlFor="password">{t("Password")}</Label>
+                    <Link
+                      to="/auth/forget-password"
+                      className="ml-auto text-sm underline-offset-4 hover:underline"
+                    >
+                      {t("Forgot your password?")}
+                    </Link>
+                  </div>
+                  <Input
+                    id="password"
+                    type="password"
+                    name="password"
+                    required
+                    placeholder="****************"
+                    value={userInfo.password}
+                    onChange={handleChange}
+                  />
+                </div>
+                <Button type="submit" className="w-full" disabled={isPending}>
+                  {isPending ? t("Logging in...") : t("Login")}
+                </Button>
+              </div>
+              <div className="text-center text-sm">
+                {t("Don't have an account? ")}
+                <CustomLink to="/auth/signup">
+                  {t("Click here to sign up")}
+                </CustomLink>
+              </div>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
     </FormContainer>
   );
 }

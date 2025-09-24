@@ -15,6 +15,8 @@ import { Badge } from "../ui/badge";
 import { Card, CardContent, CardHeader } from "../ui/card";
 import { useTranslation } from "react-i18next";
 
+const BACKEND_URL = "http://localhost:8000";
+
 const convertDate = (date = "") => {
   return date.split("T")[0];
 };
@@ -145,16 +147,16 @@ export default function SingleMovie() {
       <Container className="xl:px-0 px-2">
         <div className=" bg-muted rounded-md">
           <video
-            title={title}
-            poster={poster}
+            title={movie.title}
+            poster={`${BACKEND_URL}${movie.poster}`}
             controls
-            src={video}
+            src={`${BACKEND_URL}${movie.video}`}
             muted
             width={1200}
             height={720}
             className="w-full mx-auto mt-5 p-4 bg-muted rounded-md"
           />
-          <h1 className="pl-4 pb-4 font-semibold">{getTitle(movie)}</h1>
+          <h1 className="pl-4 pb-4 font-semibold">{movie.title}</h1>
         </div>
 
         <div className="mt-10 bg-muted p-4 rounded-md">
@@ -270,7 +272,7 @@ const CastProfiles = ({ cast, handleProfileClick }) => {
             >
               <img
                 className="w-full aspect-square object-cover rounded-t-sm "
-                src={e.avatar}
+                src={`${BACKEND_URL}${e.avatar}`}
                 alt=""
               />
               <p className="text-sm ">{e.name}</p>

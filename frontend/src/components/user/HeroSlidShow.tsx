@@ -19,6 +19,8 @@ import {
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 
+const BACKEND_URL = "http://localhost:8000";
+
 export default function HeroSlidShow() {
   const [slides, setSlides] = useState<LatestMovie[]>([]);
   const { t, i18n } = useTranslation();
@@ -66,7 +68,7 @@ export default function HeroSlidShow() {
         {slides.map((s, i) => (
           <CarouselItem key={i} className="relative md:basis-1/2 lg:basis-1/3">
             <Link to={"/movie/" + s.id}>
-              <img src={s.poster} alt="poster" className="rounded-sm" />
+              <img src={`${BACKEND_URL}${s.poster}`} alt="poster" className="rounded-sm" />
             </Link>
             <p className="absolute left-5 bottom-0 text-white text-lg font-semibold">
               {getTitle(s)}

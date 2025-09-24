@@ -38,11 +38,20 @@ export default function Navbar() {
           {isLoggedIn ? (
             <Button onClick={handleLogout}>{t("Log out")}</Button>
           ) : (
-            <NavLink to="/auth/signin">
-              <Button variant="link" className="max-sm:pr-2 max-sm:pl-0">
-                {t("Login")}
-              </Button>
-            </NavLink>
+            // --- CORRECTED: Wrapped Login and Register buttons in a div ---
+            <div className="flex items-center">
+              <NavLink to="/auth/signin">
+                <Button variant="link" className="max-sm:pr-2 max-sm:pl-0">
+                  {t("Login")}
+                </Button>
+              </NavLink>
+              {/* --- ADDED: The new Register button --- */}
+              <NavLink to="/auth/signup">
+                <Button variant="link">
+                  {t("Register")}
+                </Button>
+              </NavLink>
+            </div>
           )}
         </div>
       </div>
