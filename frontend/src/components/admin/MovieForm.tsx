@@ -1,28 +1,13 @@
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
-import {
-  CalendarIcon,
-  Delete,
-  DeleteIcon,
-  FileCheck2Icon,
-  Loader,
-  Trash,
-  Trash2,
-} from "lucide-react";
+import { CalendarIcon, Loader, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { useNotification } from "../../hooks";
-import {
-  languageOptions,
-  statusOptions,
-  typeOptions,
-} from "../../utils/options";
-import { validateMovie } from "../../utils/validator";
+import { languageOptions, statusOptions, typeOptions } from "../../utils/options";
 import DirectorSelector from "../DirectorSelector";
 import CastForm from "../form/CastForm";
-import Submit from "../form/Submit";
 import PosterSelector from "../PosterSelector";
 import { Button, buttonVariants } from "../ui/button";
 import { Calendar } from "../ui/calendar";
@@ -47,16 +32,8 @@ import {
 } from "../ui/select";
 import { Textarea } from "../ui/textarea";
 import WriterSelector from "../WriterSelector";
-import MovieUpload from "./MovieUpload";
 import Dropzone from "../ui/DropZone";
-import { Label } from "../ui/label";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "../ui/card";
+import { Card, CardContent, CardDescription, CardHeader } from "../ui/card";
 import {
   Tooltip,
   TooltipContent,
@@ -79,7 +56,11 @@ import { formatBytes } from "@/utils/helper";
 import i18n from "@/utils/i18n";
 import { useTranslation } from "react-i18next";
 import { zhCN, enUS } from "date-fns/locale";
+
+
 type Genres = Record<"value" | "label" | "className", string>;
+const BACKEND_URL = "http://localhost:8000";
+
 
 const defaultMovieInfo = {
   title: "",

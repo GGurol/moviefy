@@ -5,7 +5,21 @@ import {
   Pencil,
   Trash2,
 } from "lucide-react";
+import { useState } from "react";
+import { deleteMovie } from "@/api/movie";
+import { useMovies } from "../../hooks";
+import { useTranslation } from "react-i18next";
+import { toast } from "sonner";
 import { Button } from "../ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,150 +27,52 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogOverlay,
-  DialogPortal,
-  DialogTitle,
-  DialogTrigger,
-} from "../ui/dialog";
 import UpdateMovie from "../modals/UpdateMovie";
-import { forwardRef, useEffect, useRef, useState } from "react";
-import { deleteMovie } from "@/api/movie";
-import { toast } from "sonner";
-import { useMovies } from "@/hooks";
-import { useTranslation } from "react-i18next";
 
-export default function MovieListColumnAction({ movieId }) {
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  // const [hasOpenDialog, setHasOpenDialog] = useState(false);
-  const dropdownTriggerRef = useRef(null);
-  // const focusRef = useRef(null);
-  const [openEditDialog, setOpenEditDialog] = useState(false);
-  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+// Prop olarak artık tüm movie objesini alıyoruz
+export default function MovieListColumnAction({ movie }) {
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [busy, setBusy] = useState(false);
   const { t } = useTranslation();
+  const { fetchLatestUploads } = useMovies();
 
-  const { fetchLatestUploads, latestUploads } = useMovies();
-
-  useEffect(() => {
-    fetchLatestUploads();
-  }, []);
-
-  const handleUIUpdate = () => fetchLatestUploads();
-
-  // function handleDialogItemSelect() {
-  //   focusRef.current = dropdownTriggerRef.current;
-  // }
-
-  function handleOpenEdit(open) {
-    // setHasOpenDialog(open);
-    setOpenEditDialog(open);
-    if (open === false) {
-      setDropdownOpen(false);
-    }
-  }
-
-  function handleOpenDelete(open) {
-    // setHasOpenDialog(open);
-    setOpenDeleteDialog(open);
-    if (open === false) {
-      setDropdownOpen(false);
-    }
-  }
-
-  const handleDelete = async (setOpenDialog) => {
+  const handleDelete = async () => {
     setBusy(true);
-    const { error, message } = await deleteMovie(movieId);
-    // await new Promise((resolve) => setTimeout(resolve, 3000));
+    const { error, message } = await deleteMovie(movie.id);
     setBusy(false);
 
     if (error) return toast.error(t(error));
+    
     toast.success(t(message));
-    setOpenDialog(false);
-    handleUIUpdate();
+    setIsDeleteDialogOpen(false); // Close the delete confirmation dialog
+    fetchLatestUploads(); // Refresh the movie list
   };
 
   return (
-    <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
-      <DropdownMenuTrigger asChild>
-        <Button
-          variant="ghost"
-          className="h-3 w-3 sm:w-8 sm:h-8 p-0"
-          // ref={dropdownTriggerRef}
-        >
-          <span className="sr-only">Open menu</span>
-          <MoreHorizontal className="h-4 w-4" />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent
-        align="end"
-        // hidden={hasOpenDialog}
-        hidden={openEditDialog || openDeleteDialog}
-        // onCloseAutoFocus={(event) => {
-        //   if (focusRef.current) {
-        //     focusRef.current.focus();
-        //     focusRef.current = null;
-        //     event.preventDefault();
-        //   }
-        // }}
-      >
-        <DropdownMenuItem>
-          <div className="flex items-center gap-3 w-full">
-            <ExternalLink strokeWidth={0.9} size={20} />
-            <span>{t("Open")}</span>
-          </div>
-        </DropdownMenuItem>
-        {/* <Dialog>
-          <DialogTrigger className="w-full"> */}
-        <DialogItem
-          triggerChildren={
-            <div className="flex items-center gap-3">
-              <Pencil strokeWidth={0.9} size={20} />
-              <span>{t("Edit")}</span>
-            </div>
-          }
-          // onSelect={handleDialogItemSelect}
-          onOpenChange={handleOpenEdit}
-          open={openEditDialog}
-          className="w-[900px]"
-        >
-          {/* <DialogHeader> */}
-          <DialogTitle>{t("Edit Movie")}</DialogTitle>
-          {/* </DialogHeader> */}
-          <UpdateMovie movieId={movieId} />
-        </DialogItem>
-        {/* </DialogTrigger> */}
-        {/* <DialogContent
-            className="w-[900px]"
-            // onInteractOutside={(e) => e.preventDefault()}
-          > */}
-        {/* <DialogHeader>
-              <DialogTitle>Edit movie</DialogTitle>
-            </DialogHeader>
-            <UpdateMovie />
-          </DialogContent>
-        </Dialog> */}
-
-        <DropdownMenuSeparator />
-        <DialogItem
-          triggerChildren={
-            <div className="flex items-center gap-3">
-              <Trash2 strokeWidth={0.9} size={20} />
-              <span>{t("Delete")}</span>
-            </div>
-          }
-          // onSelect={handleDialogItemSelect}
-          onOpenChange={handleOpenDelete}
-          open={openDeleteDialog}
-          // open={hasOpenDialog}
-          className="w-[500px]"
-        >
+    <>
+      {/* Edit Movie Dialog */}
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent className="w-[900px]">
+          <DialogHeader>
+            <DialogTitle>{t("Edit Movie")}</DialogTitle>
+          </DialogHeader>
+          <UpdateMovie 
+            movieId={movie.id} 
+            // Pass the full movie object to pre-fill the form
+            initialState={movie} 
+            // Provide a function to close the dialog and refresh the list on success
+            onSuccess={() => {
+              setIsEditDialogOpen(false);
+              fetchLatestUploads();
+            }}
+          />
+        </DialogContent>
+      </Dialog>
+      
+      {/* Delete Movie Dialog */}
+      <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <DialogContent className="w-[500px]">
           <DialogHeader>
             <DialogTitle>{t("Are you sure?")}</DialogTitle>
             <DialogDescription>
@@ -166,63 +82,44 @@ export default function MovieListColumnAction({ movieId }) {
           <DialogFooter>
             <Button
               disabled={busy}
-              onClick={() => setOpenDeleteDialog(false)}
+              onClick={() => setIsDeleteDialogOpen(false)}
               variant="secondary"
             >
               {t("Cancel")}
             </Button>
-            <Button
-              onClick={() => {
-                handleDelete(setOpenDeleteDialog);
-              }}
-              variant="destructive"
-              disabled={busy}
-            >
+            <Button onClick={handleDelete} variant="destructive" disabled={busy}>
               <span className="w-12 flex items-center justify-center">
                 {busy ? <Loader className="animate-spin" /> : t("Delete")}
               </span>
             </Button>
           </DialogFooter>
-        </DialogItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+        </DialogContent>
+      </Dialog>
+      
+      {/* The ... Action Menu */}
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" className="h-8 w-8 p-0">
+            <span className="sr-only">Open menu</span>
+            <MoreHorizontal className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem onClick={() => window.open(`/movie/${movie.id}`, "_blank")}>
+            <ExternalLink className="mr-2 h-4 w-4" />
+            <span>{t("Open")}</span>
+          </DropdownMenuItem>
+          <DropdownMenuItem onSelect={() => setIsEditDialogOpen(true)}>
+            <Pencil className="mr-2 h-4 w-4" />
+            <span>{t("Edit")}</span>
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onSelect={() => setIsDeleteDialogOpen(true)} className="text-red-500">
+            <Trash2 className="mr-2 h-4 w-4" />
+            <span>{t("Delete")}</span>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </>
   );
 }
-
-const DialogItem = forwardRef((props, forwardedRef) => {
-  const {
-    triggerChildren,
-    children,
-    onSelect,
-    onOpenChange,
-    open,
-    className,
-    ...itemProps
-  } = props;
-  return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogTrigger asChild>
-        <DropdownMenuItem
-          {...itemProps}
-          // ref={forwardedRef}
-          onSelect={(event) => {
-            event.preventDefault();
-            onSelect && onSelect();
-          }}
-        >
-          {triggerChildren}
-        </DropdownMenuItem>
-      </DialogTrigger>
-      <DialogPortal>
-        <DialogContent
-          className={className}
-          onInteractOutside={(e) => {
-            e.preventDefault();
-          }}
-        >
-          {children}
-        </DialogContent>
-      </DialogPortal>
-    </Dialog>
-  );
-});
