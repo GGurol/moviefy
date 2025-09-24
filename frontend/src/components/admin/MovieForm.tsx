@@ -191,6 +191,7 @@ export default function MovieForm({
   const [showCastModal, setShowCastModal] = useState(false);
   const [showGenresModal, setShowGenresModal] = useState(false);
   const [selectedPosterForUI, setSelectedPosterForUI] = useState("");
+  const [existingVideo, setExistingVideo] = useState<string | null>(null);
 
   let form;
 
@@ -264,9 +265,6 @@ export default function MovieForm({
     setMovieInfo({ ...movieInfo, [name]: value });
   };
 
-  // const updateTags = (tags) => {
-  //   setMovieInfo({ ...movieInfo, tags });
-  // };
 
   const updateDirector = (profile) => {
     setMovieInfo({ ...movieInfo, director: profile });
@@ -280,60 +278,6 @@ export default function MovieForm({
     setMovieInfo({ ...movieInfo, cast: [...cast, castInfo] });
   };
 
-  // const updateGenres = (genres) => {
-  //   setMovieInfo({ ...movieInfo, genres });
-  // };
-
-  // const updateWriters = (profile) => {
-  //   const { writers } = movieInfo;
-  //   for (let writer of writers) {
-  //     if (writer.id === profile.id) {
-  //       return updateNotification(
-  //         "warning",
-  //         "This profile is already selected!"
-  //       );
-  //     }
-  //   }
-  //   setMovieInfo({ ...movieInfo, writers: [...writers, profile] });
-  // };
-
-  // const hideWritersModal = () => {
-  //   setShowWritersModal(false);
-  // };
-
-  // const displayWritersModal = () => {
-  //   setShowWritersModal(true);
-  // };
-  // const hideCastModal = () => {
-  //   setShowCastModal(false);
-  // };
-
-  // const displayCastModal = () => {
-  //   setShowCastModal(true);
-  // };
-
-  // const hideGenresModal = () => {
-  //   setShowGenresModal(false);
-  // };
-
-  // const displayGenresModal = () => {
-  //   setShowGenresModal(true);
-  // };
-
-  // const handleWriterRemove = (profileId) => {
-  //   const { writers } = movieInfo;
-  //   const newWriters = writers.filter(({ id }) => id !== profileId);
-  //   if (!newWriters.length) hideWritersModal();
-  //   setMovieInfo({ ...movieInfo, writers: [...newWriters] });
-  // };
-
-  // const handleCastRemove = (profileId) => {
-  //   const { cast } = movieInfo;
-  //   const newCast = cast.filter(({ profile }) => profile.id !== profileId);
-  //   if (!newCast.length) hideCastModal();
-  //   setMovieInfo({ ...movieInfo, cast: [...newCast] });
-  // };
-
   const [tagValues, setTagValues] = useState<string[]>([]);
   const [directorVal, setDirectorVal] = useState("");
   const [writerVal, setWriterVal] = useState("");
@@ -344,16 +288,6 @@ export default function MovieForm({
   // const [dupValues, setDupValues] = useState([]);
   const [selectedActors, setSelectedActors] = useState([]);
   const { t, i18n } = useTranslation();
-
-  // const leaderActors = useActorStore((state) => state.leaderActors);
-  // console.log(leaderActors);
-
-  // const [uniqValues, setUniqValues] = useState([]);
-
-  // const handleUniqValuesChange = (newValues) => {
-  //   // setUniqValues(newValues);
-  //   setSelectedActors(newValues);
-  // };
 
   function handleOnDrop(acceptedFiles: FileList | null) {
     if (acceptedFiles && acceptedFiles.length > 0) {
@@ -393,42 +327,49 @@ export default function MovieForm({
       : undefined;
   };
 
-  useEffect(() => {
-    if (initialState) {
-      // setMovieInfo({
-      //   ...initialState,
-      //   poster: null,
-      //   releaseDate: initialState.releaseDate.split("T")[0],
-      // });
-      form.setValue("title", initialState.title);
-      form.setValue("storyLine", initialState.storyLine);
-      form.setValue("status", initialState.status);
-      form.setValue("language", initialState.language);
-      const cast = initialState.cast.map((item) => {
-        for (let p in item) return item[p];
-      });
-      // form.setValue("cast", initialState.cast.id);
-      // setDupValues(cast);
-      setSelectedActors(cast);
-      // setUniqValues(initialState.cast);
-      // setCastVal(initialState.cast.id);
-      const genre = GENRES.filter((e) => initialState.genres.includes(e.value));
-      form.setValue("genres", initialState.genres);
-      setSelectedGenre(genre);
-      form.setValue("director", initialState.director.id);
-      setDirectorSelectRes(initialState.director);
-      form.setValue("writer", initialState.writer.id);
-      setWriterSelectRes(initialState.writer);
-      form.setValue("releaseDate", new Date(initialState.releaseDate));
-      form.setValue("tags", initialState.tags);
-      form.setValue("type", initialState.type);
-      setTagValues(initialState.tags);
-      setSelectedPosterForUI(initialState.poster);
-      // console.log(form.getValues("cast"));
-      // console.log(dupValues);
-      console.log(initialState.cast);
+useEffect(() => {
+  if (initialState) {
+    // Set simple text/date/select values
+    form.setValue("title", initialState.title);
+    form.setValue("storyLine", initialState.storyLine);
+    form.setValue("status", initialState.status);
+    form.setValue("language", initialState.language);
+    form.setValue("releaseDate", new Date(initialState.releaseDate));
+    form.setValue("tags", initialState.tags);
+    form.setValue("type", initialState.type);
+    
+    // --- THE FIX FOR ACTORS IS HERE ---
+    // 1. Set the local state for the UI component with the FULL actor objects from the API
+    setSelectedActors(initialState.cast || []); 
+
+    // 2. Set the react-hook-form value with only the actor IDs, as the schema expects
+    form.setValue("cast", initialState.cast ? initialState.cast.map(actor => actor.id) : []);
+    // --- END OF FIX ---
+
+    // Set genres for the MultiSelect component
+    const genreObjects = GENRES.filter((e) => initialState.genres.includes(e.value));
+    form.setValue("genres", initialState.genres);
+    setSelectedGenre(genreObjects);
+    
+    // Set complex objects for custom selector components
+    form.setValue("director", initialState.director.id);
+    setDirectorSelectRes(initialState.director);
+    
+    // Your original code used "writer", singular. Assuming it's one object.
+    form.setValue("writer", initialState.writer.id); 
+    setWriterSelectRes(initialState.writer);
+    
+    // Set UI state for the poster
+    if (initialState.poster) {
+      setSelectedPosterForUI(`${BACKEND_URL}${initialState.poster}`);
     }
-  }, [initialState]);
+    if (initialState.video) {
+        // Dosya yolundan sadece dosya adını alıyoruz (örn: /uploads/video.mp4 -> video.mp4)
+      const videoFileName = initialState.video.split('/').pop();
+      setExistingVideo(videoFileName);
+    }
+  }
+}, [initialState, form]); // form.reset was removed, so form is the correct dependency
 
   const resetForm = () => {
     form.reset();
@@ -441,6 +382,7 @@ export default function MovieForm({
     // setDupValues([]);
     setSelectedActors([]);
     setSelectedPosterForUI("");
+    setExistingVideo(null);
   };
 
   const {
@@ -778,29 +720,64 @@ export default function MovieForm({
               <FormItem className="w-full">
                 <FormLabel>{t("FormVideo")}</FormLabel>
                 <FormControl>
-                  <Dropzone
-                    {...field}
-                    dropMessage={t("Drop video file here or click here")}
-                    handleOnDrop={handleOnDrop}
-                    accept="video/*"
-                  />
+                  {/* Eğer yeni bir video seçilmediyse VE mevcut bir video varsa, onu göster */}
+                  {existingVideo && !form.watch("video") ? (
+                    <Card className="w-full">
+                      <CardHeader className="p-2 pb-1">
+                        <CardDescription className="flex items-center justify-between">
+                          <span>{t("Current Video")}</span>
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-7 w-7"
+                                  onClick={() => {
+                                    setExistingVideo(null); // Mevcut videoyu kaldır ve Dropzone'u göster
+                                  }}
+                                >
+                                  <Trash2 size={18} className="text-red-500"/>
+                                </Button>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>{t("Change the video")}</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent className="text-xs px-2 pb-2 overflow-auto">
+                        <span>{existingVideo}</span>
+                      </CardContent>
+                    </Card>
+                  ) : (
+                    // Aksi halde, yeni video yükleme alanını göster
+                    <Dropzone
+                      {...field}
+                      dropMessage={t("Drop video file here or click here")}
+                      handleOnDrop={(files) => field.onChange(files?.[0])}
+                      accept="video/*"
+                    />
+                  )}
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
           {form.watch("video") && (
-            <Card className="w-full sm:w-52 md:w-60 h-20">
+            <Card className="w-full">
               <CardHeader className="p-2 pb-1">
                 <CardDescription className="flex items-center justify-between">
-                  <span>{t("Selected Video")}</span>
+                  <span>{t("New Selected Video")}</span>
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <Trash2
                           size={25}
                           className="hover:bg-muted cursor-pointer rounded border p-1 "
-                          onClick={() => form.setValue("video", null)}
+                          onClick={() => form.setValue("video", undefined, { shouldValidate: true })}
                         />
                       </TooltipTrigger>
                       <TooltipContent>
@@ -811,7 +788,7 @@ export default function MovieForm({
                 </CardDescription>
               </CardHeader>
               <CardContent className="text-xs px-2 pb-2 flex justify-between items-center overflow-auto ">
-                <span>{form.watch("video")?.name}</span>
+                <span>{(form.watch("video") as File)?.name}</span>
               </CardContent>
             </Card>
           )}

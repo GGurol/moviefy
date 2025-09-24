@@ -222,19 +222,20 @@ export const getMovieForUpdate = async (req, res) => {
       id: movie._id,
       title: movie.title,
       storyLine: movie.storyLine,
-      poster: movie.poster, // Corrected
+      poster: movie.poster,
       releaseDate: movie.releaseDate,
       status: movie.status,
       type: movie.type,
       genres: movie.genres,
       tags: movie.tags,
       language: movie.language,
+      video: movie.video, // <-- BU SATIR EKLENDİ
       director: formateActor(movie.director),
       writer: formateActor(movie?.writer),
       cast: movie.cast.map((c: any) => ({
         id: c._id,
         name: c.name,
-        avatar: c.avatar, // Corrected
+        avatar: c.avatar,
       })),
     },
   });
