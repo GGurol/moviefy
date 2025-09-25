@@ -1,41 +1,35 @@
 import { useState } from "react";
-import { useNotification } from "../../hooks";
 import { updateActor } from "../../api/actor";
-import ModalContainer from "./ModalContainer";
 import ActorForm from "../form/ActorForm";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 
-function UpdateActor({ visible, onClose, initialState, onSuccess, setOpen }) {
+// CORRECTED: The component now only accepts the props it actually receives.
+export default function UpdateActor({ initialState, onSuccess }) {
   const [busy, setBusy] = useState(false);
   const { t } = useTranslation();
 
   const handleSubmit = async (data) => {
     setBusy(true);
-    const { error, actor } = await updateActor(initialState.id, data);
+    const { error, actor, message } = await updateActor(initialState.id, data);
     setBusy(false);
+    
     if (error) {
-      return toast.error(t("Failed to update actor"));
+      return toast.error(t(error));
     }
 
-    setOpen(false);
-
+    toast.success(t(message));
+    // Call the function passed from the parent.
+    // This will close the modal and refresh the list.
     onSuccess(actor);
-    toast.success(t("Actor updated successfully"));
   };
 
   return (
-    <>
-      {/* <ModalContainer visible={visible} onClose={onClose} ignoreContainer> */}
-      <ActorForm
-        onSubmit={!busy ? handleSubmit : null}
-        busy={busy}
-        initialState={initialState}
-        isUpdate={true}
-      />
-      {/* </ModalContainer> */}
-    </>
+    <ActorForm
+      onSubmit={!busy ? handleSubmit : null}
+      busy={busy}
+      initialState={initialState}
+      isUpdate={true}
+    />
   );
 }
-
-export default UpdateActor;

@@ -1,32 +1,26 @@
 import { useMemo } from "react";
 import NextAndPrevButton from "../NextAndPrevButton";
 import { DataTable } from "../ui/DataTable";
-import { columns as defaultColumns } from "./MovieListColumn";
+import { columns } from "./MovieListColumn"; // Use the simple, static import
 
-// CORRECTED: The component is now a "dumb" component that receives all its data and handlers as props.
+// The component is now a "dumb" component that receives all its data and handlers as props.
 export default function Movies({ movies, currentPage, totalMovieCount, limit, setCurrentPage, fetchMovies }) {
   
+  // This is the refresh function that will be passed down
   const handleSuccess = () => {
     fetchMovies(currentPage);
   };
   
-  const columns = useMemo(() => defaultColumns.map(col => {
-    if (col.id === 'actions') {
-      return { ...col, meta: { onDeleteSuccess: handleSuccess, onUpdateSuccess: handleSuccess } };
-    }
-    return col;
-  }), [handleSuccess]);
-
   const fetchNextPage = () => {
     const totalPages = Math.ceil(totalMovieCount / limit);
     if (currentPage < totalPages - 1) {
-      setCurrentPage(prevPage => prevPage + 1);
+      setCurrentPage(currentPage + 1);
     }
   };
 
   const fetchPrevPage = () => {
     if (currentPage > 0) {
-      setCurrentPage(prevPage => prevPage - 1);
+      setCurrentPage(currentPage - 1);
     }
   };
 
@@ -37,7 +31,13 @@ export default function Movies({ movies, currentPage, totalMovieCount, limit, se
     <div className="mx-2 mt-3 sm:mx-5 sm:mt-5">
       <DataTable 
         columns={columns} 
-        data={movies} 
+        data={movies}
+        // CORRECTED: Pass the meta prop directly to the DataTable,
+        // just like we did in Actors.tsx
+        meta={{
+          onDeleteSuccess: handleSuccess,
+          onUpdateSuccess: handleSuccess,
+        }}
       />
       <NextAndPrevButton
         className="mt-5"

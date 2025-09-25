@@ -35,6 +35,7 @@ export const updateActor = async (req, res) => {
 
   const oldAvatarPath = actor.avatar;
 
+  // If a new file is uploaded, delete the old one.
   if (oldAvatarPath && file) {
     try {
       const fullPath = path.join(__dirname, "../../", oldAvatarPath);
@@ -45,19 +46,28 @@ export const updateActor = async (req, res) => {
       console.error("Failed to remove old avatar:", error);
     }
   }
+  
+  // --- ADDED: The missing logic to save the new data ---
 
+  // If a new file was uploaded, save it and update the path.
   if (file) {
     const newAvatarUrl = saveImageLocally(file);
     actor.avatar = newAvatarUrl;
   }
 
+  // Update the text fields.
   actor.name = name;
   actor.about = about;
   actor.gender = gender;
 
+  // Save all changes to the database.
   await actor.save();
 
-  res.status(201).json({ actor: formateActor(actor) });
+  // Send a success response with a message for the toast notification.
+  res.status(201).json({
+    actor: formateActor(actor),
+    message: "Actor updated successfully",
+  });
 };
 
 export const removeActor = async (req, res) => {
