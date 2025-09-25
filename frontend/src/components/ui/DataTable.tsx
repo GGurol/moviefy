@@ -4,8 +4,8 @@ import {
   getCoreRowModel,
   getPaginationRowModel,
   useReactTable,
+  TableMeta,
 } from "@tanstack/react-table";
-
 import {
   Table,
   TableBody,
@@ -15,22 +15,26 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useTranslation } from "react-i18next";
-import { useEffect, useState } from "react";
 import useWindowSize from "@/hooks/useWindowSize";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  meta?: TableMeta<TData>;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  meta,
 }: DataTableProps<TData, TValue>) {
+  // CORRECTED: The hook was misspelled as 'useWindow'. It should be 'useWindowSize'.
   const windowSize = typeof window !== "undefined" ? useWindowSize() : false;
+  
   const table = useReactTable({
     data,
     columns,
+    meta,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     state: {
@@ -49,7 +53,6 @@ export function DataTable<TData, TValue>({
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
-                  // console.log(header);
                   return (
                     <TableHead
                       key={header.id}

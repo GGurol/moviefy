@@ -27,11 +27,16 @@ export const columns: ColumnDef<Actor>[] = [
     accessorKey: "about",
     header: "About",
     cell: ({ row }) => {
-      const about = row.getValue("about") as string;
-      if (about.length > 200) {
-        return <p className="text-sm text-muted-foreground">{about.substring(0, 200)}...</p>;
-      }
-      return <p className="text-sm text-muted-foreground">{about}</p>;
+        const about = row.getValue("about") as string;
+        // CORRECTED: Add a check to make sure 'about' exists before using it.
+        if (!about) {
+            return <p className="text-sm text-muted-foreground">-</p>;
+        }
+
+        if (about.length > 50) {
+            return <p className="text-sm text-muted-foreground">{about.substring(0, 50)}...</p>;
+        }
+        return <p className="text-sm text-muted-foreground">{about}</p>;
     }
   },
   {

@@ -6,7 +6,7 @@ import NextAndPrevButton from "../NextAndPrevButton";
 import NotFoundText from "../NotFoundText";
 import AppSearchForm from "../form/AppSearchForm";
 import { DataTable } from "../ui/DataTable";
-import { columns } from "./ActorListColumn"; // Use the new column definitions
+import { columns } from "./ActorListColumn"; // Use the static column definitions
 import { useTranslation } from "react-i18next";
 
 const limit = 9;
@@ -33,13 +33,6 @@ export default function Actors() {
   const handleActionSuccess = () => {
     fetchActors(currentPage);
   };
-
-  const tableColumns = useMemo(() => columns.map(col => {
-      if (col.id === 'actions') {
-        return { ...col, meta: { onActionSuccess: handleActionSuccess } };
-      }
-      return col;
-  }), [handleActionSuccess]);
 
   const handleOnNextClick = () => {
     const totalPages = Math.ceil(totalActorCount / limit);
@@ -83,7 +76,14 @@ export default function Actors() {
       </div>
       <NotFoundText text={t("No Actors Found")} visible={resultNotFound} />
       
-      <DataTable columns={tableColumns} data={resultNotFound ? results : actors} />
+      <DataTable 
+        columns={columns} 
+        data={resultNotFound ? results : actors} 
+        // CORRECTED: Pass the refresh function to the DataTable via the top-level meta prop
+        meta={{
+          onActionSuccess: handleActionSuccess,
+        }}
+      />
 
       {!results.length && !resultNotFound ? (
         <NextAndPrevButton
