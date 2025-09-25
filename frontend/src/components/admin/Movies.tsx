@@ -1,31 +1,11 @@
-import { useEffect, useState, useMemo, useCallback } from "react";
-import { getMovies } from "../../api/movie";
+import { useMemo } from "react";
 import NextAndPrevButton from "../NextAndPrevButton";
 import { DataTable } from "../ui/DataTable";
 import { columns as defaultColumns } from "./MovieListColumn";
-import { toast } from "sonner";
-import { useTranslation } from "react-i18next";
 
-const limit = 6;
-
-export default function Movies() {
-  const [movies, setMovies] = useState([]);
-  const [currentPage, setCurrentPage] = useState(0);
-  const [totalMovieCount, setTotalMovieCount] = useState(0);
-  const { t } = useTranslation();
-
-  const fetchMovies = useCallback(async (pageNo) => {
-    const { error, movies: newMovies, totalMovieCount: newTotal } = await getMovies(pageNo, limit);
-    if (error) return toast.error(t(error));
-    
-    setMovies(newMovies || []);
-    setTotalMovieCount(newTotal || 0);
-  }, [t]);
-
-  useEffect(() => {
-    fetchMovies(currentPage);
-  }, [currentPage, fetchMovies]);
-
+// CORRECTED: The component is now a "dumb" component that receives all its data and handlers as props.
+export default function Movies({ movies, currentPage, totalMovieCount, limit, setCurrentPage, fetchMovies }) {
+  
   const handleSuccess = () => {
     fetchMovies(currentPage);
   };

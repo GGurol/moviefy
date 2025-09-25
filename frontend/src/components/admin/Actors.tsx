@@ -6,33 +6,15 @@ import NextAndPrevButton from "../NextAndPrevButton";
 import NotFoundText from "../NotFoundText";
 import AppSearchForm from "../form/AppSearchForm";
 import { DataTable } from "../ui/DataTable";
-import { columns } from "./ActorListColumn"; // Use the static column definitions
+import { columns } from "./ActorListColumn";
 import { useTranslation } from "react-i18next";
 
 const limit = 9;
 
-export default function Actors() {
-  const [actors, setActors] = useState([]);
-  const [results, setResults] = useState([]);
-  const [currentPage, setCurrentPage] = useState(0);
-  const [totalActorCount, setTotalActorCount] = useState(0);
-  const { handleSearch, resetSearch, resultNotFound } = useSearch();
+// CORRECTED: This component now correctly receives its data as props from AdminNavigator
+export default function Actors({ actors, currentPage, totalActorCount, fetchActors, setCurrentPage }) {
+  const { handleSearch, resetSearch, resultNotFound, results } = useSearch();
   const { t } = useTranslation();
-
-  const fetchActors = useCallback(async (pageNo) => {
-    const { profiles, error, totalActorCount } = await getActors(pageNo, limit);
-    if (error) return toast.error(t(error));
-    setActors(profiles || []);
-    setTotalActorCount(totalActorCount || 0);
-  }, [t]);
-
-  useEffect(() => {
-    fetchActors(currentPage);
-  }, [currentPage, fetchActors]);
-  
-  const handleActionSuccess = () => {
-    fetchActors(currentPage);
-  };
 
   const handleOnNextClick = () => {
     const totalPages = Math.ceil(totalActorCount / limit);
@@ -48,19 +30,22 @@ export default function Actors() {
   };
   
   const handleOnSearchSubmit = (value) => {
-    handleSearch(searchActor, value, [], setResults);
+    handleSearch(searchActor, value, [], results.setResults);
   };
 
   const handleSearchFormReset = () => {
     resetSearch();
-    setResults([]);
     if (currentPage !== 0) {
       setCurrentPage(0);
     } else {
       fetchActors(0);
     }
   };
-
+  
+  const handleActionSuccess = () => {
+    fetchActors(currentPage);
+  };
+  
   const noPrev = currentPage <= 0;
   const noNext = (currentPage + 1) * limit >= totalActorCount;
   
@@ -76,10 +61,10 @@ export default function Actors() {
       </div>
       <NotFoundText text={t("No Actors Found")} visible={resultNotFound} />
       
+      {/* CORRECTED: Pass the 'meta' prop directly to the DataTable */}
       <DataTable 
         columns={columns} 
         data={resultNotFound ? results : actors} 
-        // CORRECTED: Pass the refresh function to the DataTable via the top-level meta prop
         meta={{
           onActionSuccess: handleActionSuccess,
         }}
