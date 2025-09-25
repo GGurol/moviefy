@@ -1,79 +1,64 @@
-import { useEffect, useState } from "react";
-import MovieListItem from "../MovieListItem";
-import { deleteMovie, getMovieForUpdate, getMovies } from "../../api/movie";
-import { useMovies, useNotification } from "../../hooks";
+import { useEffect, useState, useMemo, useCallback } from "react";
+import { getMovies } from "../../api/movie";
 import NextAndPrevButton from "../NextAndPrevButton";
-import UpdateMovie from "../modals/UpdateMovie";
-import ConfirmModal from "../modals/ConfirmModal";
 import { DataTable } from "../ui/DataTable";
-import { columns } from "./MovieListColumn";
+import { columns as defaultColumns } from "./MovieListColumn";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 
 const limit = 6;
-let currentPageNo = 0;
-let totalPage;
 
 export default function Movies() {
   const [movies, setMovies] = useState([]);
-  const [busy, setBusy] = useState(false);
-  const [showUpdateModal, setShowUpdateModal] = useState(false);
-  const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const [selectedMovie, setSelectedMovie] = useState(null);
-  const [noNext, setNoNext] = useState(false);
-  const [noPrev, setNoPrev] = useState(false);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalMovieCount, setTotalMovieCount] = useState(0);
   const { t } = useTranslation();
 
-  const fetchMovies = async (pageNo) => {
-    const { error, movies, totalMovieCount } = await getMovies(pageNo, limit);
+  const fetchMovies = useCallback(async (pageNo) => {
+    const { error, movies: newMovies, totalMovieCount: newTotal } = await getMovies(pageNo, limit);
     if (error) return toast.error(t(error));
-    if (currentPageNo === 0) {
-      setNoPrev(true);
-    }
+    
+    setMovies(newMovies || []);
+    setTotalMovieCount(newTotal || 0);
+  }, [t]);
 
-    totalPage = Math.ceil(totalMovieCount / limit);
-    if (currentPageNo === totalPage - 1) setNoNext(true);
+  useEffect(() => {
+    fetchMovies(currentPage);
+  }, [currentPage, fetchMovies]);
 
-    if (!movies.length) {
-      currentPageNo = pageNo - 1;
-      return setNoNext(true);
-    }
-
-    setMovies([...movies]);
+  const handleSuccess = () => {
+    fetchMovies(currentPage);
   };
+  
+  const columns = useMemo(() => defaultColumns.map(col => {
+    if (col.id === 'actions') {
+      return { ...col, meta: { onDeleteSuccess: handleSuccess, onUpdateSuccess: handleSuccess } };
+    }
+    return col;
+  }), [handleSuccess]);
 
   const fetchNextPage = () => {
-    if (noNext) return;
-    if (noPrev) setNoPrev(false);
-    currentPageNo += 1;
-    fetchMovies(currentPageNo);
+    const totalPages = Math.ceil(totalMovieCount / limit);
+    if (currentPage < totalPages - 1) {
+      setCurrentPage(prevPage => prevPage + 1);
+    }
   };
 
   const fetchPrevPage = () => {
-    if (currentPageNo <= 0) {
-      setNoPrev(true);
-      return;
+    if (currentPage > 0) {
+      setCurrentPage(prevPage => prevPage - 1);
     }
-    if (noNext) setNoNext(false);
-
-    currentPageNo -= 1;
-
-    fetchMovies(currentPageNo);
   };
 
-  useEffect(() => {
-    fetchMovies(currentPageNo);
-  }, []);
-
-  // const hideUpdateForm = () => setShowUpdateModal(false);
-  // const hideConfirmModal = () => setShowConfirmModal(false);
-
-  // const handleUIUpdate = () => fetchMovies();
-  // console.log(newMovies);
+  const noPrev = currentPage <= 0;
+  const noNext = (currentPage + 1) * limit >= totalMovieCount;
 
   return (
     <div className="mx-2 mt-3 sm:mx-5 sm:mt-5">
-      <DataTable columns={columns} data={movies} />
+      <DataTable 
+        columns={columns} 
+        data={movies} 
+      />
       <NextAndPrevButton
         className="mt-5"
         onNextClick={fetchNextPage}

@@ -21,8 +21,9 @@ const validateUserInfo = ({ email, password }) => {
   if (!email.trim()) return { ok: false, error: "Email is missing!" };
   if (!isValidEmail(email)) return { ok: false, error: "Invalid email!" };
   if (!password.trim()) return { ok: false, error: "Password is missing!" };
-  if (password.length < 8)
+  if (password.length < 8) {
     return { ok: false, error: "Password must be 8 characters!" };
+  }
   return { ok: true };
 };
 
@@ -48,7 +49,7 @@ export default function Signin() {
     if (!ok) return toast.error(t(error as string));
     handleLogin(userInfo.email, userInfo.password);
   };
-  
+
   useEffect(() => {
     if (isLoggedIn) navigate("/");
   }, [isLoggedIn, navigate]);
@@ -81,12 +82,6 @@ export default function Signin() {
                 <div className="grid gap-2">
                   <div className="flex items-center">
                     <Label htmlFor="password">{t("Password")}</Label>
-                    <Link
-                      to="/auth/forget-password"
-                      className="ml-auto text-sm underline-offset-4 hover:underline"
-                    >
-                      {t("Forgot your password?")}
-                    </Link>
                   </div>
                   <Input
                     id="password"
@@ -101,6 +96,12 @@ export default function Signin() {
                 <Button type="submit" className="w-full" disabled={isPending}>
                   {isPending ? t("Logging in...") : t("Login")}
                 </Button>
+                <Link
+                  to="/auth/forget-password"
+                  className="ml-auto text-sm underline-offset-4 hover:underline"
+                >
+                  {t("Forgot your password?")}
+                </Link>
               </div>
               <div className="text-center text-sm">
                 {t("Don't have an account? ")}
