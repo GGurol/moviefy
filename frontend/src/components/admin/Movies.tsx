@@ -1,12 +1,31 @@
-import { useMemo } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
+import { getMovies } from "../../api/movie";
 import NextAndPrevButton from "../NextAndPrevButton";
 import { DataTable } from "../ui/DataTable";
 import { columns } from "./MovieListColumn"; // Use the simple, static import
+import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
-// The component is now a "dumb" component that receives all its data and handlers as props.
-export default function Movies({ movies, currentPage, totalMovieCount, limit, setCurrentPage, fetchMovies }) {
-  
-  // This is the refresh function that will be passed down
+const limit = 6;
+
+export default function Movies() {
+  const [movies, setMovies] = useState([]);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalMovieCount, setTotalMovieCount] = useState(0);
+  const { t } = useTranslation();
+
+  const fetchMovies = useCallback(async (pageNo) => {
+    const { error, movies: newMovies, totalMovieCount: newTotal } = await getMovies(pageNo, limit);
+    if (error) return toast.error(t(error));
+    
+    setMovies(newMovies || []);
+    setTotalMovieCount(newTotal || 0);
+  }, [t]);
+
+  useEffect(() => {
+    fetchMovies(currentPage);
+  }, [currentPage, fetchMovies]);
+
   const handleSuccess = () => {
     fetchMovies(currentPage);
   };
@@ -14,13 +33,13 @@ export default function Movies({ movies, currentPage, totalMovieCount, limit, se
   const fetchNextPage = () => {
     const totalPages = Math.ceil(totalMovieCount / limit);
     if (currentPage < totalPages - 1) {
-      setCurrentPage(currentPage + 1);
+      setCurrentPage(prevPage => prevPage + 1);
     }
   };
 
   const fetchPrevPage = () => {
     if (currentPage > 0) {
-      setCurrentPage(currentPage - 1);
+      setCurrentPage(prevPage => prevPage - 1);
     }
   };
 
@@ -32,8 +51,7 @@ export default function Movies({ movies, currentPage, totalMovieCount, limit, se
       <DataTable 
         columns={columns} 
         data={movies}
-        // CORRECTED: Pass the meta prop directly to the DataTable,
-        // just like we did in Actors.tsx
+        // CORRECTED: The meta object is now passed as a direct prop to the DataTable
         meta={{
           onDeleteSuccess: handleSuccess,
           onUpdateSuccess: handleSuccess,

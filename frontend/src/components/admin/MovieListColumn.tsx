@@ -3,11 +3,10 @@ import { Badge } from "../ui/badge";
 import MovieListColumnAction from "./MovieListColumnAction";
 import i18n from "@/utils/i18n";
 
-// This constant should ideally come from an environment variable
 const BACKEND_URL = "http://localhost:8000";
 
 export type Movie = {
-  id: string; // Add id to the type for the action column
+  id: string;
   poster: string;
   title: string;
   status: "public" | "private";
@@ -17,11 +16,10 @@ export type Movie = {
 export const columns: ColumnDef<Movie>[] = [
   {
     accessorKey: "poster",
-    header: "Poster", // Changed to a simple string
+    header: "Poster",
     cell: ({ row }) => {
       const value = row.getValue("poster") as string;
-      // CORRECTED: Prepend the backend URL to the poster path
-      const imageUrl = value ? `${BACKEND_URL}${value}` : "/placeholder.png"; // Added a fallback
+      const imageUrl = value ? `${BACKEND_URL}${value}` : "/placeholder.png";
       return (
         <div className="w-20 sm:w-28">
           <img src={imageUrl} alt="Poster image" className="w-full rounded" />
@@ -31,9 +29,8 @@ export const columns: ColumnDef<Movie>[] = [
   },
   {
     accessorKey: "title",
-    header: "Title", // Changed to a simple string
+    header: "Title",
     cell: ({ row }) => {
-      // CORRECTED: Get the title directly from the row's data
       const title = row.getValue("title") as string;
       return (
         <div className="capitalize text-[10px] sm:text-xs lg:text-sm font-semibold">
@@ -44,41 +41,42 @@ export const columns: ColumnDef<Movie>[] = [
   },
   {
     accessorKey: "genres",
-    header: "Genres", // Changed to a simple string
+    header: "Genres",
     cell: ({ row }) => {
       const value = row.getValue("genres") as string[];
-      // Added a check to prevent error if genres is not an array
       if (!Array.isArray(value)) return null; 
-      
-      const vl = value.map((e) => {
-        return (
-          <Badge
-            key={e}
-            className="text-[8px] rounded-sm max-sm:px-1 max-sm:py-0 max-sm:bg-muted-foreground sm:rounded-full  sm:text-xs"
-          >
-            {i18n.t(`genres.${e}`)}
-          </Badge>
-        );
-      });
+      const vl = value.map((e) => (
+        <Badge key={e} className="text-[8px] rounded-sm max-sm:px-1 max-sm:py-0">
+          {i18n.t(`genres.${e}`)}
+        </Badge>
+      ));
       return <div className="flex gap-[1px] sm:gap-1 flex-wrap ">{vl}</div>;
     },
   },
   {
     accessorKey: "status",
-    header: "Status", // Changed to a simple string
-    enableHiding: true,
+    header: "Status",
     cell: ({ row }) => {
       const value = row.getValue("status") as string;
       return (
-        <div className="capitalize  text-xs lg:text-sm">{i18n.t(value)}</div>
+        <div className="capitalize text-xs lg:text-sm">{i18n.t(value)}</div>
       );
     },
   },
   {
     id: "actions",
-    cell: ({ row }) => {
-      // Pass the entire movie object to the action component
-      return <MovieListColumnAction movie={row.original} />;
+    // --- CORRECTED: The cell now gets the 'table' instance to access meta properties ---
+    cell: ({ row, table }) => {
+      // Get the refresh functions passed down from the parent (Movies.tsx)
+      const { onDeleteSuccess, onUpdateSuccess } = table.options.meta as any;
+
+      return (
+        <MovieListColumnAction 
+          movie={row.original} 
+          onDeleteSuccess={onDeleteSuccess}
+          onUpdateSuccess={onUpdateSuccess}
+        />
+      );
     },
   },
 ];

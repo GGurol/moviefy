@@ -1,65 +1,63 @@
-import { createContext, useState } from "react";
-import { useNotification } from "../hooks";
-import { getMovies } from "../api/movie";
+import { createContext, useState, useCallback } from "react";
+import { getMovies, getLatestUploads } from "../api/movie";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 
-export const MovieContext = createContext();
+export const MovieContext = createContext(null);
 
-let currentPageNo = 0;
-const limit = 4;
+const limit = 6;
 
 const MoviesProvider = ({ children }) => {
   const [movies, setMovies] = useState([]);
   const [latestUploads, setLatestUploads] = useState([]);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalMovieCount, setTotalMovieCount] = useState(0);
   const [reachedToEnd, setReachedToEnd] = useState(false);
   const { t } = useTranslation();
 
-  const fetchLatestUploads = async (qty = 5) => {
-    const { error, movies } = await getMovies(0, qty);
+  const fetchLatestUploads = useCallback(async (qty = 5) => {
+    const { error, movies } = await getLatestUploads(qty);
+    if (error) return toast.error(t(error));
+    setLatestUploads(movies);
+  }, [t]);
+
+  const fetchMovies = useCallback(async (pageNo) => {
+    const { error, movies: newMovies, totalMovieCount: newTotal } = await getMovies(pageNo, limit);
     if (error) return toast.error(t(error));
 
-    setLatestUploads([...movies]);
-  };
-
-  const fetchMovies = async (pageNo) => {
-    const { error, movies } = await getMovies(pageNo, limit);
-    if (error) return toast.error(t(error));
-
-    if (!movies.length) {
-      currentPageNo = pageNo - 1;
+    if (!newMovies.length && pageNo > 0) {
+      setCurrentPage(pageNo - 1);
       return setReachedToEnd(true);
     }
 
-    setMovies([...movies]);
+    setMovies(newMovies);
+    setTotalMovieCount(newTotal || 0);
+    setCurrentPage(pageNo);
+    setReachedToEnd(false);
+  }, [t]);
+
+  const fetchNextPage = () => {
+    if ((currentPage + 1) * limit >= totalMovieCount) return;
+    fetchMovies(currentPage + 1);
   };
 
-  const fetchNextPage = (pageNo) => {
-    if (reachedToEnd) return;
-    pageNo += 1;
-    fetchMovies(pageNo);
-    console.log("next", pageNo);
-  };
-
-  const fetchPrevPage = (pageNo) => {
-    if (pageNo <= 0) return;
-    if (reachedToEnd) setReachedToEnd(false);
-
-    pageNo -= 1;
-    console.log("prev", pageNo);
-
-    fetchMovies(pageNo);
+  const fetchPrevPage = () => {
+    if (currentPage <= 0) return;
+    fetchMovies(currentPage - 1);
   };
 
   return (
     <MovieContext.Provider
       value={{
+        movies,
         latestUploads,
         fetchLatestUploads,
-        movies,
         fetchMovies,
         fetchNextPage,
         fetchPrevPage,
+        totalMovieCount,
+        currentPage,
+        limit
       }}
     >
       {children}

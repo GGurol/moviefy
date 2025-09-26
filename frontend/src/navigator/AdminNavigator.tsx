@@ -20,11 +20,9 @@ function AdminNavigator() {
   const [movies, setMovies] = useState([]);
   const [moviePage, setMoviePage] = useState(0);
   const [totalMovies, setTotalMovies] = useState(0);
-  
   const [actors, setActors] = useState([]);
   const [actorPage, setActorPage] = useState(0);
   const [totalActors, setTotalActors] = useState(0);
-  
   const { t } = useTranslation();
 
   const fetchMovies = useCallback(async (pageNo: number) => {
@@ -49,48 +47,44 @@ function AdminNavigator() {
   }, [fetchMovies, fetchActors]);
   
   return (
-    <>
-      <SidebarProvider>
-        <AppSidebar />
-        <SidebarInset>
-          {/* Header component now receives functions to refresh both lists */}
-          <Header 
-            onMovieCreated={() => fetchMovies(0)} 
-            onActorCreated={() => fetchActors(0)}
+    <SidebarProvider>
+      <AppSidebar />
+      <SidebarInset>
+        <Header 
+          onMovieCreated={() => fetchMovies(0)} 
+          onActorCreated={() => fetchActors(0)}
+        />
+        <Routes>
+          <Route path="/" element={<Dashboard />} />
+          <Route 
+            path="/movies" 
+            element={
+              <Movies
+                movies={movies}
+                currentPage={moviePage}
+                totalMovieCount={totalMovies}
+                limit={movieLimit}
+                fetchMovies={fetchMovies}
+              />
+            } 
           />
-          <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route 
-              path="/movies" 
-              element={
-                <Movies
-                  movies={movies}
-                  currentPage={moviePage}
-                  totalMovieCount={totalMovies}
-                  limit={movieLimit}
-                  fetchMovies={fetchMovies}
-                />
-              } 
-            />
-            <Route 
-              path="/actors" 
-              element={
-                // Pass all actor-related state and functions to the Actors component
-                <Actors
-                  actors={actors}
-                  currentPage={actorPage}
-                  totalActorCount={totalActors}
-                  limit={actorLimit}
-                  fetchActors={fetchActors}
-                />
-              } 
-            />
-            <Route path="/search" element={<SearchMovies />} />
-            <Route path="/*" element={<NotFound />} />
-          </Routes>
-        </SidebarInset>
-      </SidebarProvider>
-    </>
+          <Route 
+            path="/actors" 
+            element={
+              <Actors
+                actors={actors}
+                currentPage={actorPage}
+                totalActorCount={totalActors}
+                limit={actorLimit}
+                fetchActors={fetchActors}
+              />
+            } 
+          />
+          <Route path="/search" element={<SearchMovies />} />
+          <Route path="/*" element={<NotFound />} />
+        </Routes>
+      </SidebarInset>
+    </SidebarProvider>
   );
 }
 
