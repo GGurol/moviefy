@@ -3,9 +3,8 @@ import Actor from "../models/actor";
 import { sendError, saveImageLocally, formateActor } from "../utils/helper";
 import fs from "fs";
 import path from "path";
-import { fileURLToPath } from "url"; // Import this helper
+import { fileURLToPath } from "url";
 
-// --- ADDED: ES Module-compatible way to get __dirname ---
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -35,7 +34,6 @@ export const updateActor = async (req, res) => {
 
   const oldAvatarPath = actor.avatar;
 
-  // If a new file is uploaded, delete the old one.
   if (oldAvatarPath && file) {
     try {
       const fullPath = path.join(__dirname, "../../", oldAvatarPath);
@@ -46,24 +44,18 @@ export const updateActor = async (req, res) => {
       console.error("Failed to remove old avatar:", error);
     }
   }
-  
-  // --- ADDED: The missing logic to save the new data ---
 
-  // If a new file was uploaded, save it and update the path.
   if (file) {
     const newAvatarUrl = saveImageLocally(file);
     actor.avatar = newAvatarUrl;
   }
 
-  // Update the text fields.
   actor.name = name;
   actor.about = about;
   actor.gender = gender;
 
-  // Save all changes to the database.
   await actor.save();
 
-  // Send a success response with a message for the toast notification.
   res.status(201).json({
     actor: formateActor(actor),
     message: "Actor updated successfully",
@@ -98,8 +90,9 @@ export const removeActor = async (req, res) => {
 
 export const searchActor = async (req, res) => {
   const { name } = req.query;
-  if (!name || !(name as string).trim()) return sendError(res, 'Invalid request!');
-  
+  if (!name || !(name as string).trim())
+    return sendError(res, "Invalid request!");
+
   const result = await Actor.find({
     name: { $regex: name, $options: "i" },
   });
@@ -123,16 +116,20 @@ export const getSingleActor = async (req, res) => {
   res.json({ actor: formateActor(actor) });
 };
 
+// --- CORRECTED: This function now also returns the total count ---
 export const getActors = async (req, res) => {
-  const { pageNo = '0', limit = '10' } = req.query;
-  
+  const { pageNo = "0", limit = "10" } = req.query;
+
   const actors = await Actor.find({})
     .sort({ createdAt: -1 })
     .skip(parseInt(pageNo as string) * parseInt(limit as string))
     .limit(parseInt(limit as string));
+    
+  const totalActorCount = await Actor.countDocuments();
 
   const profiles = actors.map((actor) => formateActor(actor));
   res.json({
     profiles,
+    totalActorCount, // Send the total count to the frontend
   });
 };

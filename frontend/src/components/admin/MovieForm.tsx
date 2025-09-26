@@ -690,7 +690,7 @@ useEffect(() => {
                     name="poster"
                     selectedPoster={selectedPosterForUI}
                     label={t("Select poster")}
-                    className="w-full sm:w-52 md:w-60 h-36 text-sm aspect-square object-cover rounded-md hover:bg-muted"
+                    className="w-full sm:w-52 md:w-60 aspect-[2/3] text-sm object-cover rounded-md hover:bg-muted"
                     onChange={(e) => {
                       field.onChange(e.target.files && e.target.files[0]);
                       handleChange(e);

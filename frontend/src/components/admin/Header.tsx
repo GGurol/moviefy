@@ -39,7 +39,9 @@ export default function Header({ onMovieCreated, onActorCreated }) {
     const { error } = await createMovie(data);
     setBusy(false);
     
-    if (error) return toast.error(t("Failed to create a movie"));
+    if (error) {
+      return toast.error(t("Failed to create a movie"));
+    }
     
     toast.success(t("Successfully created a movie"));
     setOpenMovieDialog(false);

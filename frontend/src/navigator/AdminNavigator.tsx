@@ -44,7 +44,6 @@ function AdminNavigator() {
   }, [t]);
 
   useEffect(() => {
-    // Fetch initial data for both when the admin panel mounts
     fetchMovies(0);
     fetchActors(0);
   }, [fetchMovies, fetchActors]);
@@ -54,6 +53,7 @@ function AdminNavigator() {
       <SidebarProvider>
         <AppSidebar />
         <SidebarInset>
+          {/* Header component now receives functions to refresh both lists */}
           <Header 
             onMovieCreated={() => fetchMovies(0)} 
             onActorCreated={() => fetchActors(0)}
@@ -68,19 +68,20 @@ function AdminNavigator() {
                   currentPage={moviePage}
                   totalMovieCount={totalMovies}
                   limit={movieLimit}
-                  setCurrentPage={setMoviePage}
+                  fetchMovies={fetchMovies}
                 />
               } 
             />
             <Route 
               path="/actors" 
               element={
+                // Pass all actor-related state and functions to the Actors component
                 <Actors
                   actors={actors}
                   currentPage={actorPage}
                   totalActorCount={totalActors}
                   limit={actorLimit}
-                  setCurrentPage={setActorPage}
+                  fetchActors={fetchActors}
                 />
               } 
             />

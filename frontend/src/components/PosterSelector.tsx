@@ -1,5 +1,5 @@
 const commonPosterStyle =
-  "flex justify-center items-center border rounded aspect-video cursor-pointer";
+  "flex justify-center items-center border rounded cursor-pointer"; // Removed 'aspect-video'
 
 export default function PosterSelector({
   name,
@@ -8,7 +8,6 @@ export default function PosterSelector({
   onChange,
   className,
   label,
-  // ref,
 }) {
   return (
     <div>
@@ -19,14 +18,14 @@ export default function PosterSelector({
         id={name}
         type="file"
         hidden
-        // ref={ref}
       />
       <label htmlFor={name} tabIndex={0}>
         {selectedPoster ? (
           <img
+            // The final className will now correctly use the aspect ratio from the parent
             className={commonPosterStyle + " object-cover " + className}
             src={selectedPoster}
-            alt=""
+            alt="poster"
           />
         ) : (
           <PosterUI label={label} className={className} />
