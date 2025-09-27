@@ -9,19 +9,30 @@ A full-stack movie platform with user and admin interfaces — featuring movie s
 - Users can stream movies, view cast and genre information, write reviews with star ratings, and toggle between light/dark modes and multiple languages.
 - Admins can manage the movie database, including adding/editing movie entries and actor profiles.
 
-## 💡 Motivation
 
-The project was born out of a desire to create a real-world movie streaming and review platform — a place to apply and deepen my skills in **full-stack development**, **UX design**, and **internationalization**.
+## Installation
 
-## 👨‍💻 My Role
+1. Clone The Repository:
+    ```bash
+    git clone https://github.com/GGurol/moviefy.git
+    ```
 
-As a solo developer, I was responsible for every aspect of the app, including:
+2. Navigate to the project directory:
+    ```bash
+    cd moviefy
+    ```
 
-- UI/UX design for both user and admin dashboards
-- Full-stack development (frontend, backend, and API integration)
-- Secure user authentication and role-based access control
-- Docker-based containerization for consistent development and deployment
-- Caddy configuration as a static file server and reverse proxy
+3. Build the docker:
+    ```bash
+    docker compose up --build -d
+    ```
+
+4. Login via : localhost:5173 with admin information in .env file.
+
+(***) The MailHog service has been added for email operations. You can access the service at http://localhost:8025. 
+A confirmation code will be sent here for the registration process 
+
+
 
 ## 🛠️ Tech Stack
 
@@ -58,27 +69,5 @@ As a solo developer, I was responsible for every aspect of the app, including:
 - 🎭 Manage actor profiles with names and pictures
 - 📝 Monitor user-submitted reviews and ratings
 
-## 🧩 Challenges & Solutions
 
-### 1. Advanced Admin Movie Form
 
-**Challenge:** Creating a highly functional form with live actor search, multilingual support, file uploads, and validation.
-
-**Solution:**
-
-- UI: Used `shadcn/ui` for polished form components
-- Validation: Combined `react-hook-form` with `Zod` for schema-based validation
-- Language Switching: Seamlessly integrated `react-i18next`
-- Actor Search: Implemented debounced live search
-- File Uploads: Built custom file input controls for video/image submission
-
-### 2. Custom Authentication & Authorization
-
-**Challenge:** Secure user login system with role-based access and account verification.
-
-**Solution:**
-
-- Email Verification: Used `Nodemailer` to send activation emails with secure tokens
-- JWT Authentication: Managed user sessions and protected admin routes
-- Role Restrictions: Limited review and rating features to verified users
-- Password Reset: Built a tokenized reset flow with email delivery
