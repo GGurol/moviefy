@@ -27,7 +27,8 @@ import ThemeButton from "../ui/ThemeButton";
 import MovieForm from "./MovieForm";
 import { SidebarTrigger } from "../ui/sidebar";
 
-export default function Header({ onMovieCreated, onActorCreated }) {
+// The component no longer needs props for refreshing
+export default function Header() {
   const [openMovieDialog, setOpenMovieDialog] = useState(false);
   const [openActorDialog, setOpenActorDialog] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -45,12 +46,15 @@ export default function Header({ onMovieCreated, onActorCreated }) {
     
     toast.success(t("Successfully created a movie"));
     setOpenMovieDialog(false);
-    onMovieCreated();
+    
+    // CORRECTED: Force a full page reload to show the new movie.
+    window.location.reload();
   };
 
+  // The actor flow now also needs a refresh
   const handleActorUploadSuccess = () => {
     setOpenActorDialog(false);
-    onActorCreated();
+    window.location.reload();
   };
 
   const handleSearchSubmit = (query) => {
